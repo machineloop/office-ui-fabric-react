@@ -20,4 +20,24 @@ describe('PresenceBadge', () => {
     const { getByLabelText } = render(<PresenceBadge status={status} />);
     expect(getByLabelText(STATUS_LABELS[status])).toBeTruthy();
   });
+
+  it.each(Object.keys(STATUS_LABELS) as PresenceBadgeStatus[])(
+    'includes out of office in the "%s" accessible name',
+    status => {
+      const { getByRole } = render(<PresenceBadge status={status} outOfOffice />);
+      const name = STATUS_LABELS[status] + (status === 'out-of-office' ? '' : ' out of office');
+      expect(getByRole('img', { name })).toBeTruthy();
+    },
+  );
+
+  it('updates and removes out of office labeling while respecting a caller label', () => {
+    const { getByRole, rerender } = render(<PresenceBadge status="away" outOfOffice />);
+    expect(getByRole('img', { name: 'away out of office' })).toBeTruthy();
+    rerender(<PresenceBadge status="busy" />);
+    expect(getByRole('img', { name: 'busy' })).toBeTruthy();
+    rerender(<PresenceBadge status="away" outOfOffice aria-label="Custom presence" />);
+    expect(getByRole('img', { name: 'Custom presence' })).toBeTruthy();
+    rerender(<PresenceBadge outOfOffice />);
+    expect(getByRole('img', { name: 'available out of office' })).toBeTruthy();
+  });
 });

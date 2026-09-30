@@ -110,6 +110,7 @@ const badgeMask = (margin?: string) => {
 };
 
 const useStyles = makeStyles({
+  hidden: { display: 'none' },
   textCaption2Strong: { fontSize: tokens.fontSizeBase100 },
   textCaption1Strong: { fontSize: tokens.fontSizeBase200 },
   textSubtitle2: { fontSize: tokens.fontSizeBase400 },
@@ -490,7 +491,7 @@ export const useAvatarStyles_unstable = (state: AvatarState): AvatarState => {
   const colorStyles = useColorStyles();
   const ringColorStyles = useRingColorStyles();
 
-  const rootClasses = [rootClassName, size !== 32 && sizeStyles[size]];
+  const rootClasses = [rootClassName, size !== 32 && sizeStyles[size], state.root.hidden && styles.hidden];
 
   if (state.badge) {
     rootClasses.push(styles.badgeAlign, styles[state.badge.size || 'medium']);

@@ -3444,6 +3444,7 @@ __metadata:
     "@fluentui/react-theme": "npm:^9.2.2"
     "@fluentui/react-tooltip": "npm:^9.10.7"
     "@fluentui/react-utilities": "npm:^9.26.7"
+    "@fluentui/scripts-cypress": "npm:*"
     "@griffel/react": "npm:^1.5.32"
     "@swc/helpers": "npm:^0.5.1"
     es6-weak-map: "npm:^2.0.2"

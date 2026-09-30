@@ -12,6 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@fluentui/scripts-cypress": "*",
     "es6-weak-map": "^2.0.2"
   },
   "dependencies": {

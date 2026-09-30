@@ -253,4 +253,19 @@ describe('Avatar', () => {
 
     expect(screen.queryByAltText('test-image')).toBeNull();
   });
+
+  it('updates native hidden state and its display class without retaining the class after removal', () => {
+    const { rerender } = render(<Avatar name="Hidden person" hidden />);
+    const root = screen.getByRole('img', { hidden: true });
+    const hiddenClassName = root.className;
+    expect(root.hasAttribute('hidden')).toBe(true);
+    expect(screen.queryByRole('img', { name: 'Hidden person' })).toBeNull();
+    rerender(<Avatar name="Hidden person" />);
+    expect(screen.getByRole('img', { name: 'Hidden person' })).toBe(root);
+    expect(root.hasAttribute('hidden')).toBe(false);
+    expect(root.className).not.toBe(hiddenClassName);
+    rerender(<Avatar name="Hidden person" hidden />);
+    expect(root.hasAttribute('hidden')).toBe(true);
+    expect(root.className).toBe(hiddenClassName);
+  });
 });

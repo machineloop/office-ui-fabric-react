@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Honor native Avatar hidden state and preserve out-of-office accessible presence with comprehensive functional coverage",
+  "packageName": "@fluentui/react-avatar",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

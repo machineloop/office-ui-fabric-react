@@ -67,7 +67,7 @@ export const usePresenceBadge_unstable = (
   const IconElement = iconMap(status, outOfOffice, size);
 
   const state: PresenceBadgeState = {
-    ...usePresenceBadgeBase_unstable(baseProps, ref),
+    ...usePresenceBadgeBase_unstable({ ...baseProps, outOfOffice }, ref),
     appearance: 'filled',
     color: 'brand',
     shape: 'circular',
