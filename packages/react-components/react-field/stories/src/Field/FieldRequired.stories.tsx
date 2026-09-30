@@ -14,7 +14,8 @@ Required.parameters = {
     description: {
       story:
         'When a Field is marked as `required`, the label has a red asterisk, ' +
-        'and the input gets the `aria-required` property for accessiblity tools.',
+        'and controls supporting native validation (such as Input) get `required`. ' +
+        'Other controls get `aria-required` for accessibility tools.',
     },
   },
 };

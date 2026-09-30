@@ -54,6 +54,15 @@ Display an error message:
 
 See [Fluent UI Storybook](https://react.fluentui.dev/) for more detailed usage examples.
 
+### Functional browser coverage
+
+`src/components/Field/Field.cy.tsx` exercises documented scenarios, native control
+interactions, accessible names and descriptions, all sizes, orientations and validation
+states, consumer overrides, dynamic slot cleanup, context and render-function controls,
+refs, slot render callbacks, and public-hook recomposition. Run it with
+`yarn nx run react-field:e2e`. Screen-reader speech and platform-specific rendering
+still require manual validation.
+
 Alternatively, run Storybook locally with:
 
 1. `yarn start`

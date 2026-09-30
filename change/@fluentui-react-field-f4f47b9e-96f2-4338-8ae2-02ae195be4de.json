@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Add direct functional Cypress coverage for Field and document native required validation.",
+  "packageName": "@fluentui/react-field",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
