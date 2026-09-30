@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Add direct DialogTrigger native functional coverage",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
