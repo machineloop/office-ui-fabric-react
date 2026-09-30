@@ -112,9 +112,8 @@ export function useARIAButtonProps<Type extends ARIAButtonType, Props extends AR
       ...rest,
       disabled: disabled && !disabledFocusable,
       'aria-disabled': disabledFocusable ? true : normalizedARIADisabled,
-      // onclick should still use internal handler to ensure prevention if disabled
-      // if disabledFocusable then there's no requirement for handlers as those events should not be propagated
-      onClick: disabledFocusable ? undefined : handleClick,
+      // Focusable disabled buttons still need to cancel native form actions.
+      onClick: handleClick,
       onKeyUp: disabledFocusable ? undefined : onKeyUp,
       onKeyDown: disabledFocusable ? undefined : onKeyDown,
     } as ARIAButtonResultProps<Type, Props>;

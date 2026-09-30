@@ -42,6 +42,27 @@ describe('useButtonBase_unstable', () => {
     expect(result.current.iconOnly).toBe(false);
   });
 
+  it.each([undefined, null, false, ''])('treats empty child %p as absent with a populated icon', children => {
+    const { result } = renderHook(() => useButtonBase_unstable({ icon: 'Icon', children }, React.createRef()));
+    expect(result.current.iconOnly).toBe(true);
+  });
+
+  it('preserves numeric zero children beside an icon', () => {
+    const { result } = renderHook(() => useButtonBase_unstable({ icon: 'Icon', children: 0 }, React.createRef()));
+    expect(result.current.iconOnly).toBe(false);
+    expect(result.current.root.children).toBe(0);
+    const { getByRole } = render(renderButton_unstable(result.current));
+    expect(getByRole('button').textContent).toBe('Icon0');
+  });
+
+  it('recognizes numeric zero as populated icon shorthand', () => {
+    const { result } = renderHook(() => useButtonBase_unstable({ icon: 0 }, React.createRef()));
+    expect(result.current.iconOnly).toBe(true);
+    expect(result.current.icon?.children).toBe(0);
+    const { getByRole } = render(renderButton_unstable(result.current));
+    expect(getByRole('button').textContent).toBe('0');
+  });
+
   describe('Recomposition', () => {
     type CustomButtonProps = ButtonBaseProps & { appearance?: '1' | '2' | '3' };
 

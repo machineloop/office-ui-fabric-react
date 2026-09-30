@@ -7,6 +7,9 @@ import { useARIAButtonProps } from '@fluentui/react-aria';
 import { slot } from '@fluentui/react-utilities';
 import type { ButtonBaseProps, ButtonBaseState, ButtonProps, ButtonState } from './Button.types';
 
+const hasContent = (children: unknown) =>
+  children !== undefined && children !== null && children !== false && children !== '';
+
 /**
  * Given user props, defines default props for the Button, calls useButtonState, and returns processed state.
  * @param props - User provided props to the Button component.
@@ -45,7 +48,7 @@ export const useButtonBase_unstable = (
     disabled: props.disabled ?? false,
     disabledFocusable: props.disabledFocusable ?? false,
     iconPosition,
-    iconOnly: Boolean(iconShorthand?.children && !props.children),
+    iconOnly: hasContent(iconShorthand?.children) && !hasContent(props.children),
     components: { root: 'button', icon: 'span' },
     root: slot.always<ARIAButtonSlotProps<'a'>>(useARIAButtonProps(buttonProps.as, buttonProps), {
       elementType: 'button',

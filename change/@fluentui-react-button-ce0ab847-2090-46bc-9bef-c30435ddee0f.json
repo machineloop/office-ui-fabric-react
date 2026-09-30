@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Preserve numeric zero Button content and icon shorthand with functional browser coverage.",
+  "packageName": "@fluentui/react-button",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

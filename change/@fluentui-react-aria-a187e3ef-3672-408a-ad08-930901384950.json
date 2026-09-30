@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Prevent native form submission and reset from focusable disabled buttons while retaining focus and enabled defaults.",
+  "packageName": "@fluentui/react-aria",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

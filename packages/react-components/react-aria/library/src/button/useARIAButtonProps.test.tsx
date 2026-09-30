@@ -45,7 +45,7 @@ describe('useARIAButton', () => {
         }),
       );
     });
-    it('should omit event handlers when disabledFocusable', () => {
+    it('should retain click cancellation but omit consumer keyboard handlers when disabledFocusable', () => {
       const handle = () => {
         /* noop */
       };
@@ -64,7 +64,7 @@ describe('useARIAButton', () => {
       expect(current).toEqual(
         expect.objectContaining<ARIAButtonProps>({
           'aria-disabled': true,
-          onClick: undefined,
+          onClick: expect.any(Function),
           onKeyDown: undefined,
           onKeyUp: undefined,
         }),
@@ -87,6 +87,39 @@ describe('useARIAButton', () => {
           'aria-disabled': true,
         }),
       );
+    });
+
+    it.each([
+      { disabledFocusable: true },
+      { disabled: true, disabledFocusable: true },
+      { 'aria-disabled': true },
+      { 'aria-disabled': 'true' as const },
+    ])('cancels disabled native click defaults and propagation for %p', disabledProps => {
+      const onClick = jest.fn();
+      const parentClick = jest.fn();
+      const { getByRole, rerender } = render(
+        <div onClick={parentClick}>
+          <TestButton {...disabledProps} onClick={onClick}>
+            Action
+          </TestButton>
+        </div>,
+      );
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      fireEvent(getByRole('button'), event);
+      expect(event.defaultPrevented).toBe(true);
+      expect(onClick).not.toHaveBeenCalled();
+      expect(parentClick).not.toHaveBeenCalled();
+
+      rerender(
+        <div onClick={parentClick}>
+          <TestButton onClick={onClick}>Action</TestButton>
+        </div>,
+      );
+      const enabledEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
+      fireEvent(getByRole('button'), enabledEvent);
+      expect(enabledEvent.defaultPrevented).toBe(false);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(parentClick).toHaveBeenCalledTimes(1);
     });
   });
 
