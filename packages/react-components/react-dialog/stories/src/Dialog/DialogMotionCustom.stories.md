@@ -7,3 +7,5 @@ Both slots also support the `children` render function, which allows replacing t
   <DialogSurface backdropMotion={{ duration: backdropDuration }}>…</DialogSurface>
 </Dialog>
 ```
+
+Set `surfaceMotion={null}` or `backdropMotion={null}` to disable that slot's animation. With `unmountOnClose={false}`, the surface and backdrop remain mounted, but closed elements are hidden and cannot intercept pointer interaction, including when their motion is disabled.

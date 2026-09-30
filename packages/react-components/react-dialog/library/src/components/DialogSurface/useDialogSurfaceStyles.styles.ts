@@ -107,6 +107,7 @@ export const useDialogSurfaceStyles_unstable = (state: DialogSurfaceState): Dial
       dialogSurfaceClassNames.backdrop,
       backdropBaseStyle,
       mountedAndClosed && styles.dialogHidden,
+      backdrop.hidden && styles.motionDisabledHidden,
       isBackdropTransparent && styles.nestedDialogBackdrop,
       backdrop.className,
     );

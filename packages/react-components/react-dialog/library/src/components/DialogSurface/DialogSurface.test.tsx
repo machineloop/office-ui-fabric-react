@@ -34,4 +34,26 @@ describe('DialogSurface', () => {
     const result = render(<DialogSurface>Default DialogSurface</DialogSurface>);
     expect(result.container).toMatchSnapshot();
   });
+
+  it('hides the retained backdrop without motion and restores it when opened', () => {
+    mockUseDialogContext({ open: false, unmountOnClose: false });
+    const result = render(<DialogSurface backdrop={{ id: 'backdrop' }} backdropMotion={null} />);
+    expect(result.baseElement.querySelector('#backdrop')).toHaveAttribute('hidden');
+    expect(result.baseElement.querySelector('#backdrop')).not.toBeVisible();
+
+    mockUseDialogContext({ open: true, unmountOnClose: false });
+    result.rerender(<DialogSurface backdrop={{ id: 'backdrop' }} backdropMotion={null} />);
+    expect(result.baseElement.querySelector('#backdrop')).not.toHaveAttribute('hidden');
+    expect(result.baseElement.querySelector('#backdrop')).toBeVisible();
+
+    mockUseDialogContext({ open: false, unmountOnClose: false });
+    result.rerender(<DialogSurface backdrop={{ id: 'backdrop' }} backdropMotion={null} />);
+    expect(result.baseElement.querySelector('#backdrop')).not.toBeVisible();
+  });
+
+  it('does not hide a retained animated backdrop before its exit motion', () => {
+    mockUseDialogContext({ open: false, unmountOnClose: false });
+    const result = render(<DialogSurface backdrop={{ id: 'backdrop' }} />);
+    expect(result.baseElement.querySelector('#backdrop')).not.toHaveAttribute('hidden');
+  });
 });

@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Hide retained DialogSurface backdrops when backdrop motion is disabled",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

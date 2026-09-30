@@ -80,6 +80,7 @@ export const useDialogSurface_unstable = (
     renderByDefault: modalType !== 'non-modal',
     defaultProps: {
       'aria-hidden': 'true',
+      hidden: props.backdropMotion === null && !unmountOnClose && !open ? true : undefined,
     },
     elementType: 'div',
   });
