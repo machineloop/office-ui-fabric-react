@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Add documented API and accessibility SkeletonItem functional browser coverage plus native and unit regressions.",
+  "packageName": "@fluentui/react-skeleton",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
