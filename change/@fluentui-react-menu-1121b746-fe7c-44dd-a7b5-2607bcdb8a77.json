@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "fix(react-menu): honor hidden on MenuList and cover list keyboard selection and context contracts",
+  "packageName": "@fluentui/react-menu",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

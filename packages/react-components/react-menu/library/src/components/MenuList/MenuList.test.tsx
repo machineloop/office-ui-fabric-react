@@ -46,4 +46,17 @@ describe('MenuList', () => {
     // Assert
     expect(hasMenuListContext).toBe(true);
   });
+
+  it('updates hidden state without retaining the hidden layout class', () => {
+    const result = render(<MenuList hidden>Actions</MenuList>);
+    const root = result.container.firstElementChild!;
+    const hiddenClassName = root.className;
+    expect(root).toHaveAttribute('hidden');
+    result.rerender(<MenuList>Actions</MenuList>);
+    expect(root).not.toHaveAttribute('hidden');
+    expect(root.className).not.toEqual(hiddenClassName);
+    result.rerender(<MenuList hidden>Actions</MenuList>);
+    expect(root).toHaveAttribute('hidden');
+    expect(root.className).toEqual(hiddenClassName);
+  });
 });

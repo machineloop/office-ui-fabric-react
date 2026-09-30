@@ -17,6 +17,9 @@ const useStyles = makeStyles({
   hasMenuContext: {
     height: '100%',
   },
+  hidden: {
+    display: 'none',
+  },
 });
 
 /**
@@ -29,6 +32,7 @@ export const useMenuListStyles_unstable = (state: MenuListState): MenuListState 
     menuListClassNames.root,
     styles.root,
     state.hasMenuContext && styles.hasMenuContext,
+    state.root.hidden && styles.hidden,
     state.root.className,
   );
   return state;
