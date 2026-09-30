@@ -122,4 +122,5 @@ export type DialogState = ComponentState<InternalDialogSlots> &
   DialogContextValue & {
     content: React.ReactNode;
     trigger: React.ReactNode;
+    surfaceMotionDisabled?: boolean;
   };

@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Fix retained Dialog visibility and focus lifecycle and preserve independently owned modal scroll locks",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

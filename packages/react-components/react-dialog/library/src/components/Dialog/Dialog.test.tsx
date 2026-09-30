@@ -35,6 +35,73 @@ describe('Dialog', () => {
     expect(result.container).toMatchSnapshot();
   });
 
+  it('hides retained surfaces with disabled motion without resetting their content', () => {
+    const result = render(
+      <Dialog surfaceMotion={null} unmountOnClose={false}>
+        <DialogTrigger disableButtonEnhancement>
+          <button>Open retained</button>
+        </DialogTrigger>
+        <DialogSurface data-testid="retained-surface">
+          <input aria-label="Draft" defaultValue="initial" />
+          <DialogTrigger disableButtonEnhancement>
+            <button>Close retained</button>
+          </DialogTrigger>
+        </DialogSurface>
+      </Dialog>,
+    );
+    const surface = result.getByTestId('retained-surface');
+    const input = result.getByLabelText('Draft');
+    expect(surface).toHaveAttribute('hidden');
+    expect(surface).toHaveAttribute('aria-hidden', 'true');
+    result.getByText('Open retained').focus();
+    fireEvent.click(result.getByText('Open retained'));
+    expect(surface).not.toHaveAttribute('hidden');
+    expect(surface).toBeVisible();
+    fireEvent.change(input, { target: { value: 'edited' } });
+    input.focus();
+    fireEvent.click(result.getByText('Close retained'));
+    expect(surface).toHaveAttribute('hidden');
+    expect(surface).not.toBeVisible();
+    expect(result.getByText('Open retained')).toHaveFocus();
+    fireEvent.click(result.getByText('Open retained'));
+    expect(result.getByLabelText('Draft')).toBe(input);
+    expect(input).toHaveValue('edited');
+    expect(surface).toBeVisible();
+  });
+
+  it.each([true, false])('preserves non-first focus when unmountOnClose changes from %s', initialUnmount => {
+    const composition = (unmountOnClose: boolean) => (
+      <Dialog open unmountOnClose={unmountOnClose} surfaceMotion={null}>
+        <DialogSurface>
+          <button>First action</button>
+          <button>Second action</button>
+        </DialogSurface>
+      </Dialog>
+    );
+    const result = render(composition(initialUnmount));
+    result.getByText('Second action').focus();
+    expect(result.getByText('Second action')).toHaveFocus();
+    result.rerender(composition(!initialUnmount));
+    expect(result.getByText('Second action')).toHaveFocus();
+  });
+
+  it.each([true, false])('preserves non-modal outside focus when unmountOnClose changes from %s', initialUnmount => {
+    const composition = (unmountOnClose: boolean) => (
+      <>
+        <Dialog open modalType="non-modal" unmountOnClose={unmountOnClose} surfaceMotion={null}>
+          <DialogSurface>
+            <button>Inside action</button>
+          </DialogSurface>
+        </Dialog>
+        <button>Outside target</button>
+      </>
+    );
+    const result = render(composition(initialUnmount));
+    result.getByText('Outside target').focus();
+    result.rerender(composition(!initialUnmount));
+    expect(result.getByText('Outside target')).toHaveFocus();
+  });
+
   it('Testing DialogSurface with toBeVisible works as expected', () => {
     // eslint-disable-next-line @griffel/styles-file
     const useStyles = makeStyles({

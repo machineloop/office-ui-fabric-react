@@ -8,6 +8,7 @@ import * as React from 'react';
 import { MotionRefForwarder } from '@fluentui/react-motion';
 import { DialogProvider, DialogSurfaceProvider } from '../../contexts';
 import type { DialogState, DialogContextValues, InternalDialogSlots } from './Dialog.types';
+import { DialogSurfaceMotionContext } from '../../contexts/dialogSurfaceMotionContext';
 
 /**
  * Render the final JSX of Dialog
@@ -17,18 +18,20 @@ export const renderDialog_unstable = (state: DialogState, contextValues: DialogC
 
   return (
     <DialogProvider value={contextValues.dialog}>
-      <DialogSurfaceProvider value={contextValues.dialogSurface}>
-        {state.trigger}
-        {state.content && (
-          <state.surfaceMotion>
-            <MotionRefForwarder>
-              {/* Casting here as content should be equivalent to <DialogSurface/> */}
-              {/* FIXME: content should not be ReactNode it should be ReactElement instead. */}
-              {state.content as React.ReactElement}
-            </MotionRefForwarder>
-          </state.surfaceMotion>
-        )}
-      </DialogSurfaceProvider>
+      <DialogSurfaceMotionContext.Provider value={{ open: state.open, motionDisabled: !!state.surfaceMotionDisabled }}>
+        <DialogSurfaceProvider value={contextValues.dialogSurface}>
+          {state.trigger}
+          {state.content && (
+            <state.surfaceMotion>
+              <MotionRefForwarder>
+                {/* Casting here as content should be equivalent to <DialogSurface/> */}
+                {/* FIXME: content should not be ReactNode it should be ReactElement instead. */}
+                {state.content as React.ReactElement}
+              </MotionRefForwarder>
+            </state.surfaceMotion>
+          )}
+        </DialogSurfaceProvider>
+      </DialogSurfaceMotionContext.Provider>
     </DialogProvider>
   );
 };

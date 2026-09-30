@@ -43,7 +43,7 @@ export const useDialog_unstable = (props: DialogProps): DialogState => {
     }
   });
 
-  const dialogRef = useFocusFirstElement(open, modalType);
+  const dialogRef = useFocusFirstElement(open, modalType, !unmountOnClose);
 
   const { modalAttributes, triggerAttributes } = useModalAttributes({
     trapFocus: modalType !== 'non-modal',
@@ -61,6 +61,7 @@ export const useDialog_unstable = (props: DialogProps): DialogState => {
     modalType,
     content,
     trigger,
+    surfaceMotionDisabled: props.surfaceMotion === null,
     requestOpenChange,
     dialogTitleId,
     isNestedDialog,

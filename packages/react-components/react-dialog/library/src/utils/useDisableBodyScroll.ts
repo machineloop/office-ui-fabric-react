@@ -5,6 +5,8 @@ import { useFluent_unstable } from '@fluentui/react-shared-contexts';
 
 import { useBodyNoScrollStyles, useHTMLNoScrollStyles } from './useDisableBodyScroll.styles';
 
+const scrollLockCounts = new WeakMap<Document, number>();
+
 /**
  * A React *hook* that disables body scrolling through `overflowY: hidden` CSS property
  *
@@ -17,9 +19,10 @@ export function useDisableBodyScroll(): {
   const htmlNoScrollStyles = useHTMLNoScrollStyles();
   const bodyNoScrollStyles = useBodyNoScrollStyles();
   const { targetDocument } = useFluent_unstable();
+  const lockedDocument = React.useRef<Document | undefined>(undefined);
 
   const disableBodyScroll = React.useCallback(() => {
-    if (!targetDocument) {
+    if (!targetDocument || lockedDocument.current) {
       return;
     }
     const isHorizontalScrollbarVisible =
@@ -31,16 +34,26 @@ export function useDisableBodyScroll(): {
     }
     targetDocument.documentElement.classList.add(htmlNoScrollStyles);
     targetDocument.body.classList.add(bodyNoScrollStyles);
+    scrollLockCounts.set(targetDocument, (scrollLockCounts.get(targetDocument) ?? 0) + 1);
+    lockedDocument.current = targetDocument;
     return;
   }, [targetDocument, htmlNoScrollStyles, bodyNoScrollStyles]);
 
   const enableBodyScroll = React.useCallback(() => {
-    if (!targetDocument) {
+    const documentToUnlock = lockedDocument.current;
+    if (!documentToUnlock) {
       return;
     }
-    targetDocument.documentElement.classList.remove(htmlNoScrollStyles);
-    targetDocument.body.classList.remove(bodyNoScrollStyles);
-  }, [targetDocument, htmlNoScrollStyles, bodyNoScrollStyles]);
+    lockedDocument.current = undefined;
+    const remainingLocks = (scrollLockCounts.get(documentToUnlock) ?? 1) - 1;
+    if (remainingLocks > 0) {
+      scrollLockCounts.set(documentToUnlock, remainingLocks);
+      return;
+    }
+    scrollLockCounts.delete(documentToUnlock);
+    documentToUnlock.documentElement.classList.remove(htmlNoScrollStyles);
+    documentToUnlock.body.classList.remove(bodyNoScrollStyles);
+  }, [htmlNoScrollStyles, bodyNoScrollStyles]);
 
   return {
     disableBodyScroll,

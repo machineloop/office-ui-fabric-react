@@ -74,6 +74,9 @@ const useStyles = makeStyles({
   dialogHidden: {
     pointerEvents: 'none',
   },
+  motionDisabledHidden: {
+    display: 'none',
+  },
 });
 
 /**
@@ -94,6 +97,7 @@ export const useDialogSurfaceStyles_unstable = (state: DialogSurfaceState): Dial
     dialogSurfaceClassNames.root,
     rootBaseStyle,
     mountedAndClosed && styles.dialogHidden,
+    root.hidden && styles.motionDisabledHidden,
     root.className,
   );
 

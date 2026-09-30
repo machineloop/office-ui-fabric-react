@@ -167,6 +167,7 @@ export type DialogSlots = {
 export type DialogState = ComponentState<InternalDialogSlots> & DialogContextValue & {
     content: React_2.ReactNode;
     trigger: React_2.ReactNode;
+    surfaceMotionDisabled?: boolean;
 };
 
 // @public

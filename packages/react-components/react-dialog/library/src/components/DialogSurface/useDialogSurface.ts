@@ -10,13 +10,14 @@ import {
   getIntrinsicElementProps,
   useIsomorphicLayoutEffect,
 } from '@fluentui/react-utilities';
-import type * as React from 'react';
+import * as React from 'react';
 
 import { useDialogContext_unstable, useDialogBackdropContext_unstable } from '../../contexts';
 import { useDisableBodyScroll } from '../../utils/useDisableBodyScroll';
 import { DialogBackdropMotion } from '../DialogBackdropMotion';
 import { useMotionForwardedRef } from '@fluentui/react-motion';
 import type { DialogSurfaceElement, DialogSurfaceProps, DialogSurfaceState } from './DialogSurface.types';
+import { DialogSurfaceMotionContext } from '../../contexts/dialogSurfaceMotionContext';
 
 /**
  * Create the state required to render DialogSurface.
@@ -42,8 +43,10 @@ export const useDialogSurface_unstable = (
   const dialogRef = useDialogContext_unstable(ctx => ctx.dialogRef);
   const requestOpenChange = useDialogContext_unstable(ctx => ctx.requestOpenChange);
   const dialogTitleID = useDialogContext_unstable(ctx => ctx.dialogTitleId);
-  const open = useDialogContext_unstable(ctx => ctx.open);
+  const contextOpen = useDialogContext_unstable(ctx => ctx.open);
   const unmountOnClose = useDialogContext_unstable(ctx => ctx.unmountOnClose);
+  const surfaceMotion = React.useContext(DialogSurfaceMotionContext);
+  const open = surfaceMotion?.open ?? contextOpen;
 
   const handledBackdropClick = useEventCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (isResolvedShorthand(props.backdrop)) {
@@ -126,6 +129,7 @@ export const useDialogSurface_unstable = (
         'aria-modal': modalType !== 'non-modal',
         'aria-labelledby': props['aria-label'] ? undefined : dialogTitleID,
         'aria-hidden': !unmountOnClose && !open ? true : undefined,
+        hidden: surfaceMotion?.motionDisabled && !unmountOnClose && !open ? true : undefined,
         ...props,
         ...modalAttributes,
         onKeyDown: handleKeyDown,
