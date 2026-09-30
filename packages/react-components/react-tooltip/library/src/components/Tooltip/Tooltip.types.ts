@@ -67,6 +67,7 @@ export type TooltipProps = ComponentProps<TooltipSlots> &
 
     /**
      * Notification when the visibility of the tooltip is changing.
+     * A requested visibility change is notified once, including in React StrictMode.
      *
      * **Note**: for backwards compatibility, `event` will be undefined if this was triggered by a keyboard event on
      * the document element. Use `data.documentKeyboardEvent` if the keyboard event object is needed.

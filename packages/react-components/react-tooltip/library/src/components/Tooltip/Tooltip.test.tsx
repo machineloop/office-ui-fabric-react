@@ -66,6 +66,75 @@ describe('Tooltip', () => {
     expect(target.getAttribute('aria-label')).toBe(tooltipText);
   });
 
+  it('notifies once per visibility transition in StrictMode', async () => {
+    const onVisibleChange = jest.fn();
+    const result = render(
+      <React.StrictMode>
+        <Tooltip
+          content="Strict tooltip"
+          relationship="label"
+          showDelay={0}
+          hideDelay={0}
+          onVisibleChange={onVisibleChange}
+        >
+          <button />
+        </Tooltip>
+      </React.StrictMode>,
+    );
+
+    fireEvent.pointerEnter(result.getByRole('button'));
+    await waitFor(() => expect(queryByRoleTooltip(result)).not.toBeNull());
+    expect(onVisibleChange).toHaveBeenCalledTimes(1);
+    expect(onVisibleChange).toHaveBeenLastCalledWith(expect.anything(), { visible: true });
+
+    fireEvent.pointerLeave(result.getByRole('button'));
+    await waitFor(() => expect(queryByRoleTooltip(result)).toBeNull());
+    expect(onVisibleChange).toHaveBeenCalledTimes(2);
+    expect(onVisibleChange).toHaveBeenLastCalledWith(expect.anything(), { visible: false });
+  });
+
+  it('preserves opposing visibility requests before a StrictMode commit', () => {
+    jest.useFakeTimers();
+    const onVisibleChange = jest.fn();
+    try {
+      const result = render(
+        <React.StrictMode>
+          <Tooltip
+            content="Ordered requests"
+            relationship="label"
+            showDelay={0}
+            hideDelay={0}
+            onVisibleChange={onVisibleChange}
+          >
+            <button />
+          </Tooltip>
+        </React.StrictMode>,
+      );
+      const trigger = result.getByRole('button');
+      act(() => {
+        fireEvent.pointerEnter(trigger);
+        jest.runOnlyPendingTimers();
+      });
+      expect(queryByRoleTooltip(result)).not.toBeNull();
+      onVisibleChange.mockClear();
+
+      act(() => {
+        fireEvent.pointerLeave(trigger);
+        jest.runOnlyPendingTimers();
+        fireEvent.pointerEnter(trigger);
+        jest.runOnlyPendingTimers();
+      });
+
+      expect(queryByRoleTooltip(result)).not.toBeNull();
+      expect(onVisibleChange).toHaveBeenCalledTimes(2);
+      expect(onVisibleChange).toHaveBeenNthCalledWith(1, expect.anything(), { visible: false });
+      expect(onVisibleChange).toHaveBeenNthCalledWith(2, expect.anything(), { visible: true });
+      result.unmount();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('renders the content of a nontrivial label tooltip', () => {
     const result = render(
       <Tooltip

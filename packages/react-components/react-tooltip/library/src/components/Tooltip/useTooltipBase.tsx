@@ -44,6 +44,7 @@ export const useTooltipBase_unstable = (props: TooltipBaseProps): TooltipBaseSta
   const { targetDocument } = useFluent();
 
   const [visible, setVisibleInternal] = useControllableState({ state: props.visible, initialState: false });
+  const requestedVisibleRef = React.useRef(visible);
   const [hidden, setHidden] = React.useState(false);
 
   const {
@@ -120,17 +121,17 @@ export const useTooltipBase_unstable = (props: TooltipBaseProps): TooltipBaseSta
 
   const [setDelayTimeout, clearDelayTimeout] = useTooltipTimeout(containerRef);
 
-  const setVisible = React.useCallback(
+  const setVisible = useEventCallback(
     (ev: React.PointerEvent<HTMLElement> | React.FocusEvent<HTMLElement> | undefined, data: OnVisibleChangeData) => {
       clearDelayTimeout();
-      setVisibleInternal(oldVisible => {
-        if (data.visible !== oldVisible) {
-          onVisibleChange?.(ev, data);
-        }
-        return data.visible;
-      });
+      const previousVisible = props.visible === undefined ? requestedVisibleRef.current : visible;
+      requestedVisibleRef.current = data.visible;
+      setVisibleInternal(data.visible);
+      if (data.visible !== previousVisible) {
+        // State updaters can be replayed in StrictMode; notify only from the event callback.
+        onVisibleChange?.(ev, data);
+      }
     },
-    [clearDelayTimeout, setVisibleInternal, onVisibleChange],
   );
 
   state.content.ref = useMergedRefs(state.content.ref, containerRef);

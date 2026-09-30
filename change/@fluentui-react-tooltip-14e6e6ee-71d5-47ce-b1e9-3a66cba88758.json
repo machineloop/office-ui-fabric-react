@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Fix duplicate onVisibleChange notifications in React StrictMode and cover functional Tooltip contracts",
+  "packageName": "@fluentui/react-tooltip",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
