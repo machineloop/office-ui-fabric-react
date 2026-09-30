@@ -1,6 +1,6 @@
 'use client';
 
-import { makeResetStyles, mergeClasses } from '@griffel/react';
+import { makeResetStyles, makeStyles, mergeClasses } from '@griffel/react';
 import type { DialogBodySlots, DialogBodyState } from './DialogBody.types';
 import type { SlotClassNames } from '@fluentui/react-utilities';
 import {
@@ -36,14 +36,26 @@ const useResetStyles = makeResetStyles({
   },
 });
 
+const useStyles = makeStyles({
+  hidden: {
+    display: 'none',
+  },
+});
+
 /**
  * Apply styling to the DialogBody slots based on the state
  */
 export const useDialogBodyStyles_unstable = (state: DialogBodyState): DialogBodyState => {
   const resetStyles = useResetStyles();
+  const styles = useStyles();
 
   // eslint-disable-next-line react-hooks/immutability
-  state.root.className = mergeClasses(dialogBodyClassNames.root, resetStyles, state.root.className);
+  state.root.className = mergeClasses(
+    dialogBodyClassNames.root,
+    resetStyles,
+    state.root.hidden && styles.hidden,
+    state.root.className,
+  );
 
   return state;
 };

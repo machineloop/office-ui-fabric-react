@@ -16,4 +16,17 @@ describe('DialogBody', () => {
     const result = render(<DialogBody>Default DialogBody</DialogBody>);
     expect(result.container).toMatchSnapshot();
   });
+
+  it('updates hidden state without retaining the hidden layout class', () => {
+    const result = render(<DialogBody hidden>Details</DialogBody>);
+    const body = result.container.firstElementChild!;
+    const hiddenClassName = body.className;
+    expect(body).toHaveAttribute('hidden');
+    result.rerender(<DialogBody>Details</DialogBody>);
+    expect(body).not.toHaveAttribute('hidden');
+    expect(body.className).not.toEqual(hiddenClassName);
+    result.rerender(<DialogBody hidden>Details</DialogBody>);
+    expect(body).toHaveAttribute('hidden');
+    expect(body.className).toEqual(hiddenClassName);
+  });
 });

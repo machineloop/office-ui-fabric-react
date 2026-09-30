@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Honor DialogBody hidden state and cover its functional layout contracts",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
