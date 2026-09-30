@@ -74,6 +74,57 @@ describe('MessageBar', () => {
     });
   });
 
+  it('preserves the bottom reflow spacer caller class', () => {
+    const { container } = render(
+      <MessageBar layout="multiline" bottomReflowSpacer={{ className: 'caller-spacer' }}>
+        <MessageBarBody>Body</MessageBarBody>
+      </MessageBar>,
+    );
+    expect(container.querySelector('.caller-spacer')?.classList.contains(messageBarClassNames.bottomReflowSpacer)).toBe(
+      true,
+    );
+  });
+
+  it.each(
+    (['info', 'success', 'warning', 'error'] as const).flatMap(intent =>
+      (['polite', 'assertive'] as const).map(politeness => [intent, politeness] as const),
+    ),
+  )('honors explicit %s intent announcement priority %s', (intent, politeness) => {
+    const announce = jest.fn();
+    render(
+      <AnnounceProvider value={{ announce }}>
+        <MessageBar intent={intent} politeness={politeness}>
+          <MessageBarBody>Body</MessageBarBody>
+        </MessageBar>
+      </AnnounceProvider>,
+    );
+    expect(announce).toHaveBeenCalledTimes(1);
+    expect(announce).toHaveBeenCalledWith('Body', {
+      polite: politeness === 'polite',
+      alert: politeness === 'assertive',
+    });
+  });
+
+  it('updates announcement priority and restores the intent preset when the override is removed', () => {
+    const announce = jest.fn();
+    const message = (props: MessageBarProps) => (
+      <AnnounceProvider value={{ announce }}>
+        <MessageBar {...props}>
+          <MessageBarBody>Body</MessageBarBody>
+        </MessageBar>
+      </AnnounceProvider>
+    );
+    const { rerender } = render(message({ intent: 'info' }));
+    expect(announce).toHaveBeenLastCalledWith('Body', { polite: true, alert: false });
+    rerender(message({ intent: 'info', politeness: 'assertive' }));
+    expect(announce).toHaveBeenLastCalledWith('Body', { polite: false, alert: true });
+    rerender(message({ intent: 'warning', politeness: 'polite' }));
+    expect(announce).toHaveBeenLastCalledWith('Body', { polite: true, alert: false });
+    rerender(message({ intent: 'warning' }));
+    expect(announce).toHaveBeenLastCalledWith('Body', { polite: false, alert: true });
+    expect(announce).toHaveBeenCalledTimes(4);
+  });
+
   it('should announce actions', () => {
     const announce = jest.fn();
     render(

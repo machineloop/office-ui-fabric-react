@@ -153,12 +153,12 @@ The entire MessageBar should have the `role="group"` attribute set to let screen
 within the component is part of one landmark.
 
 The MessageBar content is narrated on mount. The narration is handled by an announcer that is consumed through
-React context. The narrated message should include both the MessaegBar content and its actions. The `intent` prop
-determines the politeness of the narration.
+React context. The narrated message should include both the MessageBar content and its actions. The `intent` prop
+determines the default politeness of the narration. An explicit `politeness` prop overrides that preset.
 
 | Intent  | Politeness |
 | ------- | ---------- |
 | info    | polite     |
-| warning | polite     |
-| success | polite     |
+| warning | assertive  |
+| success | assertive  |
 | error   | assertive  |

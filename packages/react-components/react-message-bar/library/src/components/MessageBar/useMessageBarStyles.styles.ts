@@ -130,7 +130,11 @@ export const useMessageBarStyles_unstable = (state: MessageBarState): MessageBar
 
   if (state.bottomReflowSpacer) {
     // eslint-disable-next-line react-hooks/immutability
-    state.bottomReflowSpacer.className = mergeClasses(messageBarClassNames.bottomReflowSpacer, reflowSpacerStyles);
+    state.bottomReflowSpacer.className = mergeClasses(
+      messageBarClassNames.bottomReflowSpacer,
+      reflowSpacerStyles,
+      state.bottomReflowSpacer.className,
+    );
   }
 
   return state;

@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Honor explicit MessageBar announcement priority and preserve caller bottom reflow spacer classes.",
+  "packageName": "@fluentui/react-message-bar",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
