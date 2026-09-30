@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Add direct DialogTitle functional coverage and document its contracts",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
