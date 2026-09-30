@@ -54,5 +54,8 @@
     "dist/*.d.cts",
     "lib",
     "lib-commonjs"
-  ]
+  ],
+  "devDependencies": {
+    "@fluentui/scripts-cypress": "*"
+  }
 }

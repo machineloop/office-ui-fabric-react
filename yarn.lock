@@ -5921,6 +5921,7 @@ __metadata:
     "@fluentui/react-shared-contexts": "npm:^9.26.4"
     "@fluentui/react-theme": "npm:^9.2.2"
     "@fluentui/react-utilities": "npm:^9.26.7"
+    "@fluentui/scripts-cypress": "npm:*"
     "@griffel/react": "npm:^1.5.32"
     "@swc/helpers": "npm:^0.5.1"
   peerDependencies:

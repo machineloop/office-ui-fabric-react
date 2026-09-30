@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Add finite documented  accessibility and unit-derived Text browser coverage without changing published runtime behavior",
+  "packageName": "@fluentui/react-text",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
