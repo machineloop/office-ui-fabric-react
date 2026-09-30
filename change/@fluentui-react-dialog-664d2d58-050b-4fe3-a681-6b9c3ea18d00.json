@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "fix(react-dialog): honor hidden on DialogActions and cover action layout and native contracts",
+  "packageName": "@fluentui/react-dialog",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

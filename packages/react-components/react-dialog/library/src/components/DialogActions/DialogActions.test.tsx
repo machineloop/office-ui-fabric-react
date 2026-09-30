@@ -16,4 +16,17 @@ describe('DialogActions', () => {
     const result = render(<DialogActions>Default DialogActions</DialogActions>);
     expect(result.container).toMatchSnapshot();
   });
+
+  it('updates hidden state without retaining the hidden layout class', () => {
+    const result = render(<DialogActions hidden>Actions</DialogActions>);
+    const root = result.container.firstElementChild!;
+    const hiddenClassName = root.className;
+    expect(root).toHaveAttribute('hidden');
+    result.rerender(<DialogActions>Actions</DialogActions>);
+    expect(root).not.toHaveAttribute('hidden');
+    expect(root.className).not.toEqual(hiddenClassName);
+    result.rerender(<DialogActions hidden>Actions</DialogActions>);
+    expect(root).toHaveAttribute('hidden');
+    expect(root.className).toEqual(hiddenClassName);
+  });
 });

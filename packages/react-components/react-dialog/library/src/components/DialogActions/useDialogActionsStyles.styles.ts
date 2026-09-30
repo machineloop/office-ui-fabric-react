@@ -26,6 +26,9 @@ const useResetStyles = makeResetStyles({
 });
 
 const useStyles = makeStyles({
+  hidden: {
+    display: 'none',
+  },
   gridPositionEnd: {
     justifySelf: 'end',
     gridColumnStart: 2,
@@ -68,6 +71,7 @@ export const useDialogActionsStyles_unstable = (state: DialogActionsState): Dial
     state.position === 'end' && styles.gridPositionEnd,
     state.fluid && state.position === 'start' && styles.fluidStart,
     state.fluid && state.position === 'end' && styles.fluidEnd,
+    state.root.hidden && styles.hidden,
     state.root.className,
   );
   return state;
