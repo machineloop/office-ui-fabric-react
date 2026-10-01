@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+import { fireEvent, render } from '@testing-library/react';
 import * as ReactSharedContexts from '@fluentui/react-shared-contexts';
 import { useMenuPopover_unstable } from './useMenuPopover';
 import { MenuProvider } from '../../contexts/menuContext';
@@ -103,6 +104,13 @@ describe('useMenuPopover_unstable', () => {
   });
 
   describe('context-derived state', () => {
+    it('ignores inline rendering for a submenu', () => {
+      const { wrapper } = makeWrapper({ menu: { inline: true, isSubmenu: true } });
+      const { result } = renderHook(() => useMenuPopover_unstable({}, null), { wrapper });
+
+      expect(result.current.inline).toBe(false);
+    });
+
     it('defaults inline to false and mountNode to null when MenuContext provides no values', () => {
       const { wrapper } = makeWrapper();
 
@@ -364,12 +372,47 @@ describe('useMenuPopover_unstable', () => {
   });
 
   describe('cleanup', () => {
-    it('does not throw when unmounted', () => {
-      const { wrapper } = makeWrapper();
+    it('cancels the pending native menu-enter throttle timer on unmount', () => {
+      jest.useFakeTimers();
+      const setTimeoutSpy = jest.spyOn(window, 'setTimeout');
+      const clearTimeoutSpy = jest.spyOn(window, 'clearTimeout');
 
-      const { unmount } = renderHook(() => useMenuPopover_unstable({}, null), { wrapper });
+      try {
+        const { wrapper } = makeWrapper();
+        const Popover = () => {
+          const state = useMenuPopover_unstable({}, null);
+          return <div ref={state.root.ref} data-testid="popover" />;
+        };
+        const { getByTestId, unmount } = render(<Popover />, { wrapper });
+        const popover = getByTestId('popover');
+        const onMenuEnter = jest.fn();
+        popover.addEventListener('fuimenuenter', onMenuEnter);
+        const pendingTimersBeforeMouseOver = jest.getTimerCount();
+        setTimeoutSpy.mockClear();
+        clearTimeoutSpy.mockClear();
 
-      expect(() => unmount()).not.toThrow();
+        fireEvent.mouseOver(popover);
+
+        expect(onMenuEnter).toHaveBeenCalledTimes(1);
+        expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+        expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 250);
+        const throttleTimer = setTimeoutSpy.mock.results[0].value;
+        expect(jest.getTimerCount()).toBe(pendingTimersBeforeMouseOver + 1);
+        expect(clearTimeoutSpy).not.toHaveBeenCalledWith(throttleTimer);
+
+        fireEvent.mouseOver(popover);
+        expect(onMenuEnter).toHaveBeenCalledTimes(1);
+        expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
+
+        unmount();
+
+        expect(clearTimeoutSpy).toHaveBeenCalledWith(throttleTimer);
+        expect(jest.getTimerCount()).toBeLessThanOrEqual(pendingTimersBeforeMouseOver);
+      } finally {
+        setTimeoutSpy.mockRestore();
+        clearTimeoutSpy.mockRestore();
+        jest.useRealTimers();
+      }
     });
   });
 });

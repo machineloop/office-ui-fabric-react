@@ -71,7 +71,7 @@ export const useMenuPopoverBase_unstable = (props: MenuPopoverProps, ref: React.
     return () => clearThrottleTimeout();
   }, [clearThrottleTimeout]);
 
-  const inline = useMenuContext_unstable(context => context.inline) ?? false;
+  const inline = (useMenuContext_unstable(context => context.inline) ?? false) && !isSubmenu;
   const mountNode = useMenuContext_unstable(context => context.mountNode);
 
   const rootProps = slot.always(
