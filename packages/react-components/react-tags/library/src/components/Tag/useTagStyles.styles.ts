@@ -387,7 +387,7 @@ export const useTagStyles_unstable = (state: TagState): TagState => {
     rootStyles[size],
 
     !state.media && !state.icon && rootWithoutMediaStyles[size],
-    !state.dismissIcon && rootWithoutDismissStyles[size],
+    (!state.dismissIcon || !state.dismissible) && rootWithoutDismissStyles[size],
 
     state.root.className,
   );
