@@ -94,11 +94,12 @@ export const useMenuBase_unstable = (
     closeOnScroll = false,
     openOnContext = false,
     persistOnItemClick = false,
-    openOnHover = isSubmenu,
+    openOnHover: openOnHoverProp = isSubmenu,
     defaultCheckedValues,
     mountNode = null,
     safeZone,
   } = props;
+  const openOnHover = !openOnContext && openOnHoverProp;
 
   const { targetDocument } = useFluent();
   const triggerId = useId('menu');

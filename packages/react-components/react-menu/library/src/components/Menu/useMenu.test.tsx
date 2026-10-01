@@ -57,6 +57,24 @@ describe('useMenu_unstable', () => {
       expect(result.current.openOnHover).toBe(false);
     });
 
+    it.each([undefined, false, true])('context-only submenus disable hover when openOnHover is %s', openOnHover => {
+      const { result } = renderHook(
+        () => useMenu_unstable({ children: [trigger, popover], openOnContext: true, openOnHover }),
+        { wrapper: submenuWrapper },
+      );
+
+      expect(result.current.openOnContext).toBe(true);
+      expect(result.current.openOnHover).toBe(false);
+    });
+
+    it('context-only root menus disable explicit hover opening', () => {
+      const { result } = renderHook(() =>
+        useMenu_unstable({ children: [trigger, popover], openOnContext: true, openOnHover: true }),
+      );
+
+      expect(result.current.openOnHover).toBe(false);
+    });
+
     it('openOnHover defaults to true when rendered as a submenu', () => {
       const { result } = renderHook(() => useMenu_unstable({ children: [trigger, popover] }), {
         wrapper: submenuWrapper,

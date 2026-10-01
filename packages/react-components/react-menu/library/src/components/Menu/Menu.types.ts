@@ -76,7 +76,7 @@ export type MenuProps = ComponentProps<Partial<MenuSlots>> &
     openOnContext?: boolean;
 
     /**
-     * Opens the menu on hover
+     * Opens the menu on hover. Ignored when `openOnContext` is true.
      *
      * @default false
      */
