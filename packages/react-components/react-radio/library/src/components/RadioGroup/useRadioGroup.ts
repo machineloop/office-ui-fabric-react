@@ -32,7 +32,7 @@ export const useRadioGroupBase_unstable = (
   ref: React.Ref<HTMLDivElement>,
 ): RadioGroupBaseState => {
   // Merge props from surrounding <Field>, if any
-  props = useFieldControlProps_unstable(props);
+  props = useFieldControlProps_unstable(props, { supportsRequired: true });
 
   const generatedName = useId('radiogroup-');
 
@@ -50,6 +50,7 @@ export const useRadioGroupBase_unstable = (
     root: {
       ref,
       role: 'radiogroup',
+      'aria-required': required || undefined,
       ...slot.always(getIntrinsicElementProps('div', props, /*excludedPropNames:*/ ['onChange', 'name']), {
         elementType: 'div',
       }),
