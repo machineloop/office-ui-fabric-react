@@ -10,6 +10,11 @@ rejected controlled changes, horizontal traversal, vertical escape and list tab 
 Unit-derived contracts cover refs/classes/attributes, explicit element choices,
 numeric action payloads, event prevention and checkmark customization.
 
+Prevented primary actions assert selection and checkbox state after each click and
+Enter activation. Disabled selection asserts state after every click, Space and
+Enter activation, including items with custom actions. Two incorrect toggles cannot
+cancel out and hide a regression.
+
 Single selection retains its selected item when toggled; the suite records this
 existing useSelection policy rather than changing it. The guidance's occasional
 navigationMode-on-ListItem wording is implemented as navigationMode on List.

@@ -123,9 +123,17 @@ describe('ListItem accessibility and selection edges', () => {
     );
     cy.get('#one').should('have.attr', 'aria-disabled', 'true');
     cy.get('#one input').should('be.disabled');
-    cy.get('#one').click().realPress('Space').realPress('Enter');
+    cy.get('#one').click().should('have.attr', 'aria-selected', 'false');
+    cy.get('#one').realPress('Space');
     cy.get('#one').should('have.attr', 'aria-selected', 'false');
-    cy.get('#two').click().realPress('Space').realPress('Enter');
+    cy.get('#one').realPress('Enter');
+    cy.get('#one').should('have.attr', 'aria-selected', 'false');
+    cy.get('#two').click().should('have.attr', 'aria-selected', 'false');
+    cy.get('@action').should('have.been.calledOnce');
+    cy.get('#two').realPress('Space');
+    cy.get('#two').should('have.attr', 'aria-selected', 'false');
+    cy.get('@action').should('have.been.calledOnce');
+    cy.get('#two').realPress('Enter');
     cy.get('#two').should('have.attr', 'aria-selected', 'false');
     cy.get('@action').should('have.callCount', 2);
   });
@@ -247,7 +255,12 @@ describe('ListItem documented scenarios', () => {
         </ListItem>
       </List>,
     );
-    cy.get('#one').click().realPress('Enter');
+    cy.get('#one').click().should('have.attr', 'aria-selected', 'false');
+    cy.get('#one input').should('not.be.checked');
+    cy.get('@action').should('have.been.calledOnce');
+    cy.get('#one').realPress('Enter');
+    cy.get('#one').should('have.attr', 'aria-selected', 'false');
+    cy.get('#one input').should('not.be.checked');
     cy.get('@action').should('have.callCount', 2);
     cy.get('#one').should('have.attr', 'aria-selected', 'false').realPress('Space');
     cy.get('#one').should('have.attr', 'aria-selected', 'true');
