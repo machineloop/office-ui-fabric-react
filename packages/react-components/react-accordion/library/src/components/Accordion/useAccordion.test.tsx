@@ -29,6 +29,28 @@ import { useAccordionPanelBase_unstable, renderAccordionPanel_unstable } from '.
 import type { AccordionPanelBaseProps, AccordionPanelState } from '../AccordionPanel';
 
 describe('useAccordion_unstable', () => {
+  it('preserves an empty default when multiple changes before the first toggle', () => {
+    const { result, rerender } = renderHook(
+      ({ multiple }) => useAccordion_unstable({ defaultOpenItems: [], multiple }, React.createRef()),
+      { initialProps: { multiple: false } },
+    );
+    expect(result.current.openItems).toEqual([]);
+    rerender({ multiple: true });
+    act(() => result.current.requestToggle({ value: 'a', event: undefined! }));
+    expect(result.current.openItems).toEqual(['a']);
+    act(() => result.current.requestToggle({ value: 'a', event: undefined! }));
+    expect(result.current.openItems).toEqual(['a']);
+  });
+
+  it.each([0, '', false])('initializes a falsy scalar default value %p as an open-items array', defaultOpenItems => {
+    const { result } = renderHook(() =>
+      useAccordion_unstable({ defaultOpenItems, collapsible: true }, React.createRef()),
+    );
+    expect(result.current.openItems).toEqual([defaultOpenItems]);
+    act(() => result.current.requestToggle({ value: defaultOpenItems, event: undefined! }));
+    expect(result.current.openItems).toEqual([]);
+  });
+
   it('handle toggle behavior', () => {
     const { result } = renderHook(() => useAccordion_unstable({ defaultOpenItems: [0, 1, 2] }, React.createRef()));
 
