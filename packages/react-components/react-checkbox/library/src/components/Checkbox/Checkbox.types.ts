@@ -54,6 +54,8 @@ export type CheckboxProps = Omit<
 
   /**
    * Whether the checkbox should be rendered as checked by default.
+   * Native form reset restores this initial value, including the mixed state.
+   * Subsequent changes to defaultChecked do not change the reset value.
    */
   defaultChecked?: 'mixed' | boolean;
 

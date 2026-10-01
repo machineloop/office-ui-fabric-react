@@ -5,6 +5,7 @@ import { useFieldControlProps_unstable } from '@fluentui/react-field';
 import {
   getPartitionedNativeProps,
   useControllableState,
+  useEventCallback,
   mergeCallbacks,
   useId,
   useIsomorphicLayoutEffect,
@@ -86,18 +87,19 @@ export const useCheckboxBase_unstable = (
   'use no memo'; // justified: compiler would optimize useCheckboxBase_unstable — manual opt-out to preserve runtime behavior
 
   // Merge props from surrounding <Field>, if any
-  props = useFieldControlProps_unstable(props, { supportsLabelFor: true, supportsRequired: true });
+  const fieldProps = useFieldControlProps_unstable(props, { supportsLabelFor: true, supportsRequired: true });
 
-  const { disabled = false, required, labelPosition = 'after', onChange } = props;
+  const { disabled = false, required, labelPosition = 'after', onChange } = fieldProps;
 
   const [checked, setChecked] = useControllableState({
-    defaultState: props.defaultChecked,
-    state: props.checked,
+    defaultState: fieldProps.defaultChecked,
+    state: fieldProps.checked,
     initialState: false,
   });
+  const [initialChecked] = React.useState(() => fieldProps.defaultChecked ?? false);
 
   const nativeProps = getPartitionedNativeProps({
-    props,
+    props: fieldProps,
     primarySlotTagName: 'input',
     excludedPropNames: ['checked', 'defaultChecked', 'onChange'],
   });
@@ -115,14 +117,14 @@ export const useCheckboxBase_unstable = (
       indicator: 'div',
       label: 'label',
     },
-    root: slot.always(props.root, {
+    root: slot.always(fieldProps.root, {
       defaultProps: {
         ref: useFocusWithin<HTMLSpanElement>(),
         ...nativeProps.root,
       },
       elementType: 'span',
     }),
-    input: slot.always(props.input, {
+    input: slot.always(fieldProps.input, {
       defaultProps: {
         type: 'checkbox',
         id,
@@ -132,7 +134,7 @@ export const useCheckboxBase_unstable = (
       },
       elementType: 'input',
     }),
-    label: slot.optional(props.label, {
+    label: slot.optional(fieldProps.label, {
       defaultProps: {
         htmlFor: id,
         disabled,
@@ -140,7 +142,7 @@ export const useCheckboxBase_unstable = (
       },
       elementType: 'label',
     }),
-    indicator: slot.optional(props.indicator, {
+    indicator: slot.optional(fieldProps.indicator, {
       renderByDefault: true,
       defaultProps: {
         'aria-hidden': true,
@@ -153,12 +155,15 @@ export const useCheckboxBase_unstable = (
     const val = ev.currentTarget.indeterminate ? 'mixed' : ev.currentTarget.checked;
     onChange?.(ev, { checked: val });
     setChecked(val);
+    // Native activation clears indeterminate even when the controlled value does not change.
+    if (fieldProps.checked !== undefined) {
+      ev.currentTarget.indeterminate = mixed;
+    }
   });
 
-  // Create a ref object for the input element so we can use it to set the indeterminate prop.
-  // Use useMergedRefs, since the ref might be undefined or a function-ref (no .current)
-  const inputRef = useMergedRefs(state.input.ref);
-  state.input.ref = inputRef;
+  // Keep DOM ownership stable independently of consumer callback-ref identity.
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  state.input.ref = useMergedRefs(inputRef, state.input.ref);
 
   // Set the <input> element's checked and indeterminate properties based on our tri-state property.
   // Since indeterminate can only be set via javascript, it has to be done in a layout effect.
@@ -166,7 +171,41 @@ export const useCheckboxBase_unstable = (
     if (inputRef.current) {
       inputRef.current.indeterminate = mixed;
     }
-  }, [inputRef, mixed]);
+  });
+
+  const restoreResetState = useEventCallback((input: HTMLInputElement) => {
+    const resetChecked = fieldProps.checked === undefined ? initialChecked : checked;
+    setChecked(resetChecked);
+    input.checked = resetChecked === true;
+    input.indeterminate = resetChecked === 'mixed';
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    const ownerDocument = inputRef.current?.ownerDocument;
+    if (!ownerDocument) {
+      return;
+    }
+
+    let mounted = true;
+    const onReset = (event: Event) => {
+      const input = inputRef.current;
+      if (!input || event.target !== input.form) {
+        return;
+      }
+      // Reset is cancelable and the browser applies its default action after dispatch.
+      Promise.resolve().then(() => {
+        if (mounted && inputRef.current === input && !event.defaultPrevented && event.target === input.form) {
+          restoreResetState(input);
+        }
+      });
+    };
+    // Capture also covers external form ownership and reset handlers which stop propagation.
+    ownerDocument.addEventListener('reset', onReset, true);
+    return () => {
+      mounted = false;
+      ownerDocument.removeEventListener('reset', onReset, true);
+    };
+  }, [inputRef, restoreResetState]);
 
   return state;
 };
