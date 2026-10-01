@@ -64,6 +64,7 @@ export const useSearchBoxBase_unstable = (
 
   const searchBoxRootRef = React.useRef<HTMLDivElement>(null);
   const searchBoxRef = React.useRef<HTMLInputElement>(null);
+  const dismissSpacePressed = React.useRef(false);
 
   const [internalValue, setInternalValue] = useControllableState({
     state: value,
@@ -88,6 +89,10 @@ export const useSearchBoxBase_unstable = (
   const rootProps = slot.resolveShorthand(root);
 
   const handleDismissClick = useEventCallback((event: React.MouseEvent<HTMLSpanElement>) => {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
     if (isResolvedShorthand(dismiss)) {
       dismiss.onClick?.(event);
     }
@@ -96,6 +101,42 @@ export const useSearchBoxBase_unstable = (
     props.onChange?.(event, { value: newValue });
 
     searchBoxRef.current?.focus();
+  });
+
+  const handleDismissKeyDown = useEventCallback((event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (isResolvedShorthand(dismiss)) {
+      dismiss.onKeyDown?.(event);
+    }
+    if (event.key === ' ') {
+      dismissSpacePressed.current = !event.defaultPrevented && !disabled;
+    }
+    if (!event.defaultPrevented && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      if (!disabled && event.key === 'Enter') {
+        event.currentTarget.click();
+      }
+    }
+  });
+
+  const handleDismissKeyUp = useEventCallback((event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (isResolvedShorthand(dismiss)) {
+      dismiss.onKeyUp?.(event);
+    }
+    if (event.key === ' ') {
+      const activate = dismissSpacePressed.current;
+      dismissSpacePressed.current = false;
+      if (activate && !event.defaultPrevented && !disabled) {
+        event.preventDefault();
+        event.currentTarget.click();
+      }
+    }
+  });
+
+  const handleDismissBlur = useEventCallback((event: React.FocusEvent<HTMLSpanElement>) => {
+    dismissSpacePressed.current = false;
+    if (isResolvedShorthand(dismiss)) {
+      dismiss.onBlur?.(event);
+    }
   });
 
   const inputState = useInput_unstable(
@@ -144,6 +185,7 @@ export const useSearchBoxBase_unstable = (
       defaultProps: {
         role: 'button',
         'aria-label': 'clear',
+        'aria-disabled': disabled || undefined,
         tabIndex: -1,
       },
       renderByDefault: true,
@@ -155,6 +197,9 @@ export const useSearchBoxBase_unstable = (
 
   if (state.dismiss) {
     state.dismiss.onClick = handleDismissClick;
+    state.dismiss.onKeyDown = handleDismissKeyDown;
+    state.dismiss.onKeyUp = handleDismissKeyUp;
+    state.dismiss.onBlur = handleDismissBlur;
   }
 
   return state;
