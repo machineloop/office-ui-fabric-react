@@ -39,4 +39,15 @@ describe('TableHeader', () => {
     expect(container.firstElementChild?.tagName).toEqual('DIV');
     expect(container.firstElementChild?.getAttribute('role')).toEqual('rowgroup');
   });
+
+  it('does not add div semantics when explicitly rendered as thead', () => {
+    const { container } = render(
+      <TableHeader as="thead">
+        <tr />
+      </TableHeader>,
+      { container: table },
+    );
+    expect(container.firstElementChild?.tagName).toEqual('THEAD');
+    expect(container.firstElementChild?.hasAttribute('role')).toBe(false);
+  });
 });
