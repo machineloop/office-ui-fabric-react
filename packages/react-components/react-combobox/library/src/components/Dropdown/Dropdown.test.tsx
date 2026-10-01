@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { act, fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Field } from '@fluentui/react-field';
@@ -648,6 +649,229 @@ describe('Dropdown', () => {
     userEvent.keyboard('t');
 
     expect(combobox.getAttribute('aria-activedescendant')).toBeFalsy();
+  });
+
+  it('matches the first opening character after the options mount', () => {
+    const { getByRole, getByText } = render(
+      <Dropdown>
+        <Option>Cat</Option>
+        <Option>Dog</Option>
+        <Option>Dolphin</Option>
+      </Dropdown>,
+    );
+    const combobox = getByRole('combobox');
+    userEvent.tab();
+    userEvent.keyboard('d');
+    expect(combobox.getAttribute('aria-expanded')).toEqual('true');
+    expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText('Dog').id);
+    expect(getByText('Dog').getAttribute('aria-selected')).toEqual('false');
+  });
+
+  it('does not keep the first option active for an unmatched opening character', () => {
+    const { getByRole } = render(
+      <Dropdown>
+        <Option>Cat</Option>
+        <Option>Dog</Option>
+      </Dropdown>,
+    );
+    userEvent.tab();
+    userEvent.keyboard('z');
+    expect(getByRole('combobox').getAttribute('aria-expanded')).toEqual('true');
+    expect(getByRole('combobox').getAttribute('aria-activedescendant')).toBeFalsy();
+  });
+
+  it.each([
+    ['dd', 'Dog'],
+    ['du', 'Duck'],
+    ['dz', undefined],
+  ])('matches %s accumulated in a synchronous native batch before the popup mounts', (keys, match) => {
+    jest.useFakeTimers();
+    try {
+      const onOpenChange = jest.fn();
+      const onOptionSelect = jest.fn();
+      const { getByRole, getByText, queryByRole } = render(
+        <Dropdown onOpenChange={onOpenChange} onOptionSelect={onOptionSelect}>
+          <Option>Dog</Option>
+          <Option>Dolphin</Option>
+          <Option>Duck</Option>
+          <Option>Fish</Option>
+        </Dropdown>,
+      );
+      const combobox = getByRole('combobox');
+      expect(queryByRole('listbox')).toBeNull();
+      act(() => {
+        ReactDOM.unstable_batchedUpdates(() => {
+          combobox.focus();
+          for (const key of keys) {
+            combobox.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+            combobox.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }));
+            expect(combobox.getAttribute('aria-expanded')).toEqual('false');
+            expect(queryByRole('listbox', { hidden: true })).toBeNull();
+          }
+        });
+      });
+      expect(combobox.getAttribute('aria-expanded')).toEqual('true');
+      expect(combobox.getAttribute('aria-activedescendant') || undefined).toEqual(
+        match ? getByText(match).id : undefined,
+      );
+      expect(onOpenChange.mock.calls.map(([event, data]) => ({ key: event.key, open: data.open }))).toEqual(
+        [...keys].map(key => ({ key, open: true })),
+      );
+      expect(onOptionSelect).not.toHaveBeenCalled();
+      for (const option of ['Dog', 'Dolphin', 'Duck', 'Fish']) {
+        expect(getByText(option).getAttribute('aria-selected')).toEqual('false');
+      }
+      if (keys === 'dd') {
+        for (const option of ['Dolphin', 'Duck', 'Dog']) {
+          fireEvent.keyDown(combobox, { key: 'd' });
+          expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText(option).id);
+        }
+      }
+      act(() => {
+        jest.advanceTimersByTime(499);
+      });
+      fireEvent.keyDown(combobox, { key: 'f' });
+      expect(combobox.getAttribute('aria-activedescendant')).toBeFalsy();
+      act(() => {
+        jest.advanceTimersByTime(499);
+      });
+      fireEvent.keyDown(combobox, { key: 'i' });
+      expect(combobox.getAttribute('aria-activedescendant')).toBeFalsy();
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      fireEvent.keyDown(combobox, { key: 'f' });
+      expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText('Fish').id);
+      expect(onOpenChange).toHaveBeenCalledTimes(2);
+      expect(onOptionSelect).not.toHaveBeenCalled();
+      fireEvent.keyDown(combobox, { key: 'Enter' });
+      expect(combobox.textContent).toEqual('Fish');
+      expect(combobox.getAttribute('aria-expanded')).toEqual('false');
+      expect(onOptionSelect).toHaveBeenCalledTimes(1);
+      expect(onOptionSelect).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ optionText: 'Fish', selectedOptions: ['Fish'] }),
+      );
+      expect(onOpenChange).toHaveBeenCalledTimes(3);
+      expect(onOpenChange).toHaveBeenLastCalledWith(expect.anything(), { open: false });
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('matches an opening character even when automatic first-option focus is disabled', () => {
+    const { getByRole, getByText } = render(
+      <Dropdown disableAutoFocus>
+        <Option>Cat</Option>
+        <Option>Dog</Option>
+      </Dropdown>,
+    );
+    userEvent.tab();
+    userEvent.keyboard('d');
+    expect(getByRole('combobox').getAttribute('aria-activedescendant')).toEqual(getByText('Dog').id);
+  });
+
+  it('prefers a literal repeated-letter prefix over cycling fallback before mount', () => {
+    const onOptionSelect = jest.fn();
+    const { getByRole, getByText, queryByRole } = render(
+      <Dropdown onOptionSelect={onOptionSelect}>
+        <Option>Aardvark</Option>
+        <Option>Ant</Option>
+      </Dropdown>,
+    );
+    const combobox = getByRole('combobox');
+    expect(queryByRole('listbox')).toBeNull();
+    act(() => {
+      ReactDOM.unstable_batchedUpdates(() => {
+        combobox.focus();
+        for (let i = 0; i < 2; i++) {
+          combobox.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+          combobox.dispatchEvent(new KeyboardEvent('keyup', { key: 'a', bubbles: true }));
+          expect(combobox.getAttribute('aria-expanded')).toEqual('false');
+          expect(queryByRole('listbox', { hidden: true })).toBeNull();
+        }
+      });
+    });
+    expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText('Aardvark').id);
+    fireEvent.keyDown(combobox, { key: 'a' });
+    expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText('Ant').id);
+    expect(onOptionSelect).not.toHaveBeenCalled();
+  });
+
+  it('matches the pending character when a controlled open request is accepted', () => {
+    const onOpenChange = jest.fn();
+    const { getByRole, getByText, rerender } = render(
+      <Dropdown open={false} onOpenChange={onOpenChange}>
+        <Option>Cat</Option>
+        <Option>Dog</Option>
+      </Dropdown>,
+    );
+    userEvent.tab();
+    userEvent.keyboard('d');
+    expect(onOpenChange).toHaveBeenCalledWith(expect.anything(), { open: true });
+    expect(getByRole('combobox').getAttribute('aria-expanded')).toEqual('false');
+    rerender(
+      <Dropdown open onOpenChange={onOpenChange}>
+        <Option>Cat</Option>
+        <Option>Dog</Option>
+      </Dropdown>,
+    );
+    expect(getByRole('combobox').getAttribute('aria-activedescendant')).toEqual(getByText('Dog').id);
+  });
+
+  it('expires a pending controlled-open search after 500ms', () => {
+    jest.useFakeTimers();
+    try {
+      const { getByRole, getByText, rerender } = render(
+        <Dropdown open={false}>
+          <Option>Cat</Option>
+          <Option>Dog</Option>
+        </Dropdown>,
+      );
+      fireEvent.keyDown(getByRole('combobox'), { key: 'd' });
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+      rerender(
+        <Dropdown open>
+          <Option>Cat</Option>
+          <Option>Dog</Option>
+        </Dropdown>,
+      );
+      expect(getByRole('combobox').getAttribute('aria-activedescendant')).toEqual(getByText('Cat').id);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('expires a pending controlled-open search even when a navigation key intervenes', () => {
+    jest.useFakeTimers();
+    try {
+      const { getByRole, getByText, rerender } = render(
+        <Dropdown open={false}>
+          <Option>Cat</Option>
+          <Option>Dog</Option>
+        </Dropdown>,
+      );
+      const combobox = getByRole('combobox');
+      fireEvent.keyDown(combobox, { key: 'd' });
+      act(() => {
+        jest.advanceTimersByTime(250);
+      });
+      fireEvent.keyDown(combobox, { key: 'ArrowDown' });
+      act(() => {
+        jest.advanceTimersByTime(250);
+      });
+      rerender(
+        <Dropdown open>
+          <Option>Cat</Option>
+          <Option>Dog</Option>
+        </Dropdown>,
+      );
+      expect(combobox.getAttribute('aria-activedescendant')).toEqual(getByText('Cat').id);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('should cycle through options by repeating the same letter', () => {

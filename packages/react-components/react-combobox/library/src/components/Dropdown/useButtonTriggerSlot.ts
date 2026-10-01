@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useTimeout, mergeCallbacks } from '@fluentui/react-utilities';
+import { useTimeout, mergeCallbacks, useEventCallback } from '@fluentui/react-utilities';
 import type { Slot, ExtractSlotProps, SlotComponentType } from '@fluentui/react-utilities';
 import type { ActiveDescendantImperativeRef } from '@fluentui/react-aria';
 import type { UseTriggerSlotState } from '../../utils/useTriggerSlot';
@@ -15,8 +15,9 @@ type UseButtonTriggerSlotOptions = {
 };
 
 /**
- * useButtonTriggerSlot returns a tuple of trigger/listbox shorthand,
- * with the semantics and event handlers needed for the Combobox and Dropdown components.
+ * Resolves a native button trigger with Dropdown semantics and type-to-find behavior.
+ * The accumulated opening search is matched after options mount; subsequent repeated characters
+ * cycle through matching options. Pending searches expire after 500ms.
  * The element type of the ref should always match the element type used in the trigger shorthand.
  *
  * @internal
@@ -34,6 +35,7 @@ export function useButtonTriggerSlot(
 
   // jump to matching option based on typing
   const searchString = React.useRef('');
+  const searchOnOpen = React.useRef(false);
   const [setKeyTimeout, clearKeyTimeout] = useTimeout();
 
   const moveToNextMatchingOption = (
@@ -62,7 +64,7 @@ export function useButtonTriggerSlot(
     });
   };
 
-  const moveToNextMatchingOptionWithSameCharacterHandling = () => {
+  const moveToNextMatchingOptionWithSameCharacterHandling = (isOpening = false) => {
     if (
       moveToNextMatchingOption(
         optionText => {
@@ -70,7 +72,7 @@ export function useButtonTriggerSlot(
         },
         {
           // Slowly pressing the same key will cycle through options
-          startFromNext: searchString.current.length === 1,
+          startFromNext: !isOpening && searchString.current.length === 1,
         },
       )
     ) {
@@ -85,8 +87,8 @@ export function useButtonTriggerSlot(
           return optionText.toLocaleLowerCase().indexOf(searchString.current[0]) === 0;
         },
         {
-          // if the search is all the same letter, cycle through options starting with that letter
-          startFromNext: true,
+          // Only cycle past the active option after the popup has opened.
+          startFromNext: !isOpening,
         },
       )
     ) {
@@ -96,20 +98,30 @@ export function useButtonTriggerSlot(
     activeDescendantController.blur();
   };
 
-  const onTriggerKeyDown = (ev: React.KeyboardEvent<HTMLButtonElement>) => {
-    // clear timeout, if it exists
-    clearKeyTimeout();
+  const matchSearchOnOpen = useEventCallback(() => moveToNextMatchingOptionWithSameCharacterHandling(true));
+  React.useEffect(() => {
+    if (open && searchOnOpen.current) {
+      searchOnOpen.current = false;
+      matchSearchOnOpen();
+    }
+  }, [open, matchSearchOnOpen]);
 
+  const onTriggerKeyDown = (ev: React.KeyboardEvent<HTMLButtonElement>) => {
     // if the key was a char key, update search string
     if (getDropdownActionFromKey(ev) === 'Type') {
+      clearKeyTimeout();
       // update search string
       searchString.current += ev.key.toLowerCase();
       setKeyTimeout(() => {
         searchString.current = '';
+        searchOnOpen.current = false;
       }, 500);
 
       if (open) {
         moveToNextMatchingOptionWithSameCharacterHandling();
+      } else {
+        // Options must mount before the accumulated opening search can be matched.
+        searchOnOpen.current = true;
       }
 
       // update state
