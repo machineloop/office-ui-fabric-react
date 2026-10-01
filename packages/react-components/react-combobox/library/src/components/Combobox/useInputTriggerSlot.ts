@@ -118,7 +118,6 @@ export function useInputTriggerSlot(
   // NVDA and JAWS have bugs that suppress reading the input value text when aria-activedescendant is set
   // To prevent this, we clear the HTML attribute (but save the state) when a user presses left/right arrows
   // ref: https://github.com/microsoft/fluentui/issues/26359#issuecomment-1397759888
-  const [hideActiveDescendant, setHideActiveDescendant] = React.useState(false);
   // save the typing vs. navigating options state, as the space key should behave differently in each case
   // we do not want to update the combobox when this changes, just save the value between renders
   const isTyping = React.useRef(false);
@@ -134,9 +133,9 @@ export function useInputTriggerSlot(
 
     // clear activedescendant when moving the text insertion cursor
     if (event.key === ArrowLeft || event.key === ArrowRight) {
-      setHideActiveDescendant(true);
+      activeDescendantController.hideAttributes();
     } else {
-      setHideActiveDescendant(false);
+      activeDescendantController.showAttributes();
     }
 
     // update typing state to true if the user is typing
@@ -169,11 +168,6 @@ export function useInputTriggerSlot(
 
   // eslint-disable-next-line react-hooks/immutability
   trigger.onKeyDown = onKeyDown;
-
-  if (hideActiveDescendant) {
-    // eslint-disable-next-line react-hooks/immutability
-    trigger['aria-activedescendant'] = undefined;
-  }
 
   return trigger;
 }
