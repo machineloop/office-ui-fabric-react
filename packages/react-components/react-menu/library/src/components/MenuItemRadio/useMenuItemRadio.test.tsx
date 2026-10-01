@@ -97,6 +97,16 @@ describe('useMenuItemRadio_unstable', () => {
 
       expect(result.current.checkmark).toBeDefined();
     });
+
+    it.each([false, true])('preserves a null checkmark when hasCheckmarks=%s', hasCheckmarks => {
+      const { result } = renderHook(
+        () => useMenuItemRadio_unstable({ name: 'foo', value: '1', checkmark: null }, React.createRef()),
+        { wrapper: makeWrapper({ menuList: { hasCheckmarks, checkedValues: { foo: ['1'] } } }) },
+      );
+
+      expect(result.current.checkmark).toBeUndefined();
+      expect(result.current.root['aria-checked']).toBe(true);
+    });
   });
 
   describe('root slot — aria/role wiring', () => {

@@ -53,10 +53,14 @@ export const useMenuItemRadioBase_unstable = (
         ...props,
         role: 'menuitemradio',
         'aria-checked': checked,
-        checkmark: slot.optional(props.checkmark, {
-          renderByDefault: true,
-          elementType: 'span',
-        }),
+        // Preserve null so the base hook cannot recreate an explicitly omitted slot.
+        checkmark:
+          props.checkmark === null
+            ? null
+            : slot.optional(props.checkmark, {
+                renderByDefault: true,
+                elementType: 'span',
+              }),
         onClick: (e: React.MouseEvent<ARIAButtonElementIntersection<'div'>>) => {
           selectRadio?.(e, name, value, checked);
           props.onClick?.(e);
