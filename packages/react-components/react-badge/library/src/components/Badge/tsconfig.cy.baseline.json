@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.cy.json",
+  "include": ["./Badge.tsx", "../../../../../react-provider/library/src/components/FluentProvider/FluentProvider.tsx"]
+}
