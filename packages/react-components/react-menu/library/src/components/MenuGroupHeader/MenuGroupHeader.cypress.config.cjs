@@ -1,0 +1,44 @@
+'use strict';
+
+const path = require('node:path');
+const { baseConfig } = require('../../../../../../../scripts/cypress/lib-commonjs/index.cjs');
+
+const library = path.resolve(__dirname, '../../..');
+const repo = path.resolve(library, '../../../..');
+const webpack = baseConfig.component.devServer.webpackConfig;
+const supportRoot = path.join(repo, 'scripts/cypress/support');
+
+module.exports = {
+  ...baseConfig,
+  retries: 0,
+  screenshotOnRunFailure: false,
+  component: {
+    ...baseConfig.component,
+    specPattern: [path.join(__dirname, 'MenuGroupHeader.cy.tsx')],
+    supportFile: path.relative(library, path.join(supportRoot, 'component.js')),
+    indexHtmlFile: path.relative(library, path.join(supportRoot, 'component-index.html')),
+    devServer: {
+      ...baseConfig.component.devServer,
+      webpackConfig: {
+        ...webpack,
+        ignoreWarnings: [
+          ...(webpack.ignoreWarnings || []),
+          { message: /The specified tsconfig.*does not match its "include" patterns/ },
+        ],
+        context: library,
+        resolveLoader: { modules: [path.join(repo, 'node_modules')] },
+        module: {
+          ...webpack.module,
+          rules: webpack.module.rules.map(rule =>
+            rule.loader === 'esbuild-loader'
+              ? {
+                  ...rule,
+                  options: { ...rule.options, tsconfig: path.join(__dirname, 'MenuGroupHeader.cy.tsconfig.json') },
+                }
+              : rule,
+          ),
+        },
+      },
+    },
+  },
+};
