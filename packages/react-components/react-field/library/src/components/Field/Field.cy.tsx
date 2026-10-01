@@ -57,6 +57,54 @@ const RecomposedField = React.forwardRef<HTMLDivElement, FieldProps>((props, ref
 });
 
 describe('Field meaningful unit-derived contracts', () => {
+  it('attaches replaced callback refs to the native root and clears them on removal', () => {
+    const firstNodes: Array<HTMLDivElement | null> = [];
+    const secondNodes: Array<HTMLDivElement | null> = [];
+    const firstRef: React.RefCallback<HTMLDivElement> = node => {
+      firstNodes.push(node);
+    };
+    const secondRef: React.RefCallback<HTMLDivElement> = node => {
+      secondNodes.push(node);
+    };
+    const Updating = () => {
+      const [phase, setPhase] = React.useState(0);
+      return (
+        <>
+          <button id="replace-ref" onClick={() => setPhase(1)}>
+            Replace ref
+          </button>
+          <button id="remove-field" onClick={() => setPhase(2)}>
+            Remove field
+          </button>
+          {phase < 2 && (
+            <Field id="field" label="Value" ref={phase === 0 ? firstRef : secondRef}>
+              <Input defaultValue="retained" />
+            </Field>
+          )}
+        </>
+      );
+    };
+    mount(<Updating />);
+    cy.get<HTMLDivElement>('#field').then($field => {
+      const root = $field[0];
+      expect(firstNodes[firstNodes.length - 1]).to.equal(root);
+      cy.get('input').type('-edited');
+      cy.get('#replace-ref').click();
+      cy.get('#field').should($current => {
+        expect($current[0]).to.equal(root);
+        expect(firstNodes[firstNodes.length - 1]).to.equal(null);
+        expect(secondNodes[secondNodes.length - 1]).to.equal(root);
+      });
+      cy.get('input').should('have.value', 'retained-edited');
+      cy.get('#remove-field').click();
+      cy.get('#field').should('not.exist');
+      cy.then(() => {
+        expect(firstNodes[firstNodes.length - 1]).to.equal(null);
+        expect(secondNodes[secondNodes.length - 1]).to.equal(null);
+      });
+    });
+  });
+
   it('recomposes the base hook with a native label, no default error icon and an explicit custom icon', () => {
     const BaseField = React.forwardRef<HTMLDivElement, FieldBaseProps>((props, ref) => {
       const state = useFieldBase_unstable(props, ref);

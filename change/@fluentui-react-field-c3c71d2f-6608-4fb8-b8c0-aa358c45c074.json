@@ -1,0 +1,6 @@
+{
+  "type": "none",
+  "comment": "Cover Field callback-ref identity and cleanup after mutation survivor",
+  "packageName": "@fluentui/react-field",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}
