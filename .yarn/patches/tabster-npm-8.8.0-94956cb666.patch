@@ -1,0 +1,221 @@
+diff --git a/dist/cjs/Mover.cjs b/dist/cjs/Mover.cjs
+index 40c5d0e876958335056ad37193b815ad606975af..4040629369acb340dfe8248142051d1271280541 100644
+--- a/dist/cjs/Mover.cjs
++++ b/dist/cjs/Mover.cjs
+@@ -572,6 +572,13 @@ class MoverAPI {
+             focusedElementX1 = Math.ceil(focusedElementRect.left);
+             focusedElementX2 = Math.floor(focusedElementRect.right);
+         }
++        // DOM traversal follows inline order; vertical overlap still uses physical coordinates.
++        const focusedInlineStart = ctx.rtl ? -focusedElementX2 : focusedElementX1;
++        const focusedInlineEnd = ctx.rtl ? -focusedElementX1 : focusedElementX2;
++        const getInlineStart = (element)=>{
++            const rect = element.getBoundingClientRect();
++            return ctx.rtl ? -Math.floor(rect.right) : Math.ceil(rect.left);
++        };
+         if (ctx.rtl) {
+             if (key === _Consts.MoverKeys.ArrowRight) {
+                 key = _Consts.MoverKeys.ArrowLeft;
+@@ -586,8 +593,8 @@ class MoverAPI {
+                 useActiveModalizer: true
+             });
+             if (next && isGrid) {
+-                const nextElementX1 = Math.ceil(next.getBoundingClientRect().left);
+-                if (!isGridLinear && focusedElementX2 > nextElementX1) {
++                const nextInlineStart = getInlineStart(next);
++                if (!isGridLinear && focusedInlineEnd > nextInlineStart) {
+                     next = undefined;
+                 }
+             } else if (!next && isCyclic) {
+@@ -603,8 +610,9 @@ class MoverAPI {
+                 useActiveModalizer: true
+             });
+             if (next && isGrid) {
+-                const nextElementX2 = Math.floor(next.getBoundingClientRect().right);
+-                if (!isGridLinear && nextElementX2 > focusedElementX1) {
++                const rect = next.getBoundingClientRect();
++                const nextInlineEnd = ctx.rtl ? -Math.ceil(rect.left) : Math.floor(rect.right);
++                if (!isGridLinear && nextInlineEnd > focusedInlineStart) {
+                     next = undefined;
+                 }
+             } else if (!next && isCyclic) {
+@@ -624,8 +632,8 @@ class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left ?? 0);
+-                        if (el !== fromElement && focusedElementX1 <= nextElementX1) {
++                        const nextElementX1 = getInlineStart(el);
++                        if (el !== fromElement && focusedInlineStart <= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -648,8 +656,8 @@ class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left ?? 0);
+-                        if (el !== fromElement && focusedElementX1 >= nextElementX1) {
++                        const nextElementX1 = getInlineStart(el);
++                        if (el !== fromElement && focusedInlineStart >= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -681,7 +689,7 @@ class MoverAPI {
+             });
+             // will be on the first column move forward and preserve previous column
+             if (isGrid && next) {
+-                const firstColumnX1 = Math.ceil(next.getBoundingClientRect().left);
++                const firstColumnX1 = getInlineStart(next);
+                 focusable.findElement({
+                     currentElement: next,
+                     container,
+@@ -690,8 +698,8 @@ class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left);
+-                        if (focusedElementX1 < nextElementX1 || firstColumnX1 >= nextElementX1) {
++                        const nextElementX1 = getInlineStart(el);
++                        if (focusedInlineStart < nextElementX1 || firstColumnX1 >= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -718,7 +726,7 @@ class MoverAPI {
+             });
+             // will be on the last column move backwards and preserve previous column
+             if (isGrid && next) {
+-                const lastColumnX1 = Math.ceil(next.getBoundingClientRect().left);
++                const lastColumnX1 = getInlineStart(next);
+                 focusable.findElement({
+                     currentElement: next,
+                     container,
+@@ -728,8 +736,8 @@ class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left);
+-                        if (focusedElementX1 > nextElementX1 || lastColumnX1 <= nextElementX1) {
++                        const nextElementX1 = getInlineStart(el);
++                        if (focusedInlineStart > nextElementX1 || lastColumnX1 <= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -988,4 +996,4 @@ class MoverAPI {
+         }
+         return false;
+     }
+-} //# sourceMappingURL=Mover.js.map
++}
+diff --git a/dist/esm/Mover.js b/dist/esm/Mover.js
+index 9904d9f035c13e1674798d1e29efcc925158c3e5..21fa51b9da4e29de62ed7ee726bbee982c296ac3 100644
+--- a/dist/esm/Mover.js
++++ b/dist/esm/Mover.js
+@@ -583,6 +583,13 @@ export class MoverAPI {
+             focusedElementX1 = Math.ceil(focusedElementRect.left);
+             focusedElementX2 = Math.floor(focusedElementRect.right);
+         }
++        // DOM traversal follows inline order; vertical overlap still uses physical coordinates.
++        const focusedInlineStart = ctx.rtl ? -focusedElementX2 : focusedElementX1;
++        const focusedInlineEnd = ctx.rtl ? -focusedElementX1 : focusedElementX2;
++        const getInlineStart = (element) => {
++            const rect = element.getBoundingClientRect();
++            return ctx.rtl ? -Math.floor(rect.right) : Math.ceil(rect.left);
++        };
+         if (ctx.rtl) {
+             if (key === MoverKeys.ArrowRight) {
+                 key = MoverKeys.ArrowLeft;
+@@ -599,8 +606,8 @@ export class MoverAPI {
+                 useActiveModalizer: true,
+             });
+             if (next && isGrid) {
+-                const nextElementX1 = Math.ceil(next.getBoundingClientRect().left);
+-                if (!isGridLinear && focusedElementX2 > nextElementX1) {
++                const nextInlineStart = getInlineStart(next);
++                if (!isGridLinear && focusedInlineEnd > nextInlineStart) {
+                     next = undefined;
+                 }
+             }
+@@ -619,8 +626,9 @@ export class MoverAPI {
+                 useActiveModalizer: true,
+             });
+             if (next && isGrid) {
+-                const nextElementX2 = Math.floor(next.getBoundingClientRect().right);
+-                if (!isGridLinear && nextElementX2 > focusedElementX1) {
++                const rect = next.getBoundingClientRect();
++                const nextInlineEnd = ctx.rtl ? -Math.ceil(rect.left) : Math.floor(rect.right);
++                if (!isGridLinear && nextInlineEnd > focusedInlineStart) {
+                     next = undefined;
+                 }
+             }
+@@ -642,9 +650,9 @@ export class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left ?? 0);
++                        const nextElementX1 = getInlineStart(el);
+                         if (el !== fromElement &&
+-                            focusedElementX1 <= nextElementX1) {
++                            focusedInlineStart <= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -669,9 +677,9 @@ export class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left ?? 0);
++                        const nextElementX1 = getInlineStart(el);
+                         if (el !== fromElement &&
+-                            focusedElementX1 >= nextElementX1) {
++                            focusedInlineStart >= nextElementX1) {
+                             return true;
+                         }
+                         next = el;
+@@ -705,7 +713,7 @@ export class MoverAPI {
+             });
+             // will be on the first column move forward and preserve previous column
+             if (isGrid && next) {
+-                const firstColumnX1 = Math.ceil(next.getBoundingClientRect().left);
++                const firstColumnX1 = getInlineStart(next);
+                 focusable.findElement({
+                     currentElement: next,
+                     container,
+@@ -714,8 +722,8 @@ export class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left);
+-                        if (focusedElementX1 < nextElementX1 ||
++                        const nextElementX1 = getInlineStart(el);
++                        if (focusedInlineStart < nextElementX1 ||
+                             firstColumnX1 >= nextElementX1) {
+                             return true;
+                         }
+@@ -744,7 +752,7 @@ export class MoverAPI {
+             });
+             // will be on the last column move backwards and preserve previous column
+             if (isGrid && next) {
+-                const lastColumnX1 = Math.ceil(next.getBoundingClientRect().left);
++                const lastColumnX1 = getInlineStart(next);
+                 focusable.findElement({
+                     currentElement: next,
+                     container,
+@@ -754,8 +762,8 @@ export class MoverAPI {
+                         if (!focusable.isFocusable(el)) {
+                             return false;
+                         }
+-                        const nextElementX1 = Math.ceil(el.getBoundingClientRect().left);
+-                        if (focusedElementX1 > nextElementX1 ||
++                        const nextElementX1 = getInlineStart(el);
++                        if (focusedInlineStart > nextElementX1 ||
+                             lastColumnX1 <= nextElementX1) {
+                             return true;
+                         }
+@@ -1054,4 +1062,3 @@ export class MoverAPI {
+         return false;
+     }
+ }
+\ No newline at end of file
+-//# sourceMappingURL=Mover.js.map
+\ No newline at end of file

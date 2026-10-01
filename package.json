@@ -363,6 +363,7 @@
     }
   },
   "resolutions": {
+    "tabster@npm:^8.8.0": "patch:tabster@npm%3A8.8.0#~/.yarn/patches/tabster-npm-8.8.0-94956cb666.patch",
     "@nx/devkit/minimatch": "^9.0.7",
     "@nx/jest/minimatch": "^9.0.7",
     "@phenomnomnominal/tsquery": "6.1.3",
