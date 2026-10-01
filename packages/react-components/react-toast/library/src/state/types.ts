@@ -177,3 +177,8 @@ export type ToastImperativeRef = {
    */
   pause: () => void;
 };
+
+export type FocusToastImperativeRef = ToastImperativeRef & {
+  pauseFocus: () => void;
+  playFocus: () => void;
+};

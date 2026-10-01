@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Keep toast timers paused for independent focus, hover, window and application interactions; preserve root metadata across updates and remove dismissed queued notifications with consistent lifecycle callbacks.",
+  "packageName": "@fluentui/react-toast",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

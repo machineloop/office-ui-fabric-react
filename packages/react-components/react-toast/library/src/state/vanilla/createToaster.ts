@@ -50,6 +50,7 @@ export function createToaster(options: Partial<ToasterOptions>): {
   const { limit = Number.POSITIVE_INFINITY } = options;
   const visibleToasts = new Set<ToastId>();
   const toasts = new Map<ToastId, Toast>();
+  const dismissedToasts = new Set<ToastId>();
 
   const queue = createPriorityQueue<ToastId>((ta, tb) => {
     const a = toasts.get(ta);
@@ -79,7 +80,11 @@ export function createToaster(options: Partial<ToasterOptions>): {
       return;
     }
 
-    Object.assign(toastToUpdate, toastOptions);
+    const { data, ...optionsToUpdate } = toastOptions;
+    Object.assign(toastToUpdate, optionsToUpdate);
+    if (data !== undefined) {
+      toastToUpdate.data = { ...toastToUpdate.data, ...data };
+    }
     toastToUpdate.updateId++;
   };
 
@@ -87,15 +92,15 @@ export function createToaster(options: Partial<ToasterOptions>): {
    * Dismisses a toast with a specific id
    */
   const dismissToast = (toastId: ToastId) => {
-    visibleToasts.delete(toastId);
+    toasts.get(toastId)?.close();
   };
 
   /**
    * Dismisses all toasts and clears the queue
    */
   const dismissAllToasts = () => {
-    visibleToasts.clear();
     queue.clear();
+    Array.from(toasts.values()).forEach(toast => toast.close());
   };
 
   /**
@@ -111,13 +116,18 @@ export function createToaster(options: Partial<ToasterOptions>): {
 
     const close = () => {
       const toast = toasts.get(toastId);
-      if (!toast) {
+      if (!toast || dismissedToasts.has(toastId)) {
         return;
       }
 
-      visibleToasts.delete(toastId);
-      onUpdate();
+      dismissedToasts.add(toastId);
+      if (!visibleToasts.delete(toastId)) {
+        queue.remove(toastId);
+        toasts.delete(toastId);
+        dismissedToasts.delete(toastId);
+      }
       toast.onStatusChange?.(null, { status: 'dismissed', ...toast });
+      onUpdate();
     };
 
     const remove = () => {
@@ -127,11 +137,14 @@ export function createToaster(options: Partial<ToasterOptions>): {
       }
 
       toasts.delete(toastId);
+      visibleToasts.delete(toastId);
+      dismissedToasts.delete(toastId);
+      queue.remove(toastId);
 
-      if (visibleToasts.size < limit && queue.peek()) {
+      while (visibleToasts.size < limit && queue.size() > 0) {
         const nextToast = toasts.get(queue.dequeue());
         if (!nextToast) {
-          return;
+          continue;
         }
 
         visibleToasts.add(nextToast.toastId);

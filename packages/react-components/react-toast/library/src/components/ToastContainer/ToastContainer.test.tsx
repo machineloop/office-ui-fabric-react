@@ -6,6 +6,7 @@ import type { ToastContainerProps } from './ToastContainer.types';
 import { toastContainerClassNames } from './useToastContainerStyles.styles';
 import { resetIdsForTests } from '@fluentui/react-utilities';
 import { type PresenceComponentProps } from '@fluentui/react-motion';
+import { toasterFocusScope } from '../Toaster/toasterFocusScope';
 
 const defaultToastContainerProps: ToastContainerProps = {
   announce: () => null,
@@ -227,6 +228,113 @@ describe('ToastContainer', () => {
       fireEvent.focus(window);
     });
 
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+  });
+
+  it('keeps a non-pausing hover timer running and forwards the distinct native callbacks', () => {
+    jest.useFakeTimers();
+    const onMouseEnter = jest.fn();
+    const onMouseLeave = jest.fn();
+    const { container } = render(
+      <ToastContainer {...defaultToastContainerProps} timeout={1000} data={{ root: { onMouseEnter, onMouseLeave } }} />,
+    );
+    act(() => jest.advanceTimersByTime(FAKE_MOTION_DURATION));
+    const root = container.querySelector(`.${toastContainerClassNames.root}`)!;
+    fireEvent.mouseEnter(root);
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+    expect(onMouseEnter).toHaveBeenCalledTimes(1);
+    expect(onMouseLeave).not.toHaveBeenCalled();
+    fireEvent.mouseLeave(root);
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+    expect(onMouseEnter).toHaveBeenCalledTimes(1);
+    expect(onMouseLeave).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not let pointer or window resumption erase an application pause', () => {
+    jest.useFakeTimers();
+    const imperativeRef: ToastContainerProps['imperativeRef'] = { current: null };
+    const { container } = render(
+      <ToastContainer
+        {...defaultToastContainerProps}
+        timeout={1000}
+        pauseOnHover
+        pauseOnWindowBlur
+        imperativeRef={imperativeRef}
+      />,
+    );
+    act(() => jest.advanceTimersByTime(FAKE_MOTION_DURATION));
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+    act(() => imperativeRef.current!.pause());
+    const root = container.querySelector(`.${toastContainerClassNames.root}`)!;
+    fireEvent.mouseEnter(root);
+    fireEvent.blur(window);
+    fireEvent.mouseLeave(root);
+    fireEvent.focus(window);
+    expect(container.querySelector(pausedTimerSelector)).not.toBeNull();
+    act(() => imperativeRef.current!.play());
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+  });
+
+  it('keeps window pause intact when hover ends and hover pause intact when the window refocuses', () => {
+    jest.useFakeTimers();
+    const { container } = render(
+      <ToastContainer {...defaultToastContainerProps} timeout={1000} pauseOnHover pauseOnWindowBlur />,
+    );
+    act(() => jest.advanceTimersByTime(FAKE_MOTION_DURATION));
+    const root = container.querySelector(`.${toastContainerClassNames.root}`)!;
+    fireEvent.mouseEnter(root);
+    fireEvent.blur(window);
+    fireEvent.mouseLeave(root);
+    expect(container.querySelector(pausedTimerSelector)).not.toBeNull();
+    fireEvent.mouseEnter(root);
+    fireEvent.focus(window);
+    expect(container.querySelector(pausedTimerSelector)).not.toBeNull();
+    fireEvent.mouseLeave(root);
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+  });
+
+  it.each([
+    { scope: 'own-scope', expected: pausedTimerSelector },
+    { scope: 'other-scope', expected: runningTimerSelector },
+    { scope: undefined, expected: runningTimerSelector },
+  ])('resolves focused stack scope $scope without leaking between instances', ({ scope, expected }) => {
+    jest.useFakeTimers();
+    const { container, getByText } = render(
+      <>
+        <div data-toaster-focus-scope="own-scope">
+          <button>Focused other position</button>
+        </div>
+        <ToastContainer
+          {...defaultToastContainerProps}
+          timeout={1000}
+          data={scope === undefined ? {} : { [toasterFocusScope]: scope }}
+        />
+      </>,
+    );
+    act(() => getByText('Focused other position').focus());
+    act(() => jest.advanceTimersByTime(FAKE_MOTION_DURATION));
+    expect(container.querySelector(expected)).not.toBeNull();
+  });
+
+  it('uses root containment for standalone toast focus without private scope metadata', () => {
+    jest.useFakeTimers();
+    const imperativeRef: ToastContainerProps['imperativeRef'] = { current: null };
+    const { container, getByText } = render(
+      <ToastContainer {...defaultToastContainerProps} timeout={1000} imperativeRef={imperativeRef}>
+        <button>Standalone action</button>
+      </ToastContainer>,
+    );
+    act(() => jest.advanceTimersByTime(FAKE_MOTION_DURATION));
+    expect(container.querySelector(runningTimerSelector)).not.toBeNull();
+    act(() => {
+      getByText('Standalone action').focus();
+      imperativeRef.current!.play();
+    });
+    expect(container.querySelector(pausedTimerSelector)).not.toBeNull();
+    act(() => {
+      getByText('Standalone action').blur();
+      imperativeRef.current!.play();
+    });
     expect(container.querySelector(runningTimerSelector)).not.toBeNull();
   });
 

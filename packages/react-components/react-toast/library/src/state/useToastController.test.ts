@@ -62,6 +62,31 @@ describe('useToastController', () => {
   });
 
   describe('updateTpast', () => {
+    it('does not send undefined root data for a content-only partial update', () => {
+      const { result } = renderHook(() => useToastController());
+      result.current.updateToast({ toastId: 'foo', content: 'Updated' });
+      expect(updateToastVanilla).toHaveBeenCalledWith(
+        { toastId: 'foo', content: 'Updated', toasterId: undefined },
+        document,
+      );
+    });
+
+    it('preserves explicitly supplied data when root is omitted', () => {
+      const { result } = renderHook(() => useToastController());
+      const data = { root: { className: 'retained' }, application: 'context' };
+      result.current.updateToast({ toastId: 'foo', data });
+      expect(updateToastVanilla).toHaveBeenCalledWith({ toastId: 'foo', data, toasterId: undefined }, document);
+    });
+
+    it('supports explicit null root removal while retaining other supplied data', () => {
+      const { result } = renderHook(() => useToastController());
+      result.current.updateToast({ toastId: 'foo', root: null, data: { application: 'context' } });
+      expect(updateToastVanilla).toHaveBeenCalledWith(
+        expect.objectContaining({ data: { root: null, application: 'context' } }),
+        document,
+      );
+    });
+
     it('should pass root to data', () => {
       const { result } = renderHook(() => useToastController());
       const { updateToast } = result.current;

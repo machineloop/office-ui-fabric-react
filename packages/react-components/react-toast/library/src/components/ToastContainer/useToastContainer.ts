@@ -6,10 +6,12 @@ import { getIntrinsicElementProps, useMergedRefs, useEventCallback, useId, slot 
 import { useFluent_unstable } from '@fluentui/react-shared-contexts';
 import { Delete, Tab } from '@fluentui/keyboard-keys';
 import { useFocusableGroup, useFocusFinders } from '@fluentui/react-tabster';
-import type { ToastStatus } from '../../state';
+import type { ToastImperativeRef, ToastStatus } from '../../state';
+import type { FocusToastImperativeRef } from '../../state/types';
 import type { ToastContainerProps, ToastContainerState } from './ToastContainer.types';
 import type { TimerProps } from '../Timer/Timer';
 import { Timer } from '../Timer/Timer';
+import { toasterFocusScope } from '../Toaster/toasterFocusScope';
 
 const intentPolitenessMap = {
   success: 'assertive',
@@ -55,6 +57,10 @@ export const useToastContainer_unstable = (
   const { targetDocument } = useFluent_unstable();
   const [running, setRunning] = React.useState(false);
   const imperativePauseRef = React.useRef(false);
+  const focusPauseRef = React.useRef(false);
+  const hoveredRef = React.useRef(false);
+  const windowBlurredRef = React.useRef(false);
+  const enteredRef = React.useRef(false);
   const focusedToastBeforeClose = React.useRef(false);
   const focusableGroupAttribute = useFocusableGroup({
     tabBehavior: 'limited-trap-focus',
@@ -72,23 +78,26 @@ export const useToastContainer_unstable = (
     closeProp();
   });
   const onStatusChange = useEventCallback((status: ToastStatus) => props.onStatusChange?.(null, { status, ...props }));
-  const pause = useEventCallback(() => setRunning(false));
-  const play = useEventCallback(() => {
-    if (imperativePauseRef.current) {
-      return;
-    }
-    const containsActive = !!toastRef.current?.contains(targetDocument?.activeElement ?? null);
-    if (timerTimeout < 0) {
-      setRunning(true);
-      return;
-    }
-
-    if (!containsActive) {
-      setRunning(true);
-    }
+  const updateRunning = useEventCallback(() => {
+    const activeElement = targetDocument?.activeElement ?? null;
+    const stack = toastRef.current?.closest('[data-toaster-position]');
+    const focusedStack = activeElement?.closest('[data-toaster-focus-scope]');
+    const focusScope = toasterFocusScope in data ? data[toasterFocusScope] : undefined;
+    const containsActive =
+      focusedStack && typeof focusScope === 'string'
+        ? focusedStack.getAttribute('data-toaster-focus-scope') === focusScope
+        : !!(stack ?? toastRef.current)?.contains(activeElement);
+    setRunning(
+      enteredRef.current &&
+        !imperativePauseRef.current &&
+        !focusPauseRef.current &&
+        !(pauseOnHover && hoveredRef.current) &&
+        !(pauseOnWindowBlur && windowBlurredRef.current) &&
+        !containsActive,
+    );
   });
 
-  React.useImperativeHandle(imperativeRef, () => ({
+  React.useImperativeHandle<ToastImperativeRef, FocusToastImperativeRef>(imperativeRef, () => ({
     focus: () => {
       if (!toastRef.current) {
         return;
@@ -99,11 +108,19 @@ export const useToastContainer_unstable = (
 
     play: () => {
       imperativePauseRef.current = false;
-      play();
+      updateRunning();
     },
     pause: () => {
       imperativePauseRef.current = true;
-      pause();
+      updateRunning();
+    },
+    playFocus: () => {
+      focusPauseRef.current = false;
+      updateRunning();
+    },
+    pauseFocus: () => {
+      focusPauseRef.current = true;
+      updateRunning();
     },
   }));
 
@@ -117,14 +134,27 @@ export const useToastContainer_unstable = (
     }
 
     if (pauseOnWindowBlur) {
-      targetDocument.defaultView?.addEventListener('focus', play);
-      targetDocument.defaultView?.addEventListener('blur', pause);
+      const onFocus = () => {
+        windowBlurredRef.current = false;
+        updateRunning();
+      };
+      const onBlur = () => {
+        windowBlurredRef.current = true;
+        updateRunning();
+      };
+      targetDocument.defaultView?.addEventListener('focus', onFocus);
+      targetDocument.defaultView?.addEventListener('blur', onBlur);
       return () => {
-        targetDocument.defaultView?.removeEventListener('focus', play);
-        targetDocument.defaultView?.removeEventListener('blur', pause);
+        targetDocument.defaultView?.removeEventListener('focus', onFocus);
+        targetDocument.defaultView?.removeEventListener('blur', onBlur);
       };
     }
-  }, [targetDocument, pause, play, pauseOnWindowBlur]);
+    windowBlurredRef.current = false;
+  }, [targetDocument, updateRunning, pauseOnWindowBlur]);
+
+  React.useEffect(() => {
+    updateRunning();
+  }, [pauseOnHover, pauseOnWindowBlur, updateRunning]);
 
   // Users never actually use ToastContainer as a JSX but imperatively through useToastContainerController
   const userRootSlot = (data as { root?: ExtractSlotProps<Slot<'div'>> }).root;
@@ -136,21 +166,24 @@ export const useToastContainer_unstable = (
 
       if (direction === 'enter') {
         // start toast once it's fully animated in
-        play();
+        enteredRef.current = true;
+        updateRunning();
         onStatusChange('visible');
       }
     },
-    [onStatusChange, play, remove],
+    [onStatusChange, updateRunning, remove],
   );
 
   const onMouseEnter = useEventCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    pause();
+    hoveredRef.current = true;
+    updateRunning();
     userRootSlot?.onMouseEnter?.(e);
   });
 
   const onMouseLeave = useEventCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    play();
-    userRootSlot?.onMouseEnter?.(e);
+    hoveredRef.current = false;
+    updateRunning();
+    userRootSlot?.onMouseLeave?.(e);
   });
 
   const { findFirstFocusable, findLastFocusable } = useFocusFinders();

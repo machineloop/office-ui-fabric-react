@@ -6,15 +6,26 @@ import { useFluent_unstable as useFluent } from '@fluentui/react-shared-contexts
 import { createToaster } from './vanilla';
 import type {
   CommonToastDetail,
+  FocusToastImperativeRef,
   ShowToastEventDetail,
   Toast,
   ToastId,
+  ToastImperativeRef,
   ToastListenerMap,
   ToastPosition,
   ToasterId,
   ToasterOptions,
 } from './types';
 import { EVENTS } from './constants';
+
+function isFocusToastImperativeRef(ref: ToastImperativeRef): ref is FocusToastImperativeRef {
+  return (
+    'pauseFocus' in ref &&
+    typeof ref.pauseFocus === 'function' &&
+    'playFocus' in ref &&
+    typeof ref.playFocus === 'function'
+  );
+}
 
 export function useToaster<TElement extends HTMLElement = HTMLDivElement>(
   options: Partial<ToasterOptions> = {},
@@ -47,14 +58,28 @@ export function useToaster<TElement extends HTMLElement = HTMLDivElement>(
   const pauseAllToasts = React.useCallback(() => {
     toaster.visibleToasts.forEach(toastId => {
       const toast = toaster.toasts.get(toastId);
-      toast?.imperativeRef.current?.pause();
+      const ref = toast?.imperativeRef.current;
+      if (ref) {
+        if (isFocusToastImperativeRef(ref)) {
+          ref.pauseFocus();
+        } else {
+          ref.pause();
+        }
+      }
     });
   }, [toaster]);
 
   const playAllToasts = React.useCallback(() => {
     toaster.visibleToasts.forEach(toastId => {
       const toast = toaster.toasts.get(toastId);
-      toast?.imperativeRef.current?.play();
+      const ref = toast?.imperativeRef.current;
+      if (ref) {
+        if (isFocusToastImperativeRef(ref)) {
+          ref.playFocus();
+        } else {
+          ref.play();
+        }
+      }
     });
   }, [toaster]);
 

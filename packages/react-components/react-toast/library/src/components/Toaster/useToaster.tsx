@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import type { ExtractSlotProps, Slot } from '@fluentui/react-utilities';
-import { getIntrinsicElementProps, useEventCallback, useMergedRefs, slot } from '@fluentui/react-utilities';
+import { getIntrinsicElementProps, useEventCallback, useId, useMergedRefs, slot } from '@fluentui/react-utilities';
 import { useFluent_unstable as useFluent } from '@fluentui/react-shared-contexts';
 import { useFocusableGroup } from '@fluentui/react-tabster';
 import { Escape } from '@fluentui/keyboard-keys';
@@ -13,6 +13,7 @@ import type { Announce } from '../AriaLive';
 import { ToastContainer } from '../ToastContainer';
 import { useToasterFocusManagement_unstable } from './useToasterFocusManagement';
 import { useToastAnnounce } from './useToastAnnounce';
+import { toasterFocusScope } from './toasterFocusScope';
 
 /**
  * Create the state required to render Toaster.
@@ -21,6 +22,7 @@ import { useToastAnnounce } from './useToastAnnounce';
  */
 export const useToaster_unstable = (props: ToasterProps): ToasterState => {
   const { offset, announce: announceProp, mountNode, inline = false, ...rest } = props;
+  const focusScope = useId('toaster-focus');
   const announceRef = React.useRef<Announce>(() => null);
   const { toastsToRender, isToastVisible, pauseAllToasts, playAllToasts, tryRestoreFocus, closeAllToasts } =
     useToaster<HTMLDivElement>(rest);
@@ -53,6 +55,7 @@ export const useToaster_unstable = (props: ToasterProps): ToasterState => {
         children: toastsToRender.get(toastPosition)?.map(toast => (
           <ToastContainer
             {...toast}
+            data={{ ...toast.data, [toasterFocusScope]: focusScope }}
             tryRestoreFocus={tryRestoreFocus}
             intent={toast.intent}
             announce={announceToast}
@@ -65,6 +68,7 @@ export const useToaster_unstable = (props: ToasterProps): ToasterState => {
         onKeyDown,
         ...focusableGroupAttr,
         'data-toaster-position': toastPosition,
+        'data-toaster-focus-scope': focusScope,
         role: 'list',
         // Explicitly casting because our slot types can't handle data attributes
       } as ExtractSlotProps<Slot<'div'>>,

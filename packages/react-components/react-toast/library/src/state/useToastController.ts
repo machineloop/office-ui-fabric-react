@@ -42,7 +42,8 @@ export function useToastController(toasterId?: ToasterId): {
 
     return {
       dispatchToast: (content: React.ReactNode, options?: DispatchToastOptions) => {
-        dispatchToastVanilla(content, { ...options, toasterId, data: { root: options?.root } }, targetDocument);
+        const data = options?.root === undefined ? options?.data ?? {} : { ...options.data, root: options.root };
+        dispatchToastVanilla(content, { ...options, toasterId, data }, targetDocument);
       },
       dismissToast: (toastId: ToastId) => {
         dismissToastVanilla(toastId, toasterId, targetDocument);
@@ -51,7 +52,8 @@ export function useToastController(toasterId?: ToasterId): {
         dismissAllToastsVanilla(toasterId, targetDocument);
       },
       updateToast: (options: UpdateToastOptions) => {
-        updateToastVanilla({ ...options, data: { root: options.root }, toasterId }, targetDocument);
+        const data = options.root === undefined ? options.data : { ...options.data, root: options.root };
+        updateToastVanilla({ ...options, ...(data === undefined ? {} : { data }), toasterId }, targetDocument);
       },
       pauseToast: (toastId: ToastId) => {
         pauseToastVanilla(toastId, toasterId, targetDocument);
