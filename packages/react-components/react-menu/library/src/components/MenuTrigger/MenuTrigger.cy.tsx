@@ -1139,6 +1139,69 @@ describe('MenuTrigger edges and accessibility', () => {
 });
 
 describe('MenuTrigger additional lifecycle and event boundaries', () => {
+  [true, false].forEach(enhancement => {
+    it(`prevented ArrowDown delivers no open request before another gesture, enhancement=${enhancement}`, () => {
+      const child = cy.stub().as('child-keydown');
+      const change = cy.stub().as('change');
+      const Example = () => {
+        const [prevent, setPrevent] = React.useState(true);
+        return (
+          <>
+            <button data-testid="enable" onClick={() => setPrevent(false)}>
+              Enable
+            </button>
+            <Fixture
+              enhancement={enhancement}
+              onOpenChange={change}
+              child={
+                <button
+                  data-testid="trigger"
+                  onKeyDown={event => {
+                    child(event);
+                    if (prevent) {
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  Actions
+                </button>
+              }
+            />
+          </>
+        );
+      };
+      render(<Example />);
+      cy.get(trigger).focus().realPress('ArrowDown');
+      cy.get('@child-keydown')
+        .should('have.been.calledOnce')
+        .then(() => expect(child.firstCall.args[0].defaultPrevented).to.equal(true));
+      cy.get('@change').should('not.have.been.called');
+      cy.get(surface).should('not.exist');
+      cy.get(trigger).should('be.focused').and('not.have.attr', 'aria-expanded');
+      cy.get('[data-testid="enable"]').click();
+      cy.get(trigger).focus().realPress('ArrowDown');
+      cy.get('@child-keydown').should('have.been.calledTwice');
+      cy.get('@change')
+        .should('have.been.calledOnce')
+        .then(() => {
+          expect(change.firstCall.args[0]).to.equal(child.secondCall.args[0]);
+          expect(change.firstCall.args[1].event).to.equal(child.secondCall.args[0]);
+          expect(change.firstCall.args[1]).to.include({ open: true, keyboard: true, type: 'menuTriggerKeyDown' });
+          expect(child.secondCall.args[0].defaultPrevented).to.equal(false);
+        });
+      cy.get(trigger).should('have.attr', 'aria-expanded', 'true');
+      cy.get(surface).should('be.visible');
+      cy.get(first).should('be.focused').realPress('Escape');
+      cy.get(surface).should('not.exist');
+      cy.get(trigger).should('be.focused').and('not.have.attr', 'aria-expanded');
+      cy.get('@change')
+        .should('have.been.calledTwice')
+        .then(() =>
+          expect(change.secondCall.args[1]).to.include({ open: false, keyboard: true, type: 'menuPopoverKeyDown' }),
+        );
+    });
+  });
+
   it('enhanced Space opens on keyup, while Enter opens on keydown', () => {
     const change = cy.stub().as('change');
     render(

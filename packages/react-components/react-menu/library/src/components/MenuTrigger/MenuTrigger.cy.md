@@ -91,3 +91,20 @@ ESLint and Prettier passed. Type-check still reports only the same three
 pre-existing Provider/Tooltip diagnostics and none in MenuTrigger.
 The incidental generated-ID shape suggestion is declined for the contract
 reason above; both sibling IDs are now explicitly asserted nonempty.
+
+## Isolated mutation coverage correction
+
+Two additional cases check prevented ArrowDown immediately, with button
+enhancement both enabled and disabled. Before any later gesture they require
+the child callback and prevented event, zero open-change requests, absent
+surface, omitted expansion and retained trigger focus. Unprevented ArrowDown
+after a rerender must deliver exactly one request with the original event and
+keyboard metadata, expand the trigger and focus the first item; Escape then
+dismisses and restores focus.
+
+The earlier prevention cases sent Enter before checking the surface. That could
+activate the first menu item and dismiss a menu incorrectly opened by ArrowDown,
+masking removal of the internal preventDefault guard. The new cases close this
+observable gap without weakening or removing existing scenarios. The complete
+suite now contains 92 cases. Mutation catalogs, per-run assertions and restoration
+evidence are session-only artifacts; production source remains unchanged.
