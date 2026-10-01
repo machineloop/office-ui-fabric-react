@@ -1,0 +1,9 @@
+{
+  "extends": "./TableRow.cy.tsconfig.json",
+  "include": [
+    "../../../../../react-provider/library/src/components/FluentProvider/renderFluentProvider.tsx",
+    "../../../../../react-popover/library/src/components/PopoverSurface/renderPopoverSurface.tsx",
+    "../../../../../react-tooltip/library/src/components/Tooltip/renderTooltip.tsx"
+  ],
+  "references": []
+}

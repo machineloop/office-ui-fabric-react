@@ -20,6 +20,28 @@ describe('TableRow', () => {
     displayName: 'TableRow',
   });
 
+  it.each([false, true])('honors explicit tr with noNativeElements=%s', noNativeElements => {
+    const ref = React.createRef<HTMLDivElement>();
+    const { getByTestId } = render(
+      <TableContextProvider value={{ ...tableContextDefaultValue, noNativeElements }}>
+        <table>
+          <tbody>
+            <TableRow as="tr" ref={ref} data-testid="row" title="Native row" aria-selected className="consumer">
+              <td>Native cell</td>
+            </TableRow>
+          </tbody>
+        </table>
+      </TableContextProvider>,
+    );
+    const row = getByTestId('row');
+    expect(row.tagName).toBe('TR');
+    expect(row.hasAttribute('role')).toBe(false);
+    expect(row.getAttribute('title')).toBe('Native row');
+    expect(row.getAttribute('aria-selected')).toBe('true');
+    expect(row.classList.contains('consumer')).toBe(true);
+    expect(ref.current).toBe(row);
+  });
+
   it('renders a default state', () => {
     const result = render(
       <TableRow>

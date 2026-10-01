@@ -1,0 +1,5 @@
+{
+  "extends": "../../../tsconfig.spec.json",
+  "include": ["TableRow.test.tsx"],
+  "references": []
+}
