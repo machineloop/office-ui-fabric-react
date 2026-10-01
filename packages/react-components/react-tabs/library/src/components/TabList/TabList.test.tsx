@@ -32,6 +32,28 @@ describe('TabList', () => {
     expect(result.container).toMatchSnapshot();
   });
 
+  it('consumes design props without forwarding them to the root', () => {
+    const { getByRole } = render(
+      <TabList
+        appearance="filled-circular"
+        size="large"
+        reserveSelectedTabSpace={false}
+        selectedValue="a"
+        disabled
+        title="Native title"
+      >
+        <Tab value="a">A</Tab>
+      </TabList>,
+    );
+    const root = getByRole('tablist');
+    expect(root.getAttribute('appearance')).toBeNull();
+    expect(root.getAttribute('size')).toBeNull();
+    expect(root.getAttribute('reserveselectedtabspace')).toBeNull();
+    expect(root.getAttribute('selectedvalue')).toBeNull();
+    expect(root.getAttribute('disabled')).toBeNull();
+    expect(root.getAttribute('title')).toBe('Native title');
+  });
+
   it('renders tabs with default selected tab', () => {
     const result = render(
       <TabList defaultSelectedValue="2">
