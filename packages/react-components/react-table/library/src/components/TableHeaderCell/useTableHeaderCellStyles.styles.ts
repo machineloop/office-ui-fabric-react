@@ -108,6 +108,7 @@ export const useTableHeaderCellStyles_unstable = (state: TableHeaderCellState): 
     tableHeaderCellClassNames.root,
     styles.root,
     state.sortable && styles.rootInteractive,
+    // Explicit tag overrides retain context-owned layout, even when tag and display diverge.
     state.noNativeElements ? layoutStyles.flex.root : layoutStyles.table.root,
     state.root.className,
   );

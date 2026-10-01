@@ -1,0 +1,5 @@
+{
+  "extends": "./TableHeaderCell.cy.tsconfig.json",
+  "include": ["../../../../../react-provider/library/src/components/FluentProvider/renderFluentProvider.tsx"],
+  "references": []
+}

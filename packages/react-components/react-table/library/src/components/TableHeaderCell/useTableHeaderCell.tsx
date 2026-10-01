@@ -30,7 +30,7 @@ export const useTableHeaderCell_unstable = (
   const { noNativeElements, sortable: contextSortable } = useTableContext();
   const { sortable = contextSortable } = props;
 
-  const rootComponent = props.as ?? noNativeElements ? 'div' : 'th';
+  const rootComponent = props.as ?? (noNativeElements ? 'div' : 'th');
 
   // The sort button is rendered as a div when not sortable, and as an ARIA button when sortable.
   const buttonSlot = slot.always<ARIAButtonSlotProps>(props.button, {
@@ -58,7 +58,13 @@ export const useTableHeaderCell_unstable = (
         'aria-sort': sortable ? props.sortDirection ?? 'none' : undefined,
         ...props,
       } as const),
-      { elementType: rootComponent },
+      {
+        elementType: rootComponent,
+        // The shared intrinsic-prop filter omits these supported th attributes.
+        // The as guard narrows the public th/div props union for TypeScript.
+        defaultProps:
+          rootComponent === 'th' && props.as !== 'div' ? { abbr: props.abbr, headers: props.headers } : undefined,
+      },
     ),
     aside: slot.optional(props.aside, { elementType: 'span' }),
     sortIcon: slot.optional(props.sortIcon, {
