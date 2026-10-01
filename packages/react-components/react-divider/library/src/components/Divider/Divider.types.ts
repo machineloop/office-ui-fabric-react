@@ -8,6 +8,8 @@ export type DividerSlots = {
 
   /**
    * Wrapper for content when presented.
+   * Its id is used for the separator's automatic aria-labelledby relationship,
+   * unless aria-labelledby is explicitly provided on the root.
    */
   wrapper: NonNullable<Slot<'div'>>;
 };

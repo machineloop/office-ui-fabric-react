@@ -32,6 +32,13 @@ export const useDivider_unstable = (props: DividerProps, ref: React.Ref<HTMLElem
 export const useDividerBase_unstable = (props: DividerBaseProps, ref?: React.Ref<HTMLElement>): DividerBaseState => {
   const { vertical = false, wrapper, ...rest } = props;
   const dividerId = useId('divider-');
+  const wrapperSlot = slot.always(wrapper, {
+    defaultProps: {
+      id: dividerId,
+      children: props.children,
+    },
+    elementType: 'div',
+  });
 
   return {
     vertical,
@@ -43,18 +50,13 @@ export const useDividerBase_unstable = (props: DividerBaseProps, ref?: React.Ref
       {
         role: 'separator',
         'aria-orientation': vertical ? 'vertical' : 'horizontal',
-        'aria-labelledby': props.children ? dividerId : undefined,
+        // Preserve truthiness-based naming; wrapper rendering instead checks children !== undefined.
+        'aria-labelledby': props.children ? wrapperSlot.id : undefined,
         ref: ref as React.Ref<HTMLDivElement>,
         ...rest,
       },
       { elementType: 'div' },
     ),
-    wrapper: slot.always(wrapper, {
-      defaultProps: {
-        id: dividerId,
-        children: props.children,
-      },
-      elementType: 'div',
-    }),
+    wrapper: wrapperSlot,
   };
 };

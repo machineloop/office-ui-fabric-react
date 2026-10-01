@@ -94,4 +94,30 @@ describe('Divider', () => {
     const { container } = render(<Divider style={{ width: 100 }}>fixed 100px width</Divider>);
     expect(container.firstChild).toMatchSnapshot();
   });
+
+  it('labels the separator using the resolved wrapper id, including updates', () => {
+    const { getByRole, rerender } = render(<Divider wrapper={{ id: 'custom-label' }}>Section</Divider>);
+    const separator = getByRole('separator', { name: 'Section' });
+    expect(separator.getAttribute('aria-labelledby')).toBe('custom-label');
+    expect(separator.firstElementChild?.id).toBe('custom-label');
+
+    rerender(<Divider wrapper={{ id: 'updated-label' }}>Updated</Divider>);
+    expect(getByRole('separator', { name: 'Updated' })).toBe(separator);
+    expect(separator.getAttribute('aria-labelledby')).toBe('updated-label');
+    expect(separator.firstElementChild?.id).toBe('updated-label');
+  });
+
+  it('preserves an explicit external label when the wrapper has a custom id', () => {
+    const { getByRole } = render(
+      <>
+        <span id="external-label">External</span>
+        <Divider wrapper={{ id: 'custom-label' }} aria-labelledby="external-label">
+          Internal
+        </Divider>
+      </>,
+    );
+    const separator = getByRole('separator', { name: 'External' });
+    expect(separator.getAttribute('aria-labelledby')).toBe('external-label');
+    expect(separator.firstElementChild?.id).toBe('custom-label');
+  });
 });
