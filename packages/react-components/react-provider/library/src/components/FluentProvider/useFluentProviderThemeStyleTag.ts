@@ -56,9 +56,15 @@ export const useFluentProviderThemeStyleTag = (
   const styleTag = React.useRef<HTMLStyleElement | undefined | null>(undefined);
 
   const styleTagId = useId(fluentProviderClassNames.root);
+  // Normalize simple angle-bracket escapes before createCSSRuleFromTheme's HTML-safe escaping.
+  const escapedStyleTagId = targetDocument?.defaultView?.CSS?.escape
+    ? targetDocument.defaultView.CSS.escape(styleTagId).replace(/\\([<>])/g, (_, character) =>
+        character === '<' ? '\\3C ' : '\\3E ',
+      )
+    : styleTagId;
   const styleElementAttributes = rendererAttributes;
 
-  const rule = React.useMemo(() => createCSSRuleFromTheme(`.${styleTagId}`, theme), [theme, styleTagId]);
+  const rule = React.useMemo(() => createCSSRuleFromTheme(`.${escapedStyleTagId}`, theme), [theme, escapedStyleTagId]);
 
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/void-use-memo
@@ -69,10 +75,10 @@ export const useFluentProviderThemeStyleTag = (
       // of double render.
 
       if (targetDocument) {
-        const providerElementSelector = `.${fluentProviderClassNames.root}.${styleTagId}`;
+        const providerElementSelector = `.${fluentProviderClassNames.root}.${escapedStyleTagId}`;
         const providerElements = targetDocument.querySelectorAll(providerElementSelector);
 
-        const styleElementSelector = `style[id="${styleTagId}"]`;
+        const styleElementSelector = `style#${escapedStyleTagId}`;
         const styleElements = targetDocument.querySelectorAll<HTMLStyleElement>(styleElementSelector);
 
         if (styleElements.length > 1) {
