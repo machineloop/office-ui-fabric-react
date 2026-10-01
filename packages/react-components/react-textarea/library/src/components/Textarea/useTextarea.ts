@@ -59,7 +59,7 @@ export const useTextareaBase_unstable = (
   // Merge props from surrounding <Field>, if any
   props = useFieldControlProps_unstable(props, { supportsLabelFor: true, supportsRequired: true });
 
-  const { resize = 'none', onChange } = props;
+  const { resize = 'none', onChange, minLength, autoComplete, onInvalid, onInvalidCapture } = props;
 
   const [value, setValue] = useControllableState({
     state: props.value,
@@ -70,7 +70,15 @@ export const useTextareaBase_unstable = (
   const nativeProps = getPartitionedNativeProps({
     props,
     primarySlotTagName: 'textarea',
-    excludedPropNames: ['onChange', 'value', 'defaultValue'],
+    excludedPropNames: [
+      'onChange',
+      'value',
+      'defaultValue',
+      'minLength',
+      'autoComplete',
+      'onInvalid',
+      'onInvalidCapture',
+    ],
   });
 
   const state: TextareaBaseState = {
@@ -83,6 +91,11 @@ export const useTextareaBase_unstable = (
       defaultProps: {
         ref,
         ...nativeProps.primary,
+        // These native textarea props are missing from the shared property filter.
+        minLength,
+        autoComplete,
+        onInvalid,
+        onInvalidCapture,
       },
       elementType: 'textarea',
     }),

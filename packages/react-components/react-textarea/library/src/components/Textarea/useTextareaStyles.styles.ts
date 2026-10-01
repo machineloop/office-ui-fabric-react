@@ -171,6 +171,7 @@ const useTextareaStyles = makeStyles({
   disabled: {
     color: tokens.colorNeutralForegroundDisabled,
     cursor: 'not-allowed',
+    resize: 'none',
     '::placeholder': {
       color: tokens.colorNeutralForegroundDisabled,
     },

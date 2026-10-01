@@ -111,4 +111,51 @@ describe('Textarea', () => {
     expect(textarea.getAttribute('aria-invalid')).toEqual('true');
     expect(textarea.required).toBe(true);
   });
+
+  it('forwards minimum length and autocomplete to the primary slot, not the root', () => {
+    renderedComponent = render(<Textarea minLength={3} autoComplete="off" />);
+    expect(getTextarea().minLength).toBe(3);
+    expect(getTextarea().getAttribute('autocomplete')).toBe('off');
+    expect(getTextarea().parentElement?.hasAttribute('minlength')).toBe(false);
+    expect(getTextarea().parentElement?.hasAttribute('autocomplete')).toBe(false);
+
+    renderedComponent.rerender(<Textarea minLength={5} autoComplete="on" />);
+    expect(getTextarea().minLength).toBe(5);
+    expect(getTextarea().getAttribute('autocomplete')).toBe('on');
+  });
+
+  it('forwards invalid and invalid capture events with the textarea as currentTarget', () => {
+    const invalid = jest.fn();
+    const capture = jest.fn();
+    renderedComponent = render(
+      <Textarea
+        required
+        onInvalid={event => invalid(event.currentTarget)}
+        onInvalidCapture={event => capture(event.currentTarget)}
+      />,
+    );
+    fireEvent.invalid(getTextarea());
+    expect(invalid).toHaveBeenCalledTimes(1);
+    expect(capture).toHaveBeenCalledTimes(1);
+    expect(invalid).toHaveBeenCalledWith(getTextarea());
+    expect(capture).toHaveBeenCalledWith(getTextarea());
+  });
+
+  it('preserves textarea slot overrides for the additionally forwarded native props', () => {
+    const invalid = jest.fn();
+    const slotInvalid = jest.fn();
+    renderedComponent = render(
+      <Textarea
+        minLength={3}
+        autoComplete="off"
+        onInvalid={invalid}
+        textarea={{ minLength: 4, autoComplete: 'on', onInvalid: slotInvalid }}
+      />,
+    );
+    expect(getTextarea().minLength).toBe(4);
+    expect(getTextarea().getAttribute('autocomplete')).toBe('on');
+    fireEvent.invalid(getTextarea());
+    expect(slotInvalid).toHaveBeenCalledTimes(1);
+    expect(invalid).not.toHaveBeenCalled();
+  });
 });
