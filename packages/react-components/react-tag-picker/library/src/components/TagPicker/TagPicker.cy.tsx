@@ -16,6 +16,12 @@ import { Button } from '@fluentui/react-button';
 import 'cypress-real-events';
 import { tagPickerControlClassNames } from '../TagPickerControl/useTagPickerControlStyles.styles';
 import type { JSXElement } from '@fluentui/react-utilities';
+import { Filtering } from '../../../../stories/src/TagPicker/TagPickerFiltering.stories';
+import { Grouped } from '../../../../stories/src/TagPicker/TagPickerGrouped.stories';
+import { SingleSelect } from '../../../../stories/src/TagPicker/TagPickerSingleSelect.stories';
+import { Button as ButtonStory } from '../../../../stories/src/TagPicker/TagPickerButton.stories';
+import { SingleLine } from '../../../../stories/src/TagPicker/TagPickerSingleLine.stories';
+import { TruncatedText } from '../../../../stories/src/TagPicker/TagPickerTruncatedText.stories';
 
 const mount = (element: JSXElement) => {
   mountBase(<FluentProvider theme={teamsLightTheme}>{element}</FluentProvider>);
@@ -32,13 +38,18 @@ const options = [
   'Maria Rossi',
 ];
 
-type TagPickerControlledProps = Pick<TagPickerProps, 'open' | 'defaultOpen' | 'defaultSelectedOptions' | 'noPopover'>;
+type TagPickerControlledProps = Pick<
+  TagPickerProps,
+  'open' | 'defaultOpen' | 'defaultSelectedOptions' | 'noPopover' | 'size' | 'appearance'
+>;
 
 const TagPickerControlled = ({
   open,
   defaultOpen,
   defaultSelectedOptions = [],
   noPopover = false,
+  size,
+  appearance,
 }: TagPickerControlledProps) => {
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>(defaultSelectedOptions);
   const onOptionSelect: TagPickerProps['onOptionSelect'] = (_, data) => setSelectedOptions(data.selectedOptions);
@@ -46,9 +57,13 @@ const TagPickerControlled = ({
 
   return (
     <div style={{ display: 'flex', maxWidth: 400, flexDirection: 'column', gap: 20 }}>
+      <span id="employees-label">Selected Employees</span>
+      <span id="alternate-label">Alternate Employees</span>
       <button id="before-button">Before</button>
 
       <TagPicker
+        size={size}
+        appearance={appearance}
         noPopover={noPopover}
         onOptionSelect={onOptionSelect}
         selectedOptions={selectedOptions}
@@ -83,7 +98,7 @@ const TagPickerControlled = ({
               </Tag>
             ))}
           </TagPickerGroup>
-          <TagPickerInput data-testid="tag-picker-input" aria-labelledby="Selected Employees" />
+          <TagPickerInput data-testid="tag-picker-input" aria-labelledby="employees-label" />
         </TagPickerControl>
         {noPopover ? undefined : (
           <TagPickerList data-testid="tag-picker-list">
@@ -109,6 +124,228 @@ const TagPickerControlled = ({
     </div>
   );
 };
+
+describe('TagPicker documented compositions', () => {
+  it('keeps the single-line composition usable after selecting and dismissing a tag', () => {
+    mount(<SingleLine />);
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'John Doe').click();
+    cy.get('.fui-Tag').should('have.length', 1);
+    cy.get('.fui-Tag').click();
+    cy.get('.fui-Tag').should('not.exist');
+  });
+
+  it('renders truncated tag text with its full underlying value and permits dismissal', () => {
+    mount(<TruncatedText />);
+    const text = 'This tag has text truncation based on a fixed width of 50px';
+    cy.contains('.fui-Tag__primaryText', text)
+      .should('have.css', 'text-overflow', 'ellipsis')
+      .and('have.css', 'width', '50px');
+    cy.contains('.fui-Tag', text).click();
+    cy.contains('.fui-Tag', text).should('not.exist');
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', text).should('be.visible');
+  });
+
+  it('filters typed text, adds the selected tag, and excludes it on reopen', () => {
+    mount(<Filtering />);
+    cy.get('[role="combobox"]').type('Dupont');
+    cy.get('[role="option"]:visible').should('have.length', 2);
+    cy.contains('[role="option"]', 'Pierre Dupont').click();
+    cy.get('.fui-Tag').should('have.length', 1).and('contain.text', 'Pierre Dupont');
+    cy.get('[role="combobox"]').should('have.value', '').click();
+    cy.get('.fui-TagPickerList').should('be.visible');
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'Pierre Dupont').should('not.exist');
+  });
+
+  it('keeps selection unchanged for the documented no-match sentinel', () => {
+    mount(<Filtering />);
+    cy.get('[role="combobox"]').type('zzzz');
+    cy.contains('[role="option"]', "We couldn't find any matches").click();
+    cy.get('.fui-Tag').should('not.exist');
+  });
+
+  it('preserves group labels and selects an option from either group', () => {
+    mount(<Grouped />);
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList [role="group"]')
+      .should('have.length', 2)
+      .each(($group, index) => {
+        const id = $group.attr('aria-labelledby');
+        expect(id).to.be.a('string');
+        cy.get(`[id="${id}"]`).should('have.text', index === 0 ? 'Managers' : 'Devs');
+      });
+    cy.contains('[role="option"]', 'John Doe').click();
+    cy.get('[role="combobox"]').click();
+    cy.contains('[role="option"]', 'Pierre Dupont').click();
+    cy.get('.fui-Tag').should('have.length', 2);
+  });
+
+  it('replaces the previous tag in the documented single-select composition', () => {
+    mount(<SingleSelect />);
+    cy.get('[role="combobox"]').click();
+    cy.contains('[role="option"]', 'John Doe').click();
+    cy.get('[role="combobox"]').click();
+    cy.contains('[role="option"]', 'Jane Doe').click();
+    cy.get('.fui-Tag').should('have.length', 1).and('contain.text', 'Jane Doe');
+  });
+
+  it('selects through the button-only trigger without rendering a text input', () => {
+    mount(<ButtonStory />);
+    cy.get('input').should('not.exist');
+    cy.get('button[role="combobox"]').click();
+    cy.contains('[role="option"]', 'John Doe').click();
+    cy.get('.fui-Tag').should('contain.text', 'John Doe');
+    cy.get('button[role="combobox"]').should('be.focused');
+  });
+
+  for (const size of ['medium', 'large', 'extra-large'] as const) {
+    for (const appearance of ['outline', 'underline', 'filled-darker', 'filled-lighter'] as const) {
+      it(`selects using ${size}/${appearance}`, () => {
+        mount(<TagPickerControlled size={size} appearance={appearance} />);
+        cy.get('[data-testid="tag-picker-control"]').should(
+          'have.css',
+          'min-height',
+          size === 'medium' ? '32px' : size === 'large' ? '40px' : '44px',
+        );
+        cy.get('[data-testid="tag-picker-input"]').click();
+        cy.get('[data-testid="tag-picker-option--John Doe"]').click();
+        cy.get('[data-testid="tag--John Doe"]').should('be.visible');
+        cy.get('[data-testid="tag-picker-input"]').should('be.focused');
+      });
+    }
+  }
+});
+
+const EdgePicker = (props: Omit<TagPickerProps, 'children'>) => (
+  <TagPicker {...props}>
+    <TagPickerControl>
+      <TagPickerGroup aria-label="Selected employees">
+        <Tag value="one">One</Tag>
+      </TagPickerGroup>
+      <TagPickerInput aria-label="Choose employees" />
+    </TagPickerControl>
+    <TagPickerList>
+      <TagPickerOption value="one">One</TagPickerOption>
+      <TagPickerOption value="two">Two</TagPickerOption>
+    </TagPickerList>
+  </TagPicker>
+);
+
+describe('TagPicker browser state and accessibility edges', () => {
+  it('does not toggle off an already selected popup option', () => {
+    const selected = cy.stub().as('selected');
+    mount(<EdgePicker defaultSelectedOptions={['one']} onOptionSelect={selected} />);
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'One').click();
+    cy.get('@selected')
+      .should('have.been.calledOnce')
+      .and('have.been.calledWithMatch', Cypress.sinon.match.any, {
+        value: 'one',
+        selectedOptions: ['one'],
+        type: 'click',
+      });
+    cy.get('[role="combobox"]').should('be.focused').and('have.attr', 'aria-expanded', 'false');
+  });
+
+  it('reports rejected controlled selection without changing the next requested selection', () => {
+    const selected = cy.stub().as('selected');
+    mount(<EdgePicker selectedOptions={['one']} onOptionSelect={selected} />);
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'Two').click();
+    cy.get('@selected')
+      .should('have.been.calledOnce')
+      .and('have.been.calledWithMatch', Cypress.sinon.match.any, { value: 'two', selectedOptions: ['one', 'two'] });
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'Two').click();
+    cy.get('@selected')
+      .should('have.been.calledTwice')
+      .then(() => {
+        expect(selected.getCall(1).args[1].selectedOptions).to.deep.equal(['one', 'two']);
+      });
+  });
+
+  it('uses valid input and expand-button label relationships and popup controls', () => {
+    mount(<TagPickerControlled />);
+    cy.get('[data-testid="tag-picker-input"]')
+      .invoke('attr', 'aria-labelledby')
+      .then(id => cy.get(`[id="${id}"]`).should('have.text', 'Selected Employees'));
+    cy.get(`.${tagPickerControlClassNames.expandIcon}`)
+      .should('have.attr', 'aria-labelledby')
+      .and('contain', 'employees-label');
+    cy.get('[data-testid="tag-picker-input"]').click();
+    cy.get('[data-testid="tag-picker-list"]')
+      .invoke('attr', 'id')
+      .then(id => cy.get('[data-testid="tag-picker-input"]').should('have.attr', 'aria-controls', id));
+  });
+
+  it('propagates disabled state to input and expand control without opening', () => {
+    mount(<EdgePicker disabled />);
+    cy.get('[role="combobox"]').should('be.disabled');
+    cy.get(`.${tagPickerControlClassNames.expandIcon}`).should('have.attr', 'aria-disabled', 'true').click();
+    cy.get('.fui-TagPickerList:visible').should('not.exist');
+  });
+});
+
+describe('TagPicker unit-contract browser regressions', () => {
+  it('honors a consumer expand label and forwards keyboard open callback data', () => {
+    const openChange = cy.stub().as('openChange');
+    mount(
+      <TagPicker onOpenChange={openChange}>
+        <TagPickerControl expandIcon={{ 'aria-label': 'Find colleagues' }}>
+          <TagPickerInput aria-label="Choose colleagues" />
+        </TagPickerControl>
+        <TagPickerList>
+          <TagPickerOption value="one">One</TagPickerOption>
+        </TagPickerList>
+      </TagPicker>,
+    );
+    cy.get(`.${tagPickerControlClassNames.expandIcon}`).should('have.attr', 'aria-label', 'Find colleagues');
+    cy.get('[role="combobox"]').focus().realPress('ArrowDown');
+    cy.get('.fui-TagPickerList').should('be.visible');
+    cy.get('@openChange')
+      .should('have.been.calledOnce')
+      .and('have.been.calledWithMatch', Cypress.sinon.match.any, { open: true, type: 'keydown' });
+  });
+
+  it('uses the latest callback after parent rerender and supplies the native event', () => {
+    const first = cy.stub().as('first');
+    const latest = cy.stub().as('latest');
+    const Example = () => {
+      const [updated, setUpdated] = React.useState(false);
+      return (
+        <>
+          <button onClick={() => setUpdated(true)}>Update</button>
+          <EdgePicker selectedOptions={['one']} onOptionSelect={updated ? latest : first} />
+        </>
+      );
+    };
+    mount(<Example />);
+    cy.contains('button', 'Update').click();
+    cy.get('[role="combobox"]').click();
+    cy.get('.fui-TagPickerList').contains('[role="option"]', 'Two').click();
+    cy.get('@first').should('not.have.been.called');
+    cy.get('@latest')
+      .should('have.been.calledOnce')
+      .then(() => {
+        const [event, data] = latest.getCall(0).args;
+        expect(data.event).to.equal(event);
+        expect(data.type).to.equal('click');
+        expect(data.selectedOptions).to.deep.equal(['one', 'two']);
+      });
+  });
+
+  it('honors controlled open rejection without removing the popover', () => {
+    const openChange = cy.stub().as('openChange');
+    mount(<EdgePicker open onOpenChange={openChange} />);
+    cy.get('[role="combobox"]').focus().realPress('Escape');
+    cy.get('.fui-TagPickerList').should('be.visible');
+    cy.get('[role="combobox"]').should('have.attr', 'aria-expanded', 'true');
+    cy.get('@openChange')
+      .should('have.been.calledOnce')
+      .and('have.been.calledWithMatch', Cypress.sinon.match.any, { open: false });
+  });
+});
 
 describe('TagPicker', () => {
   it('should render a closed listbox', () => {
@@ -420,17 +657,17 @@ describe('TagPicker', () => {
       mount(<TagPickerControlled />);
 
       cy.get(`.${tagPickerControlClassNames.expandIcon}`).should('exist');
-      cy.get('[data-testid="tag-picker-input"]').should('have.attr', 'aria-labelledby', 'Selected Employees');
+      cy.get('[data-testid="tag-picker-input"]').should('have.attr', 'aria-labelledby', 'employees-label');
       cy.get(`.${tagPickerControlClassNames.expandIcon}`)
         .should('have.attr', 'aria-labelledby')
-        .and('contain', 'Selected Employees');
+        .and('contain', 'employees-label');
 
       cy.get('[data-testid="tag-picker-input"]')
-        .invoke('attr', 'aria-labelledby', 'New Labelled By')
-        .should('have.attr', 'aria-labelledby', 'New Labelled By');
+        .invoke('attr', 'aria-labelledby', 'alternate-label')
+        .should('have.attr', 'aria-labelledby', 'alternate-label');
       cy.get(`.${tagPickerControlClassNames.expandIcon}`)
         .should('have.attr', 'aria-labelledby')
-        .and('contain', 'New Labelled By');
+        .and('contain', 'alternate-label');
     });
   });
 
