@@ -17,7 +17,7 @@ export const renderMenuButton_unstable = (state: MenuButtonBaseState): JSXElemen
     <state.root>
       {state.icon && <state.icon />}
       {!iconOnly && state.root.children}
-      {(!iconOnly || !icon?.children) && state.menuIcon && <state.menuIcon />}
+      {(!iconOnly || (!icon?.children && icon?.children !== 0)) && state.menuIcon && <state.menuIcon />}
     </state.root>
   );
 };

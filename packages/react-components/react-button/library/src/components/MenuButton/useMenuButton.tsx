@@ -26,7 +26,7 @@ export const useMenuButtonBase_unstable = (
 
   return {
     ...buttonState,
-    iconOnly: Boolean(!props.children),
+    iconOnly: !props.children && props.children !== 0,
 
     // Slots definition
     components: {

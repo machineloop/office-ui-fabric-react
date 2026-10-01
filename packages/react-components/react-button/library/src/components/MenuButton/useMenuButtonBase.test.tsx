@@ -2,6 +2,8 @@ import * as React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import '@testing-library/jest-dom';
 import { useMenuButtonBase_unstable } from './useMenuButton';
+import { render } from '@testing-library/react';
+import { renderMenuButton_unstable } from './renderMenuButton';
 
 describe('useMenuButtonBase_unstable', () => {
   it('does not render the menuIcon slot when none is provided', () => {
@@ -33,5 +35,23 @@ describe('useMenuButtonBase_unstable', () => {
   it('sets iconOnly true when there are no children', () => {
     const { result } = renderHook(() => useMenuButtonBase_unstable({}, React.createRef()));
     expect(result.current.iconOnly).toBe(true);
+  });
+
+  it.each([undefined, 'Icon'])('preserves numeric zero children with leading icon %p', icon => {
+    const { result } = renderHook(() =>
+      useMenuButtonBase_unstable({ icon, children: 0, menuIcon: 'Chevron' }, React.createRef()),
+    );
+    expect(result.current.iconOnly).toBe(false);
+    const { getByRole } = render(renderMenuButton_unstable(result.current));
+    expect(getByRole('button').textContent).toBe(`${icon ?? ''}0Chevron`);
+  });
+
+  it('recognizes numeric zero as populated leading icon shorthand', () => {
+    const { result } = renderHook(() =>
+      useMenuButtonBase_unstable({ icon: 0, menuIcon: 'Chevron' }, React.createRef()),
+    );
+    expect(result.current.iconOnly).toBe(true);
+    const { getByRole } = render(renderMenuButton_unstable(result.current));
+    expect(getByRole('button').textContent).toBe('0');
   });
 });

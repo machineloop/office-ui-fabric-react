@@ -122,7 +122,8 @@ export const useMenuButtonStyles_unstable = (state: MenuButtonState): MenuButton
     // eslint-disable-next-line react-hooks/immutability
     state.icon.className = mergeClasses(
       menuButtonClassNames.icon,
-      state.root['aria-expanded'] && iconExpandedStyles[state.appearance] && iconExpandedStyles.highContrast,
+      state.root['aria-expanded'] && iconExpandedStyles[state.appearance],
+      state.root['aria-expanded'] && iconExpandedStyles.highContrast,
       state.icon.className,
     );
   }
