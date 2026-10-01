@@ -54,6 +54,7 @@ export type SwitchProps = Omit<
   /**
    * When set, allows the Switch to be focusable even when it has been disabled. This is used in scenarios where it is
    * important to keep a consistent tab order for screen reader and keyboard users.
+   * User activation does not change its checked state or invoke change handlers.
    *
    * @default false
    */

@@ -73,6 +73,39 @@ describe('Switch', () => {
   });
 
   describe('on state changes', () => {
+    it.each([false, true])('does not notify changes when disabledFocusable and checked=%s', defaultChecked => {
+      const onChange = jest.fn();
+      const onInputChange = jest.fn();
+      const { getByRole, getByText, rerender } = render(
+        <Switch
+          disabledFocusable
+          defaultChecked={defaultChecked}
+          label="Disabled"
+          onChange={onChange}
+          input={{ onChange: onInputChange }}
+        />,
+      );
+      const input = getByRole('switch') as HTMLInputElement;
+      userEvent.click(input);
+      userEvent.click(getByText('Disabled'));
+      expect(input.checked).toBe(defaultChecked);
+      expect(onChange).not.toHaveBeenCalled();
+      expect(onInputChange).not.toHaveBeenCalled();
+
+      rerender(
+        <Switch
+          defaultChecked={defaultChecked}
+          label="Enabled"
+          onChange={onChange}
+          input={{ onChange: onInputChange }}
+        />,
+      );
+      userEvent.click(input);
+      expect(input.checked).toBe(!defaultChecked);
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onInputChange).toHaveBeenCalledTimes(1);
+    });
+
     it('ignores defaultChecked updates', () => {
       const { getByRole, rerender } = render(<Switch defaultChecked />);
       const input = getByRole('switch') as HTMLInputElement;

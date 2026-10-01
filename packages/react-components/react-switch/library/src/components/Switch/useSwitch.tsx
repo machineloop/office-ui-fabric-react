@@ -5,7 +5,14 @@ import { useFieldControlProps_unstable } from '@fluentui/react-field';
 import { CircleFilled } from '@fluentui/react-icons';
 import { Label } from '@fluentui/react-label';
 import { useFocusWithin } from '@fluentui/react-tabster';
-import { getPartitionedNativeProps, mergeCallbacks, useId, slot } from '@fluentui/react-utilities';
+import {
+  getPartitionedNativeProps,
+  mergeCallbacks,
+  useId,
+  useMergedRefs,
+  useIsomorphicLayoutEffect,
+  slot,
+} from '@fluentui/react-utilities';
 import type { SwitchProps, SwitchState, SwitchBaseProps, SwitchBaseState } from './Switch.types';
 
 /**
@@ -89,7 +96,23 @@ export const useSwitchBase_unstable = (props: SwitchBaseProps, ref?: React.Ref<H
     },
     elementType: 'input',
   });
-  input.onChange = mergeCallbacks(input.onChange, ev => onChange?.(ev, { checked: ev.currentTarget.checked }));
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  input.ref = useMergedRefs(input.ref, inputRef);
+  useIsomorphicLayoutEffect(() => {
+    if (!disabledFocusable && inputRef.current) {
+      // A canceled checkbox click leaves React's native value tracking ahead of the DOM.
+      // Reassigning checked also synchronizes React DOM's implementation-specific tracker.
+      // Regression tests guard this coupling when enabling the input again.
+      const currentChecked = inputRef.current.checked;
+      inputRef.current.checked = currentChecked;
+    }
+  }, [disabledFocusable]);
+  const onInputChange = mergeCallbacks(input.onChange, ev => onChange?.(ev, { checked: ev.currentTarget.checked }));
+  input.onChange = ev => {
+    if (!disabledFocusable) {
+      onInputChange(ev);
+    }
+  };
   input.onClick = mergeCallbacks(input.onClick, ev => {
     if (disabledFocusable) {
       ev.preventDefault();
