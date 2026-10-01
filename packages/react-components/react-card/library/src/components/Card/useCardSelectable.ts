@@ -55,6 +55,7 @@ export const useCardSelectable = (
   );
 
   const [selectFocused, setSelectFocused] = React.useState(false);
+  const lastSelectionEvent = React.useRef<Event | undefined>(undefined);
 
   const onChangeHandler = React.useCallback(
     (event: CardOnSelectionChangeEvent) => {
@@ -67,6 +68,12 @@ export const useCardSelectable = (
       if (!isCheckboxOrFloatingActionTarget && shouldRestrictTriggerAction?.(event)) {
         return;
       }
+
+      // A native checkbox click produces both React click and change dispatches.
+      if (event.nativeEvent && lastSelectionEvent.current === event.nativeEvent) {
+        return;
+      }
+      lastSelectionEvent.current = event.nativeEvent;
 
       const newCheckedValue = !selected;
 
@@ -82,11 +89,14 @@ export const useCardSelectable = (
   const onKeyDownHandler = React.useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
       if ([Enter].includes(event.key)) {
+        if (checkboxRef.current !== event.target && shouldRestrictTriggerAction?.(event)) {
+          return;
+        }
         event.preventDefault();
         onChangeHandler(event);
       }
     },
-    [onChangeHandler],
+    [onChangeHandler, shouldRestrictTriggerAction],
   );
 
   const checkboxSlot = React.useMemo(() => {
