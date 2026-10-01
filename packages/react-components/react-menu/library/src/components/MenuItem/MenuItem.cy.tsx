@@ -37,7 +37,7 @@ const ItemMenu = ({
   ...props
 }: Pick<
   MenuProps,
-  'children' | 'persistOnItemClick' | 'hasIcons' | 'hasCheckmarks' | 'openOnContext' | 'openOnHover'
+  'children' | 'persistOnItemClick' | 'hasIcons' | 'hasCheckmarks' | 'openOnContext' | 'openOnHover' | 'onOpenChange'
 >) => (
   <Menu {...props}>
     <MenuTrigger disableButtonEnhancement>
@@ -66,11 +66,56 @@ const glyph = (selector: string, reference: string) =>
     );
 
 describe('MenuItem documented activation', () => {
+  it('forwards, updates and removes native title without replacing the item or losing activation', () => {
+    const onClick = cy.stub().as('title-action');
+    const Updating = () => {
+      const [phase, setPhase] = React.useState(0);
+      return (
+        <>
+          <button id="update-title" onClick={() => setPhase(value => value + 1)}>
+            Update title
+          </button>
+          <MenuList>
+            <MenuItem
+              id="item"
+              title={phase === 0 ? 'Initial title' : phase === 1 ? 'Updated title' : undefined}
+              persistOnClick
+              onClick={onClick}
+            >
+              Native title command
+            </MenuItem>
+          </MenuList>
+        </>
+      );
+    };
+    mount(<Updating />);
+    cy.get<HTMLDivElement>('#item').then($item => {
+      const root = $item[0];
+      cy.get('#item').should('have.attr', 'title', 'Initial title');
+      cy.get('#item').realClick();
+      cy.get('@title-action').should('have.been.calledOnce');
+      cy.get('#update-title').realClick();
+      cy.get('#item').should($current => {
+        expect($current[0]).to.equal(root);
+        expect($current.attr('title')).to.equal('Updated title');
+      });
+      cy.get('#item').focus().realPress('Enter');
+      cy.get('@title-action').should('have.been.calledTwice');
+      cy.get('#update-title').realClick();
+      cy.get('#item').should($current => {
+        expect($current[0]).to.equal(root);
+        expect($current.attr('title')).to.equal(undefined);
+      });
+      named('Native title command');
+    });
+  });
+
   for (const activation of ['pointer', 'Enter', 'Space'] as const) {
     it(`activates the documented command once with ${activation} and restores trigger focus`, () => {
       const onClick = cy.stub().as('action');
+      const onOpenChange = cy.stub();
       mount(
-        <ItemMenu>
+        <ItemMenu onOpenChange={onOpenChange}>
           <MenuItem id="item" onClick={onClick}>
             New file
           </MenuItem>
@@ -85,6 +130,15 @@ describe('MenuItem documented activation', () => {
         cy.realPress(activation);
       }
       cy.get('@action').should('have.been.calledOnce');
+      cy.then(() => {
+        const dismissals = onOpenChange.getCalls().filter(call => call.args[1].type === 'menuItemClick');
+        expect(dismissals).to.have.length(1);
+        expect(dismissals[0].args[1]).to.include({
+          type: 'menuItemClick',
+          open: false,
+          keyboard: activation !== 'pointer',
+        });
+      });
       cy.get('#popover').should('not.exist');
       cy.get('#trigger').should('be.focused');
     });
