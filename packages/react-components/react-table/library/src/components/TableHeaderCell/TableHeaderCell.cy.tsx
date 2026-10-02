@@ -2,6 +2,7 @@ import * as React from 'react';
 import { mount } from '@fluentui/scripts-cypress';
 import { FluentProvider } from '@fluentui/react-provider';
 import { teamsLightTheme } from '@fluentui/react-theme';
+import { ArrowUpRegular, ArrowDownRegular } from '@fluentui/react-icons';
 import type { ExtractSlotProps, SlotRenderFunction } from '@fluentui/react-utilities';
 import { useArrowNavigationGroup } from '@fluentui/react-tabster';
 import * as axe from 'axe-core';
@@ -773,9 +774,17 @@ describe('TableHeaderCell edges and accessibility', () => {
             expect(aside.width).to.be.greaterThan(0);
             if (dir === 'ltr') {
               expect(label.right).to.be.at.most(arrow.left);
+              expect(arrow.left - label.right, 'LTR label-icon token gap').to.be.closeTo(
+                parseFloat(teamsLightTheme.spacingHorizontalXS),
+                0.5,
+              );
               expect(first.right).to.be.at.most(peer.left + 1);
             } else {
               expect(arrow.right).to.be.at.most(label.left);
+              expect(label.left - arrow.right, 'RTL label-icon token gap').to.be.closeTo(
+                parseFloat(teamsLightTheme.spacingHorizontalXS),
+                0.5,
+              );
               expect(peer.right).to.be.at.most(first.left + 1);
             }
           });
@@ -835,6 +844,64 @@ describe('TableHeaderCell edges and accessibility', () => {
 describe('TableHeaderCell documented sorting and native props', () => {
   for (const noNativeElements of modes) {
     const mode = noNativeElements ? 'div' : 'th';
+    it(`maps default arrow geometry to the supplied direction with independent icon controls (${mode})`, () => {
+      let update: React.Dispatch<React.SetStateAction<TableHeaderCellProps['sortDirection']>>;
+      let ascendingPaths: Array<string | null>;
+      let descendingPaths: Array<string | null>;
+      const Dynamic = () => {
+        const [sortDirection, setSortDirection] = React.useState<TableHeaderCellProps['sortDirection']>('ascending');
+        update = setSortDirection;
+        return (
+          <FluentProvider theme={teamsLightTheme}>
+            <ArrowUpRegular data-testid="ascending-control" fontSize={12} />
+            <ArrowDownRegular data-testid="descending-control" fontSize={12} />
+            <Fixture noNativeElements={noNativeElements} sortable>
+              <TableHeaderCell data-testid="header" sortDirection={sortDirection}>
+                File
+              </TableHeaderCell>
+            </Fixture>
+          </FluentProvider>
+        );
+      };
+      mount(<Dynamic />);
+      cy.get('[data-testid="ascending-control"] path').then($paths => {
+        ascendingPaths = [...$paths].map(path => path.getAttribute('d'));
+        expect(ascendingPaths).not.to.be.empty;
+        ascendingPaths.forEach(value => expect(value).to.be.a('string').and.not.be.empty);
+      });
+      cy.get('[data-testid="descending-control"] path').then($paths => {
+        descendingPaths = [...$paths].map(path => path.getAttribute('d'));
+        expect(descendingPaths).not.to.be.empty;
+        descendingPaths.forEach(value => expect(value).to.be.a('string').and.not.be.empty);
+        expect(descendingPaths, 'independent up/down controls differ').not.to.deep.equal(ascendingPaths);
+      });
+      cy.get(cell).should('have.attr', 'aria-sort', 'ascending');
+      cy.get(icon).find('svg').should('have.attr', 'aria-hidden', 'true');
+      cy.get(icon)
+        .find('path')
+        .should($paths =>
+          expect(
+            [...$paths].map(path => path.getAttribute('d')),
+            'ascending uses ArrowUpRegular',
+          ).to.deep.equal(ascendingPaths),
+        );
+      cy.then(() => update('descending'));
+      cy.get(cell).should('have.attr', 'aria-sort', 'descending');
+      cy.get(icon)
+        .find('path')
+        .should($paths =>
+          expect(
+            [...$paths].map(path => path.getAttribute('d')),
+            'descending uses ArrowDownRegular',
+          ).to.deep.equal(descendingPaths),
+        );
+      cy.then(() => update(undefined));
+      cy.get(cell).should('have.attr', 'aria-sort', 'none');
+      cy.get(icon).should('not.exist');
+      cy.get('[data-testid="ascending-control"], [data-testid="descending-control"]').should('have.length', 2);
+      cy.get('.fui-TableBody').should('have.text', 'ReportAda');
+    });
+
     for (const sortDirection of [undefined, 'ascending', 'descending'] as const) {
       it(`renders sort narration and arrow for ${sortDirection ?? 'none'} (${mode})`, () => {
         render({ children: 'File', sortDirection }, { noNativeElements, sortable: true });

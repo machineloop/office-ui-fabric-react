@@ -17,7 +17,7 @@ The native root also forwards the typed `abbr` and `headers` attributes, which
 the shared intrinsic-prop filter currently omits for `th`. This repair is local
 to TableHeaderCell; div roots continue filtering native-only attributes.
 
-The 85 browser cases include default/context/explicit-tag resolution, all three
+The 87 browser cases include default/context/explicit-tag resolution, all three
 sort narration states, arrow direction changes, native and ARIA button activation,
 disabled/disabled-focusable behavior, anchor slots with and without a navigation
 target, disabled link navigation removal, prevented keyboard defaults, current
@@ -27,6 +27,18 @@ three densities, both layout directions, keyboard focus indication, native tab
 order, consumer-composed grid navigation, WCAG scans and actual controlled and
 uncontrolled row sorting. Header buttons retain their 32px minimum across table
 densities; density does not promise a smaller header button.
+
+Compile-only mutation follow-up found two observable coverage gaps: reversing
+both default arrow mappings still satisfied the old direction-change assertion,
+and enlarging the label-icon gap still satisfied the old ordering assertions.
+Two added native/non-native scenarios compare ascending and descending SVG paths
+against independently rendered `ArrowUpRegular` and `ArrowDownRegular` controls,
+prove the controls differ, and verify unsorted icon removal without changing data.
+The twelve existing geometry cases now measure the logical label-icon gap against
+`spacingHorizontalXS` in LTR/RTL, all three densities and both layout contexts.
+They retain the positive width, ordering, aside and peer controls; the half-pixel
+tolerance accommodates rendered geometry without admitting the larger token.
+These are source-backed visual contracts, not automatic sorting guarantees.
 
 `disabled` belongs to the button slot, not the header root. An unsortable header
 with an explicitly native button still has native button semantics; sorting
