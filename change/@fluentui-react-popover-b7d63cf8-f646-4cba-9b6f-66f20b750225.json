@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "fix: retain surface arrow rendering without requiring a global JSX intrinsic namespace",
+  "packageName": "@fluentui/react-popover",
+  "email": "223556219+Copilot@users.noreply.github.com",
+  "dependentChangeType": "patch"
+}

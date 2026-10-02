@@ -3,6 +3,7 @@
 import { assertSlots } from '@fluentui/react-utilities';
 import type { JSXElement } from '@fluentui/react-utilities';
 import { Portal } from '@fluentui/react-portal';
+import { createElement } from 'react';
 import type { PopoverSurfaceSlots, PopoverSurfaceState } from './PopoverSurface.types';
 
 /**
@@ -13,7 +14,7 @@ export const renderPopoverSurface_unstable = (state: PopoverSurfaceState): JSXEl
 
   const surface = (
     <state.root>
-      {state.withArrow && <div ref={state.arrowRef} className={state.arrowClassName} />}
+      {state.withArrow && createElement('div', { ref: state.arrowRef, className: state.arrowClassName })}
       {state.root.children}
     </state.root>
   );

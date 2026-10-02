@@ -141,9 +141,10 @@ export type PopoverProps = ComponentProps<Partial<PopoverSlots>> &
      */
     legacyTrapFocus?: boolean;
     /**
-     * Enables standard behavior according to the [HTML dialog spec](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal)
-     * where the focus trap involves setting outside elements inert,
-     * making navigation leak from the trapped area back to the browser toolbar and vice-versa.
+     * Enables standards-like focus navigation that can leave the trapped area for
+     * the browser toolbar. Outside content is hidden from accessibility navigation;
+     * this does not set the native inert attribute. Deliberate programmatic focus
+     * outside closes the popover.
      *
      * @default false
      */

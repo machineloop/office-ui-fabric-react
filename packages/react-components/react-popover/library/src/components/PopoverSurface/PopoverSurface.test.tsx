@@ -34,6 +34,16 @@ describe('PopoverSurface', () => {
     expect(getByTestId(testid)).toMatchSnapshot();
   });
 
+  it('renders the intrinsic arrow before content and forwards its positioning ref', () => {
+    const arrowRef = React.createRef<HTMLDivElement>();
+    mockPopoverContext({ withArrow: true, arrowRef });
+    const { getByTestId } = render(<PopoverSurface {...props}>Content</PopoverSurface>);
+    const surface = getByTestId(testid);
+    expect(arrowRef.current?.tagName).toBe('DIV');
+    expect(surface.firstElementChild).toBe(arrowRef.current);
+    expect(surface.textContent).toBe('Content');
+  });
+
   it.each([
     ['onMouseEnter', fireEvent.mouseEnter],
     ['onMouseLeave', fireEvent.mouseLeave],
