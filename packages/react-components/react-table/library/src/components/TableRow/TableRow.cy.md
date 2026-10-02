@@ -23,6 +23,16 @@ native attributes and refs, root render functions, callbacks/preventDefault,
 latest props, retained keyed row/input identity, reorder, context-mode replacement
 and ref teardown. The documented cell-actions pattern tests consumer
 `defaultPrevented` guards without suppressing row callbacks.
+Explicit native `role="row"` and non-default div `role="presentation"` are
+forwarded and removed on rerender without replacing the root or its ref.
+Native rows return to their implicit role when the prop is removed; div rows
+return to the context default `role="row"`. Click callbacks remain delivered
+exactly once per click across both transitions. The div case locally switches
+its table/body wrappers to presentation and removes its plain child's cell role
+while presentational, restoring table/rowgroup/cell composition with the default.
+It does not claim that a presentational row with gridcell children is a valid
+grid. Native ARIA overrides are supported by the public props/source forwarding
+contract; consumers remain responsible for semantically valid composition.
 Header context disables interactive hover styling but retains focus-within
 reveal. Nested Tables reset table density/layout context, not header context.
 Body rows receive hover/active styling even without an activation or selection

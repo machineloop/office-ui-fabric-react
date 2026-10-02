@@ -463,6 +463,85 @@ describe('TableRow edges and accessibility', () => {
         .should($row => expect(ref.current).to.equal($row[0]));
       cy.get('#row-description').should('have.text', 'Report details for Ada');
     });
+    it(`forwards and removes an explicit row role without replacing the root (${
+      noNativeElements ? 'div' : 'tr'
+    })`, () => {
+      const ref = React.createRef<HTMLDivElement>();
+      const click = cy.stub().as('roleClick');
+      const explicitRole = noNativeElements ? 'presentation' : 'row';
+      const Consumer = () => {
+        const [explicit, setExplicit] = React.useState(false);
+        const rowProps = explicit ? { ref, onClick: click, role: explicitRole } : { ref, onClick: click };
+        return (
+          <>
+            <button data-testid="toggle-role" onClick={() => setExplicit(previous => !previous)}>
+              Toggle explicit role
+            </button>
+            {noNativeElements ? (
+              <Table
+                noNativeElements
+                role={explicit ? 'presentation' : 'table'}
+                aria-label={explicit ? undefined : 'Files'}
+              >
+                <TableBody role={explicit ? 'presentation' : 'rowgroup'}>
+                  <TableRow data-testid="row" {...rowProps}>
+                    <div data-testid="file" role={explicit ? undefined : 'cell'}>
+                      Report
+                    </div>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            ) : (
+              <Fixture rowProps={rowProps} />
+            )}
+          </>
+        );
+      };
+      const assertDefaultRole = () => {
+        if (noNativeElements) {
+          cy.get(row).should('have.attr', 'role', 'row');
+        } else {
+          cy.get(row).should('not.have.attr', 'role');
+        }
+      };
+      render(<Consumer />);
+      assertDefaultRole();
+      cy.get('[data-testid="file"]').click();
+      cy.get('@roleClick').should('have.been.calledOnce');
+      cy.get(row)
+        .should('have.prop', 'tagName', noNativeElements ? 'DIV' : 'TR')
+        .then($row => {
+          const original = $row[0];
+          expect(ref.current).to.equal(original);
+          cy.get('[data-testid="toggle-role"]').click();
+          cy.get(row)
+            .should('have.attr', 'role', explicitRole)
+            .should($updated => {
+              expect($updated[0]).to.equal(original);
+              expect(ref.current).to.equal(original);
+            });
+          cy.get('[data-testid="file"]').should('have.text', 'Report').click();
+          cy.get('@roleClick').should('have.been.calledTwice');
+          if (noNativeElements) {
+            cy.get('[data-testid="file"]').should('not.have.attr', 'role');
+            cy.get('[role="presentation"]').should('have.length', 3);
+          } else {
+            cy.get('[data-testid="sibling"]').should('not.have.attr', 'role');
+          }
+          cy.get('[data-testid="toggle-role"]').click();
+          assertDefaultRole();
+          cy.get(row).should($updated => {
+            expect($updated[0]).to.equal(original);
+            expect(ref.current).to.equal(original);
+          });
+          if (noNativeElements) {
+            cy.get('[data-testid="file"]').should('have.attr', 'role', 'cell');
+            cy.get('[role="table"] > [role="rowgroup"]').should('contain', 'Report');
+          }
+          cy.get('[data-testid="file"]').click();
+          cy.get('@roleClick').should('have.been.calledThrice');
+        });
+    });
     it(`aria-disabled is descriptive, not event suppression (${noNativeElements ? 'div' : 'tr'})`, () => {
       const click = cy.stub().as('disabledClick');
       const key = cy.stub().as('disabledKey');
