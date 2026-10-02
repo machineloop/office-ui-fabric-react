@@ -318,6 +318,75 @@ describe('Switch unit-derived updates and composition', () => {
     );
   });
 
+  for (const mode of ['controlled', 'uncontrolled'] as const) {
+    for (const initialChecked of [false, true]) {
+      it(`notifies the first enabled activation after canceled clicks in ${mode} checked=${initialChecked}`, () => {
+        const events = cy.stub().as('reenabledEvents');
+        const clicks = cy.stub().as('blockedClicks');
+        const positive = cy.stub().as('positiveChanges');
+        const Reenable = () => {
+          const [enabled, setEnabled] = React.useState(false);
+          const [checked, setChecked] = React.useState(initialChecked);
+          const stateProps =
+            mode === 'controlled' ? { checked } : { checked: undefined, defaultChecked: initialChecked };
+          return (
+            <>
+              <button onClick={() => setEnabled(true)}>Enable target</button>
+              <Switch
+                {...stateProps}
+                disabledFocusable={!enabled}
+                label="Reenabled target"
+                input={{
+                  onClick: clicks,
+                  onChange: event => events('input', enabled, event.currentTarget.checked),
+                }}
+                onChange={(event, data) => {
+                  events('component', enabled, event.currentTarget.checked, data);
+                  if (mode === 'controlled') {
+                    setChecked(data.checked);
+                  }
+                }}
+              />
+              <Switch label="Enabled positive control" onChange={positive} />
+            </>
+          );
+        };
+        mount(<Reenable />);
+        cy.get(input).eq(0).should('have.prop', 'checked', initialChecked).and('not.be.disabled').click();
+        cy.get(label).eq(0).click();
+        cy.get(input).eq(0).focus();
+        cy.realPress('Space');
+        cy.realPress('Enter');
+        cy.get(input).eq(0).should('be.focused').and('have.prop', 'checked', initialChecked);
+        cy.get('@blockedClicks').should('have.been.calledTwice');
+        cy.get('@reenabledEvents').should('not.have.been.called');
+        cy.get(input).eq(1).click().should('be.checked');
+        cy.get('@positiveChanges').should('have.been.calledOnce');
+        cy.contains('button', 'Enable target').click();
+        cy.get(input).eq(0).should('not.have.attr', 'aria-disabled');
+        cy.get(input).eq(0).should('have.prop', 'checked', initialChecked).click();
+        cy.get(input).eq(0).should('have.prop', 'checked', !initialChecked);
+        cy.then(() =>
+          expect(events.args).to.deep.equal([
+            ['input', true, !initialChecked],
+            ['component', true, !initialChecked, { checked: !initialChecked }],
+          ]),
+        );
+        cy.get(label).eq(0).click();
+        cy.get(input).eq(0).should('have.prop', 'checked', initialChecked);
+        cy.then(() =>
+          expect(events.args).to.deep.equal([
+            ['input', true, !initialChecked],
+            ['component', true, !initialChecked, { checked: !initialChecked }],
+            ['input', true, initialChecked],
+            ['component', true, initialChecked, { checked: initialChecked }],
+          ]),
+        );
+        cy.get('@positiveChanges').should('have.been.calledOnce');
+      });
+    }
+  }
+
   it('updates Field context relationships without replacing the input or firing change', () => {
     const changes = cy.stub().as('changes');
     const DynamicField = () => {
