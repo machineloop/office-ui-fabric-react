@@ -1019,6 +1019,35 @@ describe('Radio layout and visuals', () => {
       });
   });
 
+  it('preserves keyboard focus tracking and its visible outline when a consumer supplies the root ref', () => {
+    const rootRef = React.createRef<HTMLSpanElement>();
+    mountRadio(
+      <>
+        <button>Before</button>
+        <Radio value="custom-ref" label="Custom ref" root={{ ref: rootRef }} />
+        <button>After</button>
+      </>,
+    );
+    cy.contains('button', 'Before').realClick();
+    cy.realPress('Tab');
+    cy.get(input('custom-ref')).should('be.focused').and('have.css', 'opacity', '0');
+    cy.get(input('custom-ref'))
+      .parent()
+      .should($root => {
+        expect($root).to.have.attr('data-fui-focus-within');
+        expect(rootRef.current).to.equal($root[0]);
+        const outline = css($root[0], '::after');
+        expect(outline.content).to.equal('""');
+        expect(outline.borderTopStyle).to.equal('solid');
+        expect(outline.borderTopWidth).to.equal('2px');
+        expect(outline.borderTopColor).to.equal(color($root[0], webLightTheme.colorStrokeFocus2));
+        expect(outline.pointerEvents).to.equal('none');
+      });
+    cy.realPress('Tab');
+    cy.contains('button', 'After').should('be.focused');
+    cy.get(input('custom-ref')).parent().should('not.have.attr', 'data-fui-focus-within');
+  });
+
   it('uses a checked pseudo-element for the default indicator and hides custom children only when unchecked', () => {
     mountRadio(
       <RadioGroup aria-label="Indicators">

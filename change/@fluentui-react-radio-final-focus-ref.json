@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Preserve Radio keyboard focus tracking and its visible outline when a consumer supplies a root slot ref.",
+  "packageName": "@fluentui/react-radio",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

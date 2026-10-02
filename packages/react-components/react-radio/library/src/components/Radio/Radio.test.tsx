@@ -1,8 +1,14 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useFocusWithin } from '@fluentui/react-tabster';
 import { isConformant } from '../../testing/isConformant';
 import { Radio } from './Radio';
+
+jest.mock('@fluentui/react-tabster', () => {
+  const actual = jest.requireActual('@fluentui/react-tabster');
+  return { ...actual, useFocusWithin: jest.fn(actual.useFocusWithin) };
+});
 
 describe('Radio', () => {
   const noOp = () => undefined;
@@ -54,6 +60,19 @@ describe('Radio', () => {
   it('handles disabled', () => {
     const { getByRole } = render(<Radio disabled />);
     expect((getByRole('radio') as HTMLInputElement).disabled).toBeTruthy();
+  });
+
+  it('merges the consumer root ref with the internal focus tracking ref', () => {
+    const rootRef = React.createRef<HTMLSpanElement>();
+    const focusHook = useFocusWithin as jest.Mock;
+    focusHook.mockClear();
+    const { getByRole, unmount } = render(<Radio root={{ ref: rootRef }} />);
+    const internalRef = focusHook.mock.results[0].value as React.RefObject<HTMLSpanElement>;
+    expect(rootRef.current).toBe(getByRole('radio').parentElement);
+    expect(internalRef.current).toBe(rootRef.current);
+    unmount();
+    expect(rootRef.current).toBeNull();
+    expect(internalRef.current).toBeNull();
   });
 
   it('defaults to unchecked', () => {
