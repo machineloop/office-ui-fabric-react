@@ -604,7 +604,7 @@ describe('Radio composition and updates', () => {
     scan();
   });
 
-  it('inherits Field labels, validation/hint descriptions and ARIA required while documenting native-required separation', () => {
+  it('inherits Field labels, validation/hint descriptions and native required semantics', () => {
     mountRadio(
       <div data-testid="scan">
         <Field label="Favorite fruit" hint="Choose a fruit" validationMessage="Selection needed" required>
@@ -624,10 +624,21 @@ describe('Radio composition and updates', () => {
     });
     cy.get(input('apple')).should($radio => {
       expect(computeAccessibleDescription($radio[0])).to.equal('Selection needed Choose a fruit Group detail');
-      // RadioGroup currently receives only aria-required from Field (see Radio.cy.md).
-      expect(($radio[0] as HTMLInputElement).required).to.equal(false);
+      expect(($radio[0] as HTMLInputElement).required).to.equal(true);
+      expect(($radio[0] as HTMLInputElement).validity.valueMissing).to.equal(true);
     });
-    cy.get(input('pear')).should($radio => expect(computeAccessibleDescription($radio[0])).to.equal('Pear detail'));
+    cy.get(input('pear')).should($radio => {
+      expect(computeAccessibleDescription($radio[0])).to.equal('Pear detail');
+      expect(($radio[0] as HTMLInputElement).required).to.equal(true);
+      expect(($radio[0] as HTMLInputElement).validity.valueMissing).to.equal(true);
+    });
+    cy.contains('label', 'Pear').realClick();
+    selected('pear');
+    cy.get('input[type="radio"]').should($radios => {
+      $radios.each((_, radio) => {
+        expect((radio as HTMLInputElement).validity.valueMissing).to.equal(false);
+      });
+    });
     scan();
   });
 
@@ -1031,8 +1042,79 @@ describe('Radio layout and visuals', () => {
       .should($indicator => {
         expect(css($indicator[0], '::after').content).to.equal('""');
         expect(css($indicator[0], '::after').transform).to.equal('matrix(0.625, 0, 0, 0.625, 0, 0)');
+        expect(css($indicator[0], '::after').display).to.equal('block');
+        expect(css($indicator[0], '::after').width).to.equal('16px');
+        expect(css($indicator[0], '::after').height).to.equal('16px');
+        expect(css($indicator[0], '::after').opacity).to.equal('1');
       });
   });
+
+  for (const checked of [false, true]) {
+    it(`updates the same ${checked ? 'checked' : 'unchecked'} indicator from default to custom and back`, () => {
+      const changed = cy.spy().as('changed');
+      let originalInput: HTMLInputElement;
+      let originalRoot: HTMLElement;
+      let originalIndicator: HTMLElement;
+      let originalGlyph: HTMLElement;
+      const tree = (custom: boolean) =>
+        themed(
+          <Radio
+            value="live-indicator"
+            label="Live indicator"
+            checked={checked}
+            onChange={changed}
+            indicator={{ children: custom ? <span data-testid="live-glyph">●</span> : undefined }}
+          />,
+        );
+      const assertIndicator = (custom: boolean) =>
+        cy.get(input('live-indicator')).should($input => {
+          const element = $input[0] as HTMLInputElement;
+          const indicator = element.nextElementSibling as HTMLElement;
+          expect(element).to.equal(originalInput);
+          expect(element.parentElement).to.equal(originalRoot);
+          expect(indicator).to.equal(originalIndicator);
+          expect(element.checked).to.equal(checked);
+          expect(indicator.getAttribute('aria-hidden')).to.equal('true');
+          expect(css(indicator).display).to.equal('flex');
+          expect(css(indicator, '::after').content).to.equal(checked && !custom ? '""' : 'none');
+          if (checked && !custom) {
+            expect(css(indicator, '::after').transform).to.equal('matrix(0.625, 0, 0, 0.625, 0, 0)');
+            expect(css(indicator, '::after').display).to.equal('block');
+            expect(css(indicator, '::after').width).to.equal('16px');
+            expect(css(indicator, '::after').height).to.equal('16px');
+            expect(css(indicator, '::after').opacity).to.equal('1');
+          }
+          expect(indicator.children).to.have.length(custom ? 1 : 0);
+          if (custom) {
+            const glyph = indicator.children[0];
+            expect(glyph.getAttribute('data-testid')).to.equal('live-glyph');
+            expect(css(glyph).display).to.equal('block');
+            expect(css(glyph).opacity).to.equal(checked ? '1' : '0');
+          }
+        });
+      mount(tree(false)).then(({ rerender }) => {
+        cy.get(input('live-indicator')).then($input => {
+          originalInput = $input[0] as HTMLInputElement;
+          originalRoot = originalInput.parentElement!;
+          originalIndicator = originalInput.nextElementSibling as HTMLElement;
+        });
+        assertIndicator(false);
+        cy.get('[data-testid="live-glyph"]').should('not.exist');
+        cy.then(() => rerender(tree(true)));
+        assertIndicator(true);
+        cy.get('[data-testid="live-glyph"]')
+          .should('have.length', 1)
+          .then($glyph => {
+            originalGlyph = $glyph[0];
+          });
+        cy.then(() => rerender(tree(false)));
+        assertIndicator(false);
+        cy.get('[data-testid="live-glyph"]').should('not.exist');
+        cy.then(() => expect(originalGlyph.isConnected).to.equal(false));
+        cy.get('@changed').should('not.have.been.called');
+      });
+    });
+  }
 
   for (const [themeName, theme] of [
     ['light', webLightTheme],

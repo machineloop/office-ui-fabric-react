@@ -6,7 +6,7 @@
     "lib": ["ES2019", "DOM", "DOM.Iterable"],
     "noEmit": true
   },
-  "include": ["./*.cy.tsx"],
+  "include": ["./Radio.cy.tsx", "./Radio.cy-jsx.stories.ts"],
   "exclude": [],
   "references": []
 }
