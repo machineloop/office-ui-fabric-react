@@ -944,6 +944,78 @@ describe('MenuItemRadio unit-derived composition and rerenders', () => {
     cy.contains('Child fallback').should('not.exist');
   });
 
+  for (const useRenderFunction of [false, true]) {
+    it(`secondary ${
+      useRenderFunction ? 'render-function' : 'plain'
+    } slot preserves consumer classes/native props/ref through selection and rerender`, () => {
+      const secondaryRef = React.createRef<HTMLSpanElement>();
+      const change = cy.stub().as('change');
+      const Example = () => {
+        const [updated, setUpdated] = React.useState(false);
+        return (
+          <>
+            <button data-testid="update" onClick={() => setUpdated(true)}>
+              Update secondary
+            </button>
+            <MenuList aria-label="Fonts" onCheckedValueChange={change}>
+              <MenuItemRadio
+                name="font"
+                value="alpha"
+                data-testid="alpha"
+                className="consumer-root"
+                title="Root title"
+                icon={{ children: 'I', className: 'consumer-icon' }}
+                secondaryContent={{
+                  children: useRenderFunction ? renderSlot('consumer-secondary', 'Ctrl+A') : 'Ctrl+A',
+                  className: updated ? 'secondary-new' : 'secondary-old',
+                  title: updated ? 'New shortcut' : 'Old shortcut',
+                  ref: secondaryRef,
+                }}
+              >
+                Alpha
+              </MenuItemRadio>
+            </MenuList>
+          </>
+        );
+      };
+      render(<Example />);
+      checked('alpha', false);
+      cy.get(item('alpha'))
+        .should('have.class', 'consumer-root')
+        .and('have.class', 'fui-MenuItemRadio')
+        .and('have.attr', 'title', 'Root title');
+      cy.get(item('alpha')).find('.consumer-icon').should('have.class', 'fui-MenuItemRadio__icon');
+      cy.get(item('alpha'))
+        .find('.fui-MenuItemRadio__secondaryContent')
+        .should('have.class', 'secondary-old')
+        .and('have.class', 'fui-MenuItem__secondaryContent')
+        .and('have.attr', 'title', 'Old shortcut')
+        .and('have.text', 'Ctrl+A')
+        .then($el => {
+          expect(secondaryRef.current).to.equal($el[0]);
+          if (useRenderFunction) {
+            expect($el.attr('data-testid')).to.equal('consumer-secondary');
+          }
+        });
+      cy.get(item('alpha')).click();
+      checked('alpha', true);
+      cy.get(item('update')).click();
+      checked('alpha', true);
+      cy.get(item('alpha'))
+        .find('.fui-MenuItemRadio__secondaryContent')
+        .should('have.class', 'secondary-new')
+        .and('not.have.class', 'secondary-old')
+        .and('have.class', 'fui-MenuItem__secondaryContent')
+        .and('have.attr', 'title', 'New shortcut')
+        .and('have.text', 'Ctrl+A')
+        .then($el => expect(secondaryRef.current).to.equal($el[0]));
+      cy.get(item('alpha')).should('have.class', 'consumer-root').and('have.attr', 'title', 'Root title');
+      cy.get(item('alpha')).find('.consumer-icon').should('have.class', 'fui-MenuItemRadio__icon');
+      cy.get('@change').should('have.been.calledOnce');
+      cy.then(() => expect(change.firstCall.args[1]).to.deep.equal({ name: 'font', checkedItems: ['alpha'] }));
+    });
+  }
+
   it('default checkmark and alignment icon respond to changing list hints without losing selection', () => {
     const Example = () => {
       const [icons, setIcons] = React.useState(false);

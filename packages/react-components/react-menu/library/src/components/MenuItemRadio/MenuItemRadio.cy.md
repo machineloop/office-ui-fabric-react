@@ -33,10 +33,18 @@ A separate diagnostic reproduced `aria-hidden-focus` on the containing
 this component's edit scope; the evidence records them without suppressing
 axe rules or claiming the full containing menu passes.
 
-The finite suite includes 64 cases: 15 documentation cases, 24 keyboard,
-accessibility, layout and lifecycle edges, and 25 unit-derived composition
+The finite suite includes 66 cases: 15 documentation cases, 24 keyboard,
+accessibility, layout and lifecycle edges, and 27 unit-derived composition
 and rerender cases. Browser checks exercise light/dark themes, LTR/RTL slot
 geometry, native forced-colors emulation, controlled/uncontrolled owners,
 exact callback payloads and order, latest handlers, keyboard prevention,
 focusable disabled items, slot render functions and omissions, refs,
 selection persistence and nested/adjacent context boundaries.
+
+The isolated mutation follow-up adds two secondary-content composition cases.
+Both a plain slot and a render-function slot that spreads its supplied props
+must retain consumer classes alongside Radio/shared static classes, native
+title and ref. Rerender replaces the consumer class and title without losing
+selection or issuing another selection callback. Root and icon class/native
+forwarding provide positive controls. These are inherited `Slot<'span'>`
+contracts, not new selection behavior or a parent-menu fix.
