@@ -71,6 +71,13 @@ describe('AccordionHeader documented stories', () => {
         })
         .realClick();
       cy.contains('button', `${name} Header`).should('have.attr', 'aria-expanded', 'true');
+      cy.get('.fui-AccordionPanel').should($panels => {
+        for (const panel of $panels) {
+          expect(
+            panel.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running'),
+          ).to.have.length(0);
+        }
+      });
     }
   });
 

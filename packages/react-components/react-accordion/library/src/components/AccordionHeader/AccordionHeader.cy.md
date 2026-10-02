@@ -15,6 +15,10 @@ The native disabled button cannot receive programmatic focus; the disabled ancho
 uses an explicit negative tabindex to receive programmatic focus but must still
 block Enter/Space activation.
 Owning-item disability is authoritative while local slot disabling is retained.
+Live inherited disability is resolved from current owner and consumer inputs;
+the unit regression checks an unchanged slot object across disabled recovery.
+Real pointer targets that move during panel expansion await completion of the
+actual browser animations before the next activation, without fixed sleeps.
 
 - Package-local Accordion stories: Default, HeadingLevels, Sizes, Inline,
   Disabled, ExpandIconPosition, ExpandIcon, WithIcon. Assertions observe root

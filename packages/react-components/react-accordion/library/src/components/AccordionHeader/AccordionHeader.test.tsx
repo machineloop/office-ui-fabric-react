@@ -106,4 +106,21 @@ describe('AccordionHeader', () => {
     fireEvent.click(button);
     expect(toggle).not.toHaveBeenCalled();
   });
+
+  it('recovers from live inherited disability with unchanged slot props', () => {
+    const button = { id: 'stable-slot' };
+    const Fixture = ({ disabled }: { disabled: boolean }) => (
+      <Accordion collapsible>
+        <AccordionItem value="a" disabled={disabled}>
+          <AccordionHeader button={button}>Header</AccordionHeader>
+        </AccordionItem>
+      </Accordion>
+    );
+    const { getByRole, rerender } = render(<Fixture disabled={false} />);
+    expect((getByRole('button') as HTMLButtonElement).disabled).toBe(false);
+    rerender(<Fixture disabled />);
+    expect((getByRole('button') as HTMLButtonElement).disabled).toBe(true);
+    rerender(<Fixture disabled={false} />);
+    expect((getByRole('button') as HTMLButtonElement).disabled).toBe(false);
+  });
 });

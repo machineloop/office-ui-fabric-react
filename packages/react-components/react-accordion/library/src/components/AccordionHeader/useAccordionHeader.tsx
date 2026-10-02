@@ -82,7 +82,7 @@ export const useAccordionHeaderBase_unstable = (
       type: 'button',
     },
   });
-  buttonSlot.disabled = disabled || buttonSlot.disabled;
+  buttonSlot.disabled = disabled || (isResolvedShorthand(button) ? button.disabled : undefined);
 
   buttonSlot.onClick = useEventCallback(event => {
     if (isResolvedShorthand(button)) {
