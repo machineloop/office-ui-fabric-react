@@ -33,6 +33,14 @@ existing hydrated sheets intentionally retain their original attributes.
 SSR is produced in the runner's actual DOM-free Node process, not simulated by
 calling server rendering in a browser with DOM globals.
 
+The final gate strengthens the existing renderer-replacement scenario (still
+15 scenarios): an unchanged fresh document contains actual server-generated
+rules. Both the original and replacement renderer must discover those rules
+before the child's styling hook runs. Replacement retains child identity,
+native Enter activation and computed paint, with exact original style-node
+identity/count, CSS rule counts and cache size. This distinguishes cache
+rehydration on renderer changes from context-identity updates alone.
+
 Upstream RendererContext unit files were not shipped with the installed package
 and could not be retrieved from attempted public/GitHub endpoints. Unit-informed
 coverage therefore uses the exact installed runtime/type/source contracts and

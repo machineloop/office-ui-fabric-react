@@ -265,40 +265,71 @@ describe('RendererProvider ownership and native boundaries', () => {
   });
 
   it('updates renderer ownership without recreating the mounted child or its native behavior', () => {
-    cy.document().then(doc => {
-      const first = createDOMRenderer(doc);
-      const second = createDOMRenderer(doc);
-      let observed: GriffelRenderer | undefined;
-      const click = cy.spy().as('click');
-      const Owner = () => {
-        const [updated, setUpdated] = React.useState(false);
-        return (
-          <>
-            <button id="update" onClick={() => setUpdated(true)}>
-              Update
-            </button>
-            <RendererProvider renderer={updated ? second : first} targetDocument={doc}>
-              <Probe
-                observe={value => {
-                  observed = value;
-                }}
-                onClick={click}
-              />
-            </RendererProvider>
-          </>
-        );
-      };
-      mount(<Owner />);
-      cy.get('#probe').then($original => {
-        expect(observed).to.equal(first);
-        cy.get('#update').realClick();
-        cy.get('#probe').should($node => {
-          expect($node[0]).to.equal($original[0]);
-          expect(observed).to.equal(second);
-        });
-        cy.get('#probe').focus();
-        cy.realPress('Enter');
-        cy.get('@click').should('have.been.calledOnce');
+    cy.task<{ html: string; css: string; ruleKeys: string[] }>('rendererSSR', { rules }).then(seed => {
+      freshDocument().then(doc => {
+        const template = doc.createElement('template');
+        template.innerHTML = seed.css;
+        doc.head.appendChild(template.content);
+        const seededSheets = Array.from(doc.head.querySelectorAll<HTMLStyleElement>('style[data-make-styles-bucket]'));
+        const ruleCounts = seededSheets.map(sheet => sheet.sheet!.cssRules.length);
+        expect(seed.ruleKeys.length).to.be.greaterThan(0);
+        expect(seededSheets.length).to.be.greaterThan(0);
+        const first = createDOMRenderer(doc);
+        const second = createDOMRenderer(doc);
+        expect(Object.keys(second.insertionCache)).to.have.length(0);
+        let observed: GriffelRenderer | undefined;
+        const snapshots = new Map<GriffelRenderer, string[][]>();
+        const click = cy.spy().as('click');
+        const Owner = () => {
+          const [updated, setUpdated] = React.useState(false);
+          return (
+            <>
+              <button id="update" onClick={() => setUpdated(true)}>
+                Update
+              </button>
+              <RendererProvider renderer={updated ? second : first} targetDocument={doc}>
+                {ReactDOM.createPortal(
+                  <Probe
+                    observe={value => {
+                      observed = value;
+                      const history = snapshots.get(value) ?? [];
+                      history.push(Object.keys(value.insertionCache));
+                      snapshots.set(value, history);
+                    }}
+                    onClick={click}
+                  />,
+                  doc.body,
+                )}
+              </RendererProvider>
+            </>
+          );
+        };
+        mount(<Owner />);
+        cy.wrap(doc.body)
+          .find('#probe')
+          .then($original => {
+            expect(observed).to.equal(first);
+            expect(seed.ruleKeys.every(key => snapshots.get(first)![0].includes(key))).to.equal(true);
+            cy.get('#update').realClick();
+            cy.wrap(doc.body)
+              .find('#probe')
+              .should($node => {
+                expect($node[0]).to.equal($original[0]);
+                expect(observed).to.equal(second);
+                expect(snapshots.get(second)).not.to.equal(undefined);
+                expect(seed.ruleKeys.every(key => snapshots.get(second)![0].includes(key))).to.equal(true);
+                expect(Object.keys(second.insertionCache)).to.have.length(seed.ruleKeys.length);
+                expect(Array.from(doc.head.querySelectorAll('style[data-make-styles-bucket]'))).to.deep.equal(
+                  seededSheets,
+                );
+                expect(sheets(second)).to.have.members(seededSheets);
+                expect(seededSheets.map(sheet => sheet.sheet!.cssRules.length)).to.deep.equal(ruleCounts);
+                expect(computed($node[0]).color).to.equal('rgb(18, 52, 86)');
+              });
+            cy.wrap(doc.body).find('#probe').focus();
+            cy.realPress('Enter');
+            cy.get('@click').should('have.been.calledOnce');
+          });
       });
     });
   });
