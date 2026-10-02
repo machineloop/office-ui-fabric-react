@@ -40,6 +40,26 @@ describe('useInteractionTagPrimary_unstable', () => {
 });
 
 describe('useInteractionTagPrimaryBase_unstable', () => {
+  it('retains the context-generated id when a caller explicitly supplies undefined', () => {
+    const { result } = renderHook(() => useInteractionTagPrimaryBase_unstable({ id: undefined }, React.createRef()), {
+      wrapper: wrap(),
+    });
+    expect(result.current.root.id).toBe(baseContext.interactionTagPrimaryId);
+  });
+
+  it.each([
+    [false, false, false],
+    [false, true, true],
+    [true, false, true],
+    [true, undefined, true],
+  ] as const)('merges context disability %p and local disability %p as %p', (contextDisabled, disabled, expected) => {
+    const { result } = renderHook(() => useInteractionTagPrimaryBase_unstable({ disabled }, React.createRef()), {
+      wrapper: wrap({ disabled: contextDisabled }),
+    });
+    expect(result.current.disabled).toBe(expected);
+    expect(result.current.root.disabled).toBe(expected);
+  });
+
   it('should render root with the interactionTagPrimaryId from context', () => {
     const ref = React.createRef<HTMLButtonElement>();
     const { result } = renderHook(() => useInteractionTagPrimaryBase_unstable({}, ref), { wrapper: wrap() });

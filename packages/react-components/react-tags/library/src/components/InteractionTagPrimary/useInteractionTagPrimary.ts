@@ -32,13 +32,14 @@ export const useInteractionTagPrimaryBase_unstable = (
   ref: React.Ref<HTMLButtonElement>,
 ): InteractionTagPrimaryBaseState => {
   const {
-    disabled,
+    disabled: contextDisabled,
     handleTagSelect,
     interactionTagPrimaryId,
     selected: contextSelected,
     selectedValues,
     value,
   } = useInteractionTagContext_unstable();
+  const disabled = contextDisabled || props.disabled === true;
   const { hasSecondaryAction = false } = props;
 
   const onClick = useEventCallback(
@@ -63,10 +64,10 @@ export const useInteractionTagPrimaryBase_unstable = (
     root: slot.always(
       getIntrinsicElementProps('button', {
         ref,
-        disabled,
-        id: interactionTagPrimaryId,
         ...(handleTagSelect !== undefined && { 'aria-pressed': contextSelected }),
         ...props,
+        id: props.id ?? interactionTagPrimaryId,
+        disabled,
         type: props.type ?? 'button',
         onClick,
       }),

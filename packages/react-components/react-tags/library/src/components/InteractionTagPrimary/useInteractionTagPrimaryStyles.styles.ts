@@ -241,10 +241,11 @@ const useRootStyles = makeStyles({
         width: '100%',
       },
       '&:before': {
-        bottom: '100%',
+        // Absolute positioning starts at the padding box, inside the border.
+        bottom: `calc(100% + ${tokens.strokeWidthThin})`,
       },
       '&:after': {
-        top: '100%',
+        top: `calc(100% + ${tokens.strokeWidthThin})`,
       },
     },
   },

@@ -185,6 +185,13 @@ const useRootStyles = makeStyles({
       },
     },
   },
+  extraSmallBordered: {
+    // Filled and brand omit vertical borders while enabled.
+    '@media (forced-colors: none)': {
+      '&:before': { bottom: `calc(100% + ${tokens.strokeWidthThin})` },
+      '&:after': { top: `calc(100% + ${tokens.strokeWidthThin})` },
+    },
+  },
 });
 const useRootDisabledStyles = makeStyles({
   filled: {
@@ -225,6 +232,7 @@ export const useInteractionTagSecondaryStyles_unstable = (
     disabled ? rootDisabledStyles[appearance] : rootStyles[appearance],
     rootStyles[shape],
     rootStyles[size],
+    size === 'extra-small' && (appearance === 'outline' || disabled) && rootStyles.extraSmallBordered,
     selected && !disabled && rootStyles.selected,
     state.root.className,
   );

@@ -22,7 +22,14 @@ export const useInteractionTagSecondaryBase_unstable = (
   props: InteractionTagSecondaryBaseProps,
   ref: React.Ref<HTMLButtonElement>,
 ): InteractionTagSecondaryBaseState => {
-  const { disabled, handleTagDismiss, interactionTagPrimaryId, selected, value } = useInteractionTagContext_unstable();
+  const {
+    disabled: contextDisabled,
+    handleTagDismiss,
+    interactionTagPrimaryId,
+    selected,
+    value,
+  } = useInteractionTagContext_unstable();
+  const disabled = contextDisabled || props.disabled === true;
 
   const id = useId('fui-InteractionTagSecondary-', props.id);
   const { ['aria-labelledby']: ariaLabelledBy, ...nativeProps } = props;
@@ -51,9 +58,9 @@ export const useInteractionTagSecondaryBase_unstable = (
     root: slot.always(
       getIntrinsicElementProps('button', {
         type: 'button',
-        disabled,
         ref,
         ...nativeProps,
+        disabled,
         'aria-labelledby':
           'aria-labelledby' in props ? ariaLabelledBy ?? undefined : `${interactionTagPrimaryId} ${id}`,
         id,

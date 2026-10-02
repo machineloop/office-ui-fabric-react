@@ -54,6 +54,19 @@ describe('useInteractionTagSecondary_unstable', () => {
 });
 
 describe('useInteractionTagSecondaryBase_unstable', () => {
+  it.each([
+    [false, false, false],
+    [false, true, true],
+    [true, false, true],
+    [true, undefined, true],
+  ] as const)('merges context disability %p and local disability %p as %p', (contextDisabled, disabled, expected) => {
+    const { result } = renderHook(() => useInteractionTagSecondaryBase_unstable({ disabled }, React.createRef()), {
+      wrapper: wrap({ disabled: contextDisabled }),
+    });
+    expect(result.current.disabled).toBe(expected);
+    expect(result.current.root.disabled).toBe(expected);
+  });
+
   it('should render root with type="button"', () => {
     const ref = React.createRef<HTMLButtonElement>();
     const { result } = renderHook(() => useInteractionTagSecondaryBase_unstable({}, ref), { wrapper: wrap() });

@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "fix: honor action disability, retain generated names and preserve compact hit areas across borders",
+  "packageName": "@fluentui/react-tags",
+  "email": "223556219+Copilot@users.noreply.github.com",
+  "dependentChangeType": "patch"
+}

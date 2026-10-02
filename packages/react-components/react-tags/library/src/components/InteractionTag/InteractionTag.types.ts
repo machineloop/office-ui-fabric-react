@@ -46,7 +46,7 @@ export type InteractionTagProps<Value = TagValue> = ComponentProps<Partial<Inter
   /**
    * An InteractionTag can have rounded or circular shape.
    *
-   * @default 'round'
+   * @default 'rounded'
    */
   shape?: TagShape;
 
