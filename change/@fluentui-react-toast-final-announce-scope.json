@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Suppress toast announcements across every position while focus remains inside the same Toaster instance, without suppressing independent instances.",
+  "packageName": "@fluentui/react-toast",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

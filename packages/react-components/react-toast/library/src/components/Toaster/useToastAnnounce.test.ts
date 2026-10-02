@@ -41,4 +41,28 @@ describe('useToastAnnounce', () => {
     expect(announce).toHaveBeenCalledTimes(1);
     expect(announce).toHaveBeenCalledWith('foo', { politeness: 'assertive' });
   });
+
+  it('suppresses every position in the same focus scope without suppressing another instance', () => {
+    const otherPosition = document.createElement('div');
+    const otherButton = document.createElement('button');
+    otherPosition.append(otherButton);
+    document.body.append(otherPosition);
+    toaster.setAttribute('data-toaster-focus-scope', 'one');
+    otherPosition.setAttribute('data-toaster-focus-scope', 'one');
+    const announce = jest.fn();
+    const { result, unmount } = renderHook(() => useToastAnnounce(announce, 'one'));
+    result.current.toasterRef(toaster);
+    otherButton.focus();
+    result.current.announceToast('suppressed', { politeness: 'assertive' });
+    expect(announce).not.toHaveBeenCalled();
+    otherPosition.setAttribute('data-toaster-focus-scope', 'two');
+    result.current.announceToast('another instance', { politeness: 'assertive' });
+    expect(announce).toHaveBeenCalledWith('another instance', { politeness: 'assertive' });
+    outside.focus();
+    result.current.announceToast('outside', { politeness: 'polite' });
+    expect(announce).toHaveBeenCalledTimes(2);
+    unmount();
+    otherPosition.remove();
+    toaster.removeAttribute('data-toaster-focus-scope');
+  });
 });

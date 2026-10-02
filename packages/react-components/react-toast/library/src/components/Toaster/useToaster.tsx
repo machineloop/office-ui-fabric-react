@@ -48,7 +48,7 @@ export const useToaster_unstable = (props: ToasterProps): ToasterState => {
   });
   const usePositionSlot = (toastPosition: ToastPosition) => {
     const focusManagementRef = useToasterFocusManagement_unstable(pauseAllToasts, playAllToasts);
-    const { announceToast, toasterRef } = useToastAnnounce(announceProp ?? announce);
+    const { announceToast, toasterRef } = useToastAnnounce(announceProp ?? announce, focusScope);
     return slot.optional<ExtractSlotProps<Slot<'div'>>>(toastsToRender.has(toastPosition) ? rootProps : null, {
       defaultProps: {
         ref: useMergedRefs(focusManagementRef, toasterRef),

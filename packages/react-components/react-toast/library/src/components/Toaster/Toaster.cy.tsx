@@ -312,6 +312,55 @@ describe('Toaster source and conformance gaps', () => {
     cy.get('[aria-live]').should('not.exist');
   });
 
+  it('suppresses announcements across existing and newly mounted positions until focus leaves the same toaster', () => {
+    const announce = cy.stub().as('crossPositionAnnounce');
+    const ref = setup({ announce });
+    notify(ref, 'focus-bottom', { position: 'bottom-end' });
+    notify(ref, 'existing-top', { position: 'top-start' });
+    cy.get('@crossPositionAnnounce').should('have.been.calledTwice');
+    cy.get(action('focus-bottom')).focus();
+    notify(ref, 'suppressed-existing', { position: 'top-start', intent: 'error' });
+    notify(ref, 'suppressed-new', { position: 'top', intent: 'error' });
+    cy.get('@crossPositionAnnounce').should('have.been.calledTwice');
+    cy.get(action('existing-top')).focus();
+    notify(ref, 'suppressed-transfer', { position: 'bottom-end', intent: 'error' });
+    cy.get('@crossPositionAnnounce').should('have.been.calledTwice');
+    cy.get('#outside').focus();
+    notify(ref, 'restored-cross-position', { position: 'top', intent: 'error' });
+    cy.get('@crossPositionAnnounce').should('have.been.calledThrice');
+    cy.get(item('restored-cross-position')).then($toast => {
+      cy.get('@crossPositionAnnounce')
+        .its('lastCall.args')
+        .should('deep.equal', [$toast[0].textContent, { politeness: 'assertive' }]);
+    });
+  });
+
+  it('does not suppress a separate toaster instance announcer even with shared controller routing', () => {
+    const first = cy.stub().as('firstInstanceAnnounce');
+    const second = cy.stub().as('secondInstanceAnnounce');
+    const one = React.createRef<Handle>();
+    const two = React.createRef<Handle>();
+    mount(
+      <FluentProvider theme={webLightTheme}>
+        <Fixture controlsPrefix="first-" toasterId="shared-announce" inline announce={first} ref={one} />
+        <Fixture controlsPrefix="second-" toasterId="shared-announce" inline announce={second} ref={two} />
+      </FluentProvider>,
+      { strict: false },
+    );
+    cy.get('#first-notify').should('be.visible');
+    cy.get('#second-notify').should('be.visible');
+    cy.get('#first-outside').realHover();
+    cy.then(() => one.current!.notify('shared-focused'));
+    cy.get('#first-frame').find(action('shared-focused')).should('be.visible').focus();
+    cy.get('@firstInstanceAnnounce').should('have.been.calledOnce');
+    cy.get('@secondInstanceAnnounce').should('have.been.calledOnce');
+    cy.then(() => two.current!.notify('shared-announced', { position: 'top-start', intent: 'error' }));
+    cy.get('#second-frame').find(item('shared-announced')).should('be.visible');
+    cy.get('@firstInstanceAnnounce').should('have.been.calledOnce');
+    cy.get('@secondInstanceAnnounce').should('have.been.calledTwice');
+    cy.get('@secondInstanceAnnounce').its('lastCall.args.0').should('contain', 'Notice shared-announced');
+  });
+
   for (const intent of ['info', 'success', 'warning', 'error'] as const) {
     it(`forwards ${intent} default politeness to the custom announcer`, () => {
       const announce = cy.stub().as('announce');

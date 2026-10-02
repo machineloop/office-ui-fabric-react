@@ -25,12 +25,20 @@ suite adds native RTL/LTR keyboard and pointer, CSS animation timing, live
 callbacks/offsets/native props, focus suppression of announcements, controller
 routing/cleanup, immutable style overrides and adversarial regressions.
 
-The final browser run is **58/58 passing in Chrome**, with zero retries, pending
+The prior browser run was **58/58 passing in Chrome**, with zero retries, pending
 or skipped cases (`48-Toaster-final-c.log`). Source TypeScript is clean with zero
 diagnostics (`48-Toaster-final-tsc.log`). All 16 toast package unit suites pass:
 229/229 tests and 8/8 snapshots (`48-Toaster-jest-final.log`).
 
 ## Repaired scenarios and regression contracts
+
+The final gate adds two scenarios (60 total): announcement suppression spans
+existing and newly mounted positions of the same Toaster, remains suppressed
+through position-to-position focus transfer, and recovers after outside focus.
+An independent instance sharing controller routing still announces. The hook
+checks actual focus in the position's owning document against the private
+instance scope, rather than per-position event state. Native callback assertions
+do not claim screen-reader certification.
 
 Independent adversarial review identified and refined these source-grounded
 regressions. Repairs address each:
