@@ -6,6 +6,7 @@ import { Avatar } from '@fluentui/react-avatar';
 import { CalendarMonthRegular } from '@fluentui/react-icons';
 import { computeAccessibleName, computeAccessibleDescription } from 'dom-accessibility-api';
 import * as axe from 'axe-core';
+import { getCypressElementCoordinates } from 'cypress-real-events/getCypressElementCoordinates';
 import type { RefAttributes, SlotRenderFunction } from '@fluentui/react-utilities';
 import { TagGroupContextProvider } from '../../contexts/tagGroupContext';
 import { Tag } from './Tag';
@@ -645,22 +646,44 @@ describe('Tag unit and conformance contracts in the browser', () => {
       cy.get(root).then(original => {
         cy.get(root).realClick();
         cy.get('@first').should('have.been.calledOnce');
+        cy.get('@dismissed')
+          .should('have.been.calledOnce')
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'first' });
         cy.then(() => rerender(tree({ onClick: latest, value: 'latest' })));
         cy.get(root).should(tag => expect(tag[0]).to.equal(original[0]));
         cy.get(root).realClick();
+        cy.get('@dismissed')
+          .should('have.been.calledTwice')
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'latest' });
         cy.realPress('Delete');
         cy.get('@latest').should('have.been.calledOnce');
         cy.get('@key').should('not.have.been.called');
-        cy.get('@dismissed').its('lastCall.args.1').should('deep.equal', { value: 'latest' });
+        cy.get('@dismissed')
+          .should('have.callCount', 3)
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'latest' });
         cy.then(() => rerender(tree({ value: 'removed' })));
         cy.get(root).realClick();
         cy.get('@latest').should('have.been.calledOnce');
+        cy.get('@dismissed')
+          .should('have.callCount', 4)
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'removed' });
         cy.then(() => rerender(tree({ onClick: first, onKeyDown: key, value: 'restored' })));
         cy.get(root).realClick();
+        cy.get('@dismissed')
+          .should('have.callCount', 5)
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'restored' });
         cy.realPress('Backspace');
         cy.get('@first').should('have.been.calledTwice');
         cy.get('@key').should('have.been.calledOnce');
-        cy.get('@dismissed').its('lastCall.args.1').should('deep.equal', { value: 'restored' });
+        cy.get('@dismissed')
+          .should('have.callCount', 6)
+          .its('lastCall.args.1')
+          .should('deep.equal', { value: 'restored' });
       });
     });
   });
@@ -719,6 +742,7 @@ describe('Tag unit and conformance contracts in the browser', () => {
           expect(current[0]).to.equal(tag[0]);
         });
         cy.then(() => rerender(tree(second, false)));
+        cy.get(root).should('not.exist');
         cy.then(() => expect(second.current).to.equal(null));
       });
     });
@@ -941,4 +965,64 @@ describe('Tag defined forced-colors paint', () => {
       });
     });
   }
+});
+
+describe('Tag selected dismiss affordance native endpoints', () => {
+  it('preserves selected foreground on real dismiss hover and held press while an unselected icon differs', () => {
+    const dismissed = cy.spy().as('dismissed');
+    mount(
+      <FluentProvider theme={teamsLightTheme}>
+        <Tag
+          data-testid="selected-tag"
+          selected
+          dismissible
+          onClick={dismissed}
+          dismissIcon={{ 'aria-label': 'remove' }}
+        >
+          Selected asset
+        </Tag>
+        <Tag data-testid="unselected-tag" dismissible dismissIcon={{ 'aria-label': 'remove' }}>
+          Other asset
+        </Tag>
+      </FluentProvider>,
+    );
+    const selected = '[data-testid="selected-tag"] .fui-Tag__dismissIcon';
+    const unselected = '[data-testid="unselected-tag"] .fui-Tag__dismissIcon';
+    const release = (selector: string) =>
+      cy.get(selector).then(icon => {
+        const { x, y } = getCypressElementCoordinates(icon, 'center');
+        // realMouseUp in cypress-real-events 1.14 reports buttons=1 even after release.
+        return Cypress.automation('remote:debugger:protocol', {
+          command: 'Input.dispatchMouseEvent',
+          params: { type: 'mouseReleased', x, y, button: 'left', buttons: 0, clickCount: 1 },
+        });
+      });
+    cy.get('[data-testid="selected-tag"]').should('not.be.disabled').and('have.attr', 'aria-pressed', 'true');
+    cy.get(selected).realHover();
+    cy.get(selected).should(icon => {
+      expect(icon[0].matches(':hover')).to.equal(true);
+      expect(icon[0].matches(':active')).to.equal(false);
+    });
+    cy.get(selected).should('have.css', 'color', rgb(teamsLightTheme.colorNeutralForegroundOnBrand));
+    cy.get(selected).realMouseDown();
+    cy.get(selected).should(icon => expect(icon[0].matches(':active')).to.equal(true));
+    cy.get(selected).should('have.css', 'color', rgb(teamsLightTheme.colorNeutralForegroundOnBrand));
+    cy.get('@dismissed').should('not.have.been.called');
+    release(selected);
+    cy.get(selected).should(icon => expect(icon[0].matches(':active')).to.equal(false));
+    cy.get('@dismissed').should('have.been.calledOnce');
+    cy.get(unselected).realHover();
+    cy.get(unselected).should(icon => {
+      expect(icon[0].matches(':hover')).to.equal(true);
+      expect(icon[0].matches(':active')).to.equal(false);
+    });
+    cy.get(unselected).should('have.css', 'color', rgb(teamsLightTheme.colorCompoundBrandForeground1Hover));
+    cy.get(unselected).realMouseDown();
+    cy.get(unselected).should(icon => expect(icon[0].matches(':active')).to.equal(true));
+    cy.get(unselected).should('have.css', 'color', rgb(teamsLightTheme.colorCompoundBrandForeground1Pressed));
+    release(unselected);
+    cy.get(unselected).should(icon => expect(icon[0].matches(':active')).to.equal(false));
+    cy.get(unselected).should('have.css', 'color', rgb(teamsLightTheme.colorCompoundBrandForeground1Hover));
+    cy.get('@dismissed').should('have.been.calledOnce');
+  });
 });

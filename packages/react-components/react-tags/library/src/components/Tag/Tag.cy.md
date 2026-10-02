@@ -1,7 +1,8 @@
 # Tag browser contracts
 
 `Tag.cy.tsx` exercises the current Tag contract in a real browser. Run the
-`react-tags:e2e` Nx target with the exact `**/Tag.cy.tsx` spec selector. The
+`react-tags:e2e` Nx target with `--config-file=src/components/Tag/Tag.cypress.config.cjs`
+and `--browser=chrome`. The local config discovers only `Tag.cy.tsx`. The
 `Tag.cy.styles.cy.tsx` module is a test-only style fixture, not a spec; it is
 excluded from production compilation by the existing `*.cy.tsx` exclusion.
 
@@ -42,6 +43,32 @@ rerenders to obey React hook-order rules. Hook-free callbacks separately cover
 override removal/restoration. Reduced motion has no Tag-specific behavior;
 forced colors has defined styles and is tested by actual browser emulation.
 
-Validation evidence and runtime adaptations are session-private, not package
-configuration changes. Repository writes and commits are restricted to this
-directory; no release/change record outside this scope is generated.
+Validation evidence is session-private. The component-local runner and browser
+type project are kept with this suite. Repository writes and commits for these
+revisions are restricted to this directory; no release/change record is needed.
+
+The component-local CommonJS runner and explicit JSX/browser type project now
+discover Tag.cy.tsx alone: TagGroup/helper specs are not part of the Tag count.
+All original scenarios remain. Object-ref cleanup waits for committed DOM
+disappearance without weakening the null assertion. Native selected dismiss
+hover/held-press foreground is checked against on-brand tokens with an
+unselected compound-brand positive control and release click count.
+
+## Queued refinement validation
+
+The scoped Cypress 14.4.1 / Chrome 154 / Node 22.20.0 run has **67 passing,
+0 failing, 0 pending, 0 skipped**: all 66 original cases plus one selected
+dismiss hover/held-press case. Browser pseudo-state assertions distinguish
+hover, held press, and release; the native CDP release explicitly uses
+`buttons: 0` because the installed real-events 1.14 mouse-up adapter reports
+`buttons: 1`. The latest/removed/restored handler case checks the exact dismiss
+count and value after each pointer and keyboard action, so an earlier click
+cannot mask a missing Delete or Backspace dismissal.
+
+The browser type project passes and imports the actual Tag source. The raw
+production `tsconfig.lib.json` check retains the known transitive Tooltip
+`renderTooltip.tsx:21` missing global JSX diagnostic; it is not reported as a
+clean library typecheck. Production source fingerprints are unchanged.
+Independent whole-Tag coverage review covers the suite, fixtures, runner,
+source contracts and documentation; it does not constitute manual assistive
+technology verification or the campaign's final all-component gate.
