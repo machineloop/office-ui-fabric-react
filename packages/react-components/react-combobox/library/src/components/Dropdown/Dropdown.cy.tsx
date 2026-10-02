@@ -1381,6 +1381,116 @@ describe('Dropdown - unit-derived and lifecycle scenarios', () => {
     cy.get('@submit').should('not.have.been.called');
   });
 
+  it('forwards top-level native key events after internal handling without submitting the form', () => {
+    const onKey = cy.stub().as('nativeKey');
+    const onOpen = cy.stub().as('nativeOpen');
+    const onSelect = cy.stub().as('nativeSelect');
+    const onSubmit = cy.stub().as('nativeSubmit');
+    const trace: string[] = [];
+    mount(
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          onSubmit();
+        }}
+      >
+        <Basic
+          button={{ type: 'submit' }}
+          onKeyDown={event => {
+            trace.push(`key:${event.key}`);
+            onKey(event, event.nativeEvent, event.currentTarget, event.defaultPrevented);
+          }}
+          onOpenChange={(event, data) => {
+            trace.push(`open:${data.open}`);
+            onOpen(event, data);
+          }}
+          onOptionSelect={(event, data) => {
+            trace.push('select');
+            onSelect(event, data);
+          }}
+        />
+      </form>,
+    );
+    trigger().focus();
+    cy.realPress('Enter');
+    active('cat');
+    cy.get('@nativeKey').should('have.been.calledOnce');
+    cy.get('@nativeSelect').should('not.have.been.called');
+    cy.realPress('ArrowDown');
+    active('dog');
+    selected('dog', false);
+    cy.realPress('Enter');
+    trigger().should('have.text', 'Dog').and('have.attr', 'aria-expanded', 'false').and('be.focused');
+    cy.get('@nativeKey').should('have.been.calledThrice');
+    cy.get('@nativeOpen').should('have.been.calledTwice');
+    cy.get('@nativeSelect').should('have.been.calledOnce');
+    cy.get('@nativeSubmit').should('not.have.been.called');
+    trigger().then($button => {
+      const calls = onKey.getCalls();
+      expect(calls.map(call => call.args[0].key)).to.deep.equal(['Enter', 'ArrowDown', 'Enter']);
+      for (const call of calls) {
+        const [event, nativeEvent, currentTarget, defaultPrevented] = call.args;
+        expect(event.type).to.equal('keydown');
+        expect(event.nativeEvent).to.equal(nativeEvent);
+        expect(nativeEvent.isTrusted).to.equal(true);
+        expect(nativeEvent.target).to.equal($button[0]);
+        expect(currentTarget).to.equal($button[0]);
+        expect(defaultPrevented).to.equal(true);
+        expect(nativeEvent.defaultPrevented).to.equal(true);
+      }
+      expect(onOpen.firstCall.args[0]).to.equal(calls[0].args[0]);
+      expect(onOpen.firstCall.args[1]).to.deep.equal({ open: true });
+      expect(onOpen.lastCall.args[0]).to.equal(calls[2].args[0]);
+      expect(onOpen.lastCall.args[1]).to.deep.equal({ open: false });
+      expect(onSelect.firstCall.args[0]).to.equal(calls[2].args[0]);
+      expect(onSelect.firstCall.args[1]).to.deep.equal({
+        optionValue: 'dog',
+        optionText: 'Dog',
+        selectedOptions: ['dog'],
+      });
+      expect(trace).to.deep.equal(['open:true', 'key:Enter', 'key:ArrowDown', 'open:false', 'select', 'key:Enter']);
+    });
+    trigger().click();
+    selected('dog');
+    selected('cat', false);
+  });
+
+  it('uses only the explicit button-slot key handler while preserving native event identity and selection', () => {
+    const onTopKey = cy.stub().as('topKey');
+    const onSlotKey = cy.stub().as('slotKey');
+    const onSelect = cy.stub().as('slotKeySelect');
+    mount(
+      <Basic
+        onKeyDown={onTopKey}
+        button={{ onKeyDown: event => onSlotKey(event, event.currentTarget, event.defaultPrevented) }}
+        onOptionSelect={onSelect}
+      />,
+    );
+    trigger().focus();
+    cy.realPress('Enter');
+    active('cat');
+    cy.realPress('ArrowDown');
+    active('dog');
+    cy.realPress('Enter');
+    trigger().should('have.text', 'Dog').and('have.attr', 'aria-expanded', 'false').and('be.focused');
+    cy.get('@topKey').should('not.have.been.called');
+    cy.get('@slotKey').should('have.been.calledThrice');
+    cy.get('@slotKeySelect').should('have.been.calledOnce');
+    trigger().then($button => {
+      expect(onSlotKey.getCalls().map(call => call.args[0].key)).to.deep.equal(['Enter', 'ArrowDown', 'Enter']);
+      for (const call of onSlotKey.getCalls()) {
+        expect(call.args[1]).to.equal($button[0]);
+        expect(call.args[2]).to.equal(true);
+      }
+      expect(onSelect.firstCall.args[0]).to.equal(onSlotKey.lastCall.args[0]);
+      expect(onSelect.firstCall.args[1]).to.deep.equal({
+        optionValue: 'dog',
+        optionText: 'Dog',
+        selectedOptions: ['dog'],
+      });
+    });
+  });
+
   it('is not a native select/input: selection is not implicitly submitted or constrained by Field required', () => {
     const onSubmit = cy.stub().as('submit');
     mount(
