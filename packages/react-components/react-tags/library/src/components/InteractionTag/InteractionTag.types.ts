@@ -36,8 +36,8 @@ export type InteractionTagProps<Value = TagValue> = ComponentProps<Partial<Inter
   disabled?: boolean;
 
   /**
-   * An InteractionTag can be selected.
-   * Note: This prop only changes the appearance of the tag at the moment. A future PR will add the integration with TagGroup.
+   * Changes the selected appearance of the tag without managing selection state.
+   * A selectable TagGroup also marks tags whose values are in its selectedValues.
    *
    * @default false
    */

@@ -47,7 +47,7 @@ Selected.parameters = {
   docs: {
     description: {
       story:
-        'InteractionTag that can be selected. Note: This prop only changes the appearance of the tag at the moment. A future PR will add the integration with TagGroup.',
+        'The selected prop changes the appearance without managing selection state. A selectable TagGroup also marks tags whose values are in its selectedValues.',
     },
   },
 };

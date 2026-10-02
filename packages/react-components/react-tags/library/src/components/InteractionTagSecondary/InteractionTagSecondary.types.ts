@@ -8,7 +8,12 @@ export type InteractionTagSecondarySlots = {
 /**
  * InteractionTagSecondary Props
  */
-export type InteractionTagSecondaryProps = ComponentProps<InteractionTagSecondarySlots>;
+export type InteractionTagSecondaryProps = Omit<ComponentProps<InteractionTagSecondarySlots>, 'aria-labelledby'> & {
+  /**
+   * Overrides the default combined action name. Set null to use aria-label alone.
+   */
+  'aria-labelledby'?: string | null;
+};
 
 /**
  * State used in rendering InteractionTagSecondary

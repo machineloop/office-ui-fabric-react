@@ -25,6 +25,7 @@ export const useInteractionTagSecondaryBase_unstable = (
   const { disabled, handleTagDismiss, interactionTagPrimaryId, selected, value } = useInteractionTagContext_unstable();
 
   const id = useId('fui-InteractionTagSecondary-', props.id);
+  const { ['aria-labelledby']: ariaLabelledBy, ...nativeProps } = props;
 
   const onClick = useEventCallback((ev: React.MouseEvent<HTMLButtonElement>) => {
     props?.onClick?.(ev);
@@ -52,8 +53,9 @@ export const useInteractionTagSecondaryBase_unstable = (
         type: 'button',
         disabled,
         ref,
-        'aria-labelledby': `${interactionTagPrimaryId} ${id}`,
-        ...props,
+        ...nativeProps,
+        'aria-labelledby':
+          'aria-labelledby' in props ? ariaLabelledBy ?? undefined : `${interactionTagPrimaryId} ${id}`,
         id,
         onClick,
         onKeyDown,

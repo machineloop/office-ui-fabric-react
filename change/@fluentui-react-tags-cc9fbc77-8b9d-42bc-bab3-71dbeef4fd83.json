@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "fix: preserve primary action selection without unintended form submission and support nullable secondary label overrides",
+  "packageName": "@fluentui/react-tags",
+  "email": "223556219+Copilot@users.noreply.github.com",
+  "dependentChangeType": "patch"
+}

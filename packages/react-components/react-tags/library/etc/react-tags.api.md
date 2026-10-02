@@ -96,7 +96,9 @@ export type InteractionTagSecondaryBaseState = Omit<InteractionTagSecondaryState
 export const interactionTagSecondaryClassNames: SlotClassNames<InteractionTagSecondarySlots>;
 
 // @public
-export type InteractionTagSecondaryProps = ComponentProps<InteractionTagSecondarySlots>;
+export type InteractionTagSecondaryProps = Omit<ComponentProps<InteractionTagSecondarySlots>, 'aria-labelledby'> & {
+    'aria-labelledby'?: string | null;
+};
 
 // @public (undocumented)
 export type InteractionTagSecondarySlots = {
