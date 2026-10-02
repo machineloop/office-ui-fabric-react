@@ -24,7 +24,7 @@ export const renderTableCellLayout_unstable = (
 
       {state.content && (
         <state.content>
-          {state.main && <state.main>{state.root.children}</state.main>}
+          {state.main && <state.main />}
           {state.description && <state.description />}
         </state.content>
       )}

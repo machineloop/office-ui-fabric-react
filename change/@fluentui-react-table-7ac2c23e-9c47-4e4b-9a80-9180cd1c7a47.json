@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "fix: preserve numeric and explicit main-slot content in table cell layouts",
+  "packageName": "@fluentui/react-table",
+  "email": "223556219+Copilot@users.noreply.github.com",
+  "dependentChangeType": "patch"
+}

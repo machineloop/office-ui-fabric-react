@@ -10,6 +10,7 @@ const tableAvatarSizeMap = {
   small: 24,
   'extra-small': 20,
 } as const;
+const hasContent = (value: unknown) => value !== undefined && value !== null && value !== false && value !== '';
 
 /**
  * Create the state required to render TableCellLayout.
@@ -51,11 +52,15 @@ export const useTableCellLayout_unstable = (
     ),
     appearance: props.appearance,
     truncate: props.truncate,
-    main: slot.optional(props.main, { renderByDefault: true, elementType: 'span' }),
+    main: slot.optional(props.main, {
+      renderByDefault: true,
+      defaultProps: { children: props.children },
+      elementType: 'span',
+    }),
     media: slot.optional(props.media, { elementType: 'span' }),
     description: slot.optional(props.description, { elementType: 'span' }),
     content: slot.optional(props.content, {
-      renderByDefault: !!props.description || !!props.children,
+      renderByDefault: hasContent(props.description) || hasContent(props.main) || hasContent(props.children),
       elementType: 'div',
     }),
     avatarSize: tableAvatarSizeMap[size],
