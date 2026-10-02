@@ -138,6 +138,62 @@ describe('AccordionHeader documented stories', () => {
 });
 
 describe('AccordionHeader native input and state boundaries', () => {
+  for (const as of ['button', 'a'] as const) {
+    for (const slotDisabled of [false, undefined]) {
+      it(`retains item disability for a ${as} slot with disabled=${String(slotDisabled)}`, () => {
+        const toggle = cy.spy().as('disabledSlotToggle');
+        const click = cy.spy().as('disabledSlotClick');
+        render(
+          <>
+            <button id="before-disabled">Before</button>
+            <Accordion collapsible onToggle={toggle}>
+              <AccordionItem value="a" disabled>
+                <AccordionHeader
+                  button={{
+                    as,
+                    id: 'blocked-slot',
+                    disabled: slotDisabled,
+                    onClick: click,
+                    tabIndex: as === 'a' ? -1 : undefined,
+                  }}
+                >
+                  Blocked
+                </AccordionHeader>
+                <AccordionPanel id="blocked-panel">Blocked content</AccordionPanel>
+              </AccordionItem>
+              <AccordionItem value="b">
+                <AccordionHeader button={{ id: 'enabled-slot' }}>Enabled</AccordionHeader>
+                <AccordionPanel id="enabled-panel">Enabled content</AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+          </>,
+        );
+        cy.get('#before-disabled').realClick();
+        cy.realPress('Tab');
+        cy.get('#enabled-slot').should('be.focused');
+        cy.get('#blocked-slot').realClick();
+        if (as === 'button') {
+          cy.get('#blocked-slot').should('be.disabled');
+          cy.get('#before-disabled').focus();
+          cy.get('#blocked-slot').then($node => $node[0].focus());
+          cy.get('#before-disabled').should('be.focused');
+        } else {
+          cy.get('#blocked-slot').should('have.attr', 'aria-disabled', 'true').focus().should('be.focused');
+        }
+        cy.realPress('Enter');
+        cy.realPress('Space');
+        cy.get('#blocked-slot').should('have.attr', 'aria-expanded', 'false');
+        cy.get('#blocked-panel').should('not.exist');
+        cy.get('@disabledSlotToggle').should('not.have.been.called');
+        cy.get('@disabledSlotClick').should('not.have.been.called');
+        cy.get('#enabled-slot').focus();
+        cy.realPress('Enter');
+        cy.get('#enabled-panel').should('be.visible');
+        cy.get('@disabledSlotToggle').should('have.been.calledOnce');
+      });
+    }
+  }
+
   for (const key of ['Enter', 'Space'] as const) {
     it(`opens and closes using native ${key} with focus and click count preserved`, () => {
       const click = cy.spy().as('click');

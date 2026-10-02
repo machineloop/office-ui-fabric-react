@@ -7,6 +7,15 @@ checks browser fixture dependencies.
 
 ## Contract map
 
+The final gate adds four regressions (37 total): native button and anchor slots
+cannot override owning-item disability through `disabled: false` or explicitly
+forwarded `undefined`. Tab skips the blocked slot, pointer and keyboard attempts
+cannot notify or expand, and an enabled sibling proves native activation works.
+The native disabled button cannot receive programmatic focus; the disabled anchor
+uses an explicit negative tabindex to receive programmatic focus but must still
+block Enter/Space activation.
+Owning-item disability is authoritative while local slot disabling is retained.
+
 - Package-local Accordion stories: Default, HeadingLevels, Sizes, Inline,
   Disabled, ExpandIconPosition, ExpandIcon, WithIcon. Assertions observe root
   semantics, actual typography/geometry, ARIA state, icon structure and naming.

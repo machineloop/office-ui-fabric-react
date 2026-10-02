@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Preserve AccordionItem disability when a header button slot supplies false or undefined, while retaining local button disabling.",
+  "packageName": "@fluentui/react-accordion",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

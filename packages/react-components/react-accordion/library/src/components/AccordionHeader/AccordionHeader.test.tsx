@@ -74,4 +74,36 @@ describe('AccordionHeader', () => {
     button.dispatchEvent(event);
     expect(mockClick).toHaveBeenCalledTimes(1);
   });
+
+  it.each([false, undefined])('retains item disability when button.disabled is %s', disabled => {
+    const toggle = jest.fn();
+    render(
+      <Accordion collapsible onToggle={toggle}>
+        <AccordionItem value="a" disabled>
+          <AccordionHeader button={{ disabled }}>Blocked</AccordionHeader>
+          <AccordionPanel>Blocked content</AccordionPanel>
+        </AccordionItem>
+      </Accordion>,
+    );
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(toggle).not.toHaveBeenCalled();
+  });
+
+  it('retains local button disabling on an enabled item', () => {
+    const toggle = jest.fn();
+    render(
+      <Accordion collapsible onToggle={toggle}>
+        <AccordionItem value="a">
+          <AccordionHeader button={{ disabled: true }}>Locally disabled</AccordionHeader>
+        </AccordionItem>
+      </Accordion>,
+    );
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(toggle).not.toHaveBeenCalled();
+  });
 });
