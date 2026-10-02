@@ -20,10 +20,11 @@ const mountFluent = (element: JSXElement) => {
 };
 
 const resolveAsset = (asset: string) => {
-  const ASSET_URL =
-    'https://raw.githubusercontent.com/microsoft/fluentui/master/packages/react-components/react-card/stories/src/assets/';
-
-  return `${ASSET_URL}${asset}`;
+  const svg =
+    asset === 'pptx.png'
+      ? '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="#c43e1c"/><text x="8" y="24" fill="white" font-size="24">P</text></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="320" height="180" fill="#eef"/><rect x="60" y="12" width="200" height="156" fill="white"/><path d="M80 40h160M80 60h160M80 80h120" stroke="#185abd" stroke-width="4"/></svg>';
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
 
 const CardSample = (props: CardProps) => (
@@ -493,19 +494,36 @@ describe('Card', () => {
 
     it('should not respond to keyboard events when disabled', () => {
       const onClickSpy = cy.spy().as('onClickSpy');
+      const childClickSpy = cy.spy().as('childClickSpy');
 
-      mountFluent(<CardSample disabled onClick={onClickSpy} focusMode="no-tab" />);
+      mountFluent(
+        <div onClick={childClickSpy}>
+          <CardSample disabled onClick={onClickSpy} focusMode="no-tab" />
+        </div>,
+      );
 
-      // Since the card is disabled and not focusable, we can't send keyboard events to it
-      // This test verifies that the card doesn't receive focus and therefore can't respond to keyboard events
       cy.get('#card').should('have.attr', 'aria-disabled', 'true');
-
-      // Try to focus the card - it should not be focusable
       cy.get('#before').focus();
       cy.realPress('Tab');
       cy.get('#card').should('not.be.focused');
-
+      cy.get('#open-button').should('be.focused');
+      cy.realPress('Space');
+      cy.get('@childClickSpy').should('have.been.calledOnce');
       cy.get('@onClickSpy').should('not.have.been.called');
+      cy.realPress('Enter');
+      cy.get('@childClickSpy').should('have.been.calledTwice');
+      cy.get('@onClickSpy').should('not.have.been.called');
+
+      mountFluent(<CardSample onClick={onClickSpy} focusMode="no-tab" />);
+      cy.get('#card').should('not.have.attr', 'aria-disabled');
+      cy.get('#card').should('have.attr', 'tabindex', '0');
+      cy.get('#card').focus().should('be.focused');
+      cy.realPress('Enter');
+      cy.get('#open-button').should('be.focused');
+      cy.realPress('Space');
+      cy.get('@onClickSpy').should('have.been.calledOnce');
+      cy.realPress('Enter');
+      cy.get('@onClickSpy').should('have.been.calledTwice');
     });
 
     describe('selectable disabled', () => {
@@ -524,13 +542,43 @@ describe('Card', () => {
       });
 
       it('should not change selection state with keyboard when disabled', () => {
-        mountFluent(<CardSample disabled defaultSelected={false} />);
+        const changed = cy.spy().as('changed');
+        const childClick = cy.spy().as('childClick');
+        mountFluent(
+          <div onClick={childClick}>
+            <CardSample disabled defaultSelected={false} onSelectionChange={changed} />
+          </div>,
+        );
 
         cy.get(`.${cardClassNames.checkbox}`).should('not.be.checked');
-        // Disabled checkbox should not respond to keyboard events
         cy.get(`.${cardClassNames.checkbox}`).should('be.disabled');
-        // The checkbox is disabled, so trying to type on it should not work
+        cy.get('#before').focus();
+        cy.realPress('Tab');
+        cy.get('#open-button').should('be.focused');
+        cy.realPress('Space');
+        cy.get('@childClick').should('have.been.calledOnce');
         cy.get(`.${cardClassNames.checkbox}`).should('not.be.checked');
+        cy.get('@changed').should('not.have.been.called');
+        cy.realPress('Enter');
+        cy.get('@childClick').should('have.been.calledTwice');
+        cy.get(`.${cardClassNames.checkbox}`).should('not.be.checked');
+        cy.get('@changed').should('not.have.been.called');
+
+        mountFluent(<CardSampleNoActions defaultSelected={false} onSelectionChange={changed} />);
+        cy.get(`.${cardClassNames.checkbox}`).should('not.be.disabled');
+        cy.get(`.${cardClassNames.checkbox}`).focus().should('be.focused');
+        cy.realPress('Space');
+        cy.get(`.${cardClassNames.checkbox}`).should('be.checked');
+        cy.get('@changed')
+          .should('have.been.calledOnce')
+          .its('firstCall.args.1')
+          .should('deep.equal', { selected: true });
+        cy.realPress('Enter');
+        cy.get(`.${cardClassNames.checkbox}`).should('not.be.checked');
+        cy.get('@changed')
+          .should('have.been.calledTwice')
+          .its('lastCall.args.1')
+          .should('deep.equal', { selected: false });
       });
 
       it('should maintain selected state when disabled', () => {
@@ -597,13 +645,19 @@ describe('Card', () => {
       it('should not receive programmatic focus when disabled', () => {
         mountFluent(<CardSample disabled focusMode="no-tab" />);
 
-        // Disabled cards should not be focusable, so we verify the focus doesn't change
         cy.get('#before').focus();
         cy.get('#before').should('be.focused');
-
-        // This should not change the focus since the card is disabled
         cy.get('#card').should('have.attr', 'aria-disabled', 'true');
-        cy.get('#before').should('be.focused'); // Focus should remain on #before
+        cy.get('#card').then(card => card[0].focus());
+        cy.get('#before').should('be.focused');
+        cy.get('#card').should('not.be.focused');
+
+        mountFluent(<CardSample focusMode="no-tab" />);
+        cy.get('#card').should('not.have.attr', 'aria-disabled');
+        cy.get('#card').should('have.attr', 'tabindex', '0');
+        cy.get('#before').focus().should('be.focused');
+        cy.get('#card').then(card => card[0].focus());
+        cy.get('#card').should('be.focused');
       });
     });
 

@@ -724,6 +724,49 @@ describe('Card documented visual and composition contracts', () => {
 
   describe('Card supported edges and native accessibility', () => {
     for (const key of ['Enter', 'Space'] as const) {
+      it(`preserves disabled nonselectable root consumer ${key} bubbling from an enabled child`, () => {
+        const clicked = cy.spy().as('clicked');
+        const action = cy.spy().as('action');
+        const keyDown = cy
+          .spy((event: React.KeyboardEvent<HTMLDivElement>) => ({
+            key: event.key,
+            target: event.target,
+            currentTarget: event.currentTarget,
+            defaultPrevented: event.defaultPrevented,
+          }))
+          .as('keyDown');
+        render({
+          disabled: true,
+          focusMode: 'no-tab',
+          onClick: clicked,
+          onKeyDown: keyDown,
+          children: (
+            <button data-testid="open" onClick={action}>
+              Open
+            </button>
+          ),
+        });
+        cy.get(root).should('have.attr', 'aria-disabled', 'true').and('not.have.attr', 'tabindex');
+        cy.get(checkbox).should('not.exist');
+        cy.get('[data-testid="before"]').focus();
+        cy.realPress('Tab');
+        cy.get('[data-testid="open"]').should('be.focused');
+        cy.realPress(key);
+        cy.get('@action').should('have.been.calledOnce');
+        cy.get('@clicked').should('not.have.been.called');
+        cy.get('@keyDown')
+          .should('have.been.calledOnce')
+          .its('firstCall.returnValue')
+          .should(data => {
+            expect(data.key).to.equal(key === 'Space' ? ' ' : key);
+            expect(data.target).to.equal(Cypress.$('[data-testid="open"]')[0]);
+            expect(data.currentTarget).to.equal(Cypress.$(root)[0]);
+            expect(data.defaultPrevented).to.equal(false);
+          });
+      });
+    }
+
+    for (const key of ['Enter', 'Space'] as const) {
       it(`preserves a nested button native ${key} action without changing card selection`, () => {
         const changed = cy.spy().as('changed');
         const action = cy.spy().as('action');
@@ -981,6 +1024,7 @@ describe('Card documented visual and composition contracts', () => {
             expect(second.current).to.equal(card[0]);
           });
           cy.then(() => rerender(tree(second, false)));
+          cy.get(root).should('not.exist');
           cy.then(() => expect(second.current).to.equal(null));
         });
       });

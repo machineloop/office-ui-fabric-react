@@ -1,18 +1,23 @@
 # Card browser contracts
 
-The original `Card.cy.tsx` remains unchanged (51 cases). The additional
+The original `Card.cy.tsx` retains all 51 cases, with self-contained image
+fixtures and native disabled keyboard/programmatic-focus attempts plus enabled
+positive controls. The additional
 `Card.functional.cy.tsx` covers documented visual/composition contracts and
 meaningful native browser edges and unit/conformance behaviors. Run the
-`react-card:e2e` Nx target with the exact `**/Card{,.functional}.cy.tsx` selector.
+`react-card:e2e` Nx target using the component-local
+`src\components\Card\Card.cypress.config.cjs` configuration, which selects both
+original and functional specs with no retries. `Card.cy.tsconfig.json` typechecks
+both specs and their imported production sources with the test-only React JSX bridge.
 `Card.functional.styles.cy.tsx` is an excluded test-only style fixture, not a
-spec. Current combined coverage is 128 cases.
+spec. Current combined coverage is 130 cases.
 
 | Current source                             | Additional browser proof                                                                                                                                                                                      |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | README; Default and Description stories    | Native group and medium/vertical/filled defaults, actual shadow/border paint, rich header/preview/footer composition                                                                                          |
 | Size, Orientation and Appearance stories   | All sizes/radii/padding/gaps, all appearances/pseudo borders/shadows, flush preview geometry in both orientations and RTL, native hover/pressed/selected paint                                                |
 | Selectable and SelectableIndicator stories | Controlled surface selection, independent nested actions, synchronized floating Checkbox and computed title-based name                                                                                        |
-| Disabled story                             | All appearances suppress surface and selection callbacks and disable internal checkbox; explicitly enabled children work by pointer and keyboard                                                              |
+| Disabled story                             | All appearances suppress surface and selection callbacks and disable internal checkbox; enabled children work by pointer and keyboard; disabled nonselectable roots retain consumer keydown bubbling          |
 | Action and Templates stories               | Off-mode root/inner button access, real linked title, task controls and list-item semantics                                                                                                                   |
 | FocusMode story and best practices         | Existing forward Enter/Tab/Escape mode matrix preserved; additional reverse native Tab matrix, inferred interactive focus, computed group name/description                                                    |
 | `Card.types.ts`; slot/native contracts     | Controlled versus uncontrolled initialization, omission/restoration, floating slot shorthand/render functions, explicit null checkbox, native attributes, inline/classes and ref identity/replacement/unmount |
@@ -46,8 +51,9 @@ not constitute deduplication unit coverage.
 
 No retries, skips, fixed sleeps, forced clicks, exception suppression or fake
 clocks are added. Computed accessible names/descriptions and axe do not claim
-manual speech or screen-reader proof. New image fixtures are local data URLs;
-original remote-image fixtures remain untouched.
+manual speech or screen-reader proof. Both suites use local data URL images.
+Object-ref unmount cleanup waits retryably for root disappearance before the
+strong null assertion; it does not assume synchronous React unmount completion.
 
 The current inferred interactive focus is `no-tab`; a legacy unit-test title
 says `tab-only`, but its assertions only exercise tabIndex and simulated Tab.
