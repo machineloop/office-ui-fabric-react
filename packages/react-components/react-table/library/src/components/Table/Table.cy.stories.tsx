@@ -842,26 +842,30 @@ function SelectionExample({
   );
 }
 
-function ResizeExample() {
+function ResizeExample({ firstId = 'name' }: { firstId?: TableColumnId }) {
+  const resizeColumns = React.useMemo(() => [{ ...columns[0], columnId: firstId }, columns[1]], [firstId]);
   const {
     getRows,
     tableRef,
     columnSizing_unstable: sizing,
-  } = useTableFeatures({ columns, items: records }, [
+  } = useTableFeatures({ columns: resizeColumns, items: records }, [
     useTableColumnSizing_unstable({
       autoFitColumns: false,
-      columnSizingOptions: { name: { defaultWidth: 200, minWidth: 100 }, count: { defaultWidth: 200, minWidth: 100 } },
+      columnSizingOptions: {
+        [firstId]: { defaultWidth: 200, minWidth: 100 },
+        count: { defaultWidth: 200, minWidth: 100 },
+      },
     }),
   ]);
   return (
     <>
-      <button id="resize-keyboard" onClick={sizing.enableKeyboardMode('name')}>
+      <button id="resize-keyboard" onClick={sizing.enableKeyboardMode(firstId)}>
         Resize name column
       </button>
       <Table id="table" noNativeElements aria-label="Resizable inventory" ref={tableRef} {...sizing.getTableProps()}>
         <TableHeader>
           <TableRow>
-            <TableHeaderCell id="resize-name" {...sizing.getTableHeaderCellProps('name')}>
+            <TableHeaderCell id="resize-name" {...sizing.getTableHeaderCellProps(firstId)}>
               Name
             </TableHeaderCell>
             <TableHeaderCell {...sizing.getTableHeaderCellProps('count')}>Count</TableHeaderCell>
@@ -870,7 +874,7 @@ function ResizeExample() {
         <TableBody>
           {getRows().map(({ item }) => (
             <TableRow key={item.name}>
-              <TableCell id={`resize-cell-${item.name}`} {...sizing.getTableCellProps('name')}>
+              <TableCell id={`resize-cell-${item.name}`} {...sizing.getTableCellProps(firstId)}>
                 {item.name}
               </TableCell>
               <TableCell {...sizing.getTableCellProps('count')}>{item.count}</TableCell>
@@ -940,83 +944,96 @@ describe('Table documented feature composition', () => {
     });
   }
 
-  it('composes keyboard column resizing with real header and body geometry', () => {
-    mount(
-      <FluentProvider theme={webLightTheme}>
-        <ResizeExample />
-      </FluentProvider>,
-    );
-    cy.get('#resize-name')
-      .should(header => {
-        expect(header[0].style.width).to.equal('200px');
-        expect(header[0].getBoundingClientRect().width).to.be.greaterThan(0);
-      })
-      .then(header => {
-        const width = header[0].getBoundingClientRect().width;
-        cy.get('#resize-keyboard').realClick();
-        cy.realPress('ArrowRight');
-        cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
-          for (const cell of cells) {
-            expect(cell.style.width).to.equal('220px');
-            expect(cell.getBoundingClientRect().width).to.equal(width + 20);
-          }
+  for (const firstId of ['name', 0] as const) {
+    it(`composes keyboard column resizing with real header and body geometry for column ${firstId}`, () => {
+      mount(
+        <FluentProvider theme={webLightTheme}>
+          <ResizeExample firstId={firstId} />
+        </FluentProvider>,
+      );
+      cy.get('#resize-name')
+        .should(header => {
+          expect(header[0].style.width).to.equal('200px');
+          expect(header[0].getBoundingClientRect().width).to.be.greaterThan(0);
+        })
+        .then(header => {
+          const width = header[0].getBoundingClientRect().width;
+          cy.get('#resize-keyboard').realClick();
+          cy.realPress('ArrowRight');
+          cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
+            for (const cell of cells) {
+              expect(cell.style.width).to.equal('220px');
+              expect(cell.getBoundingClientRect().width).to.equal(width + 20);
+            }
+          });
+          cy.realPress('ArrowLeft');
+          cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
+          cy.realPress(['Shift', 'ArrowRight']);
+          cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
+            for (const cell of cells) {
+              expect(cell.style.width).to.equal('205px');
+              expect(cell.getBoundingClientRect().width).to.equal(width + 5);
+            }
+          });
+          cy.realPress(['Shift', 'ArrowLeft']);
+          cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
+          cy.realPress('Escape');
+          cy.get('#resize-name .fui-TableResizeHandle')
+            .should('have.attr', 'aria-hidden', 'true')
+            .and('not.have.attr', 'tabindex');
+          cy.realPress('ArrowRight');
+          cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
+          cy.get('#resize-keyboard').realClick();
+          cy.get('#resize-name .fui-TableResizeHandle').should('be.focused').and('have.attr', 'aria-hidden', 'false');
+          cy.get('#resize-keyboard').focus();
+          cy.get('#resize-name .fui-TableResizeHandle')
+            .should('have.attr', 'aria-hidden', 'true')
+            .and('not.have.attr', 'tabindex');
+          cy.realPress('ArrowRight');
+          cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
         });
-        cy.realPress('ArrowLeft');
-        cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
-        cy.realPress(['Shift', 'ArrowRight']);
-        cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
-          for (const cell of cells) {
-            expect(cell.style.width).to.equal('205px');
-            expect(cell.getBoundingClientRect().width).to.equal(width + 5);
-          }
-        });
-        cy.realPress(['Shift', 'ArrowLeft']);
-        cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
-        cy.realPress('Escape');
-        cy.realPress('ArrowRight');
-        cy.get('#resize-name').should(current => expect(current[0].getBoundingClientRect().width).to.equal(width));
-      });
-  });
+    });
 
-  it('composes real pointer resizing, minimum-width clamping and release cleanup', () => {
-    mount(
-      <FluentProvider theme={webLightTheme}>
-        <ResizeExample />
-      </FluentProvider>,
-    );
-    cy.get('#resize-name .fui-TableResizeHandle').realHover();
-    cy.get('#resize-name .fui-TableResizeHandle')
-      .should('be.visible')
-      .then(handle => {
-        const rect = handle[0].getBoundingClientRect();
-        const bodyRect = handle[0].ownerDocument.body.getBoundingClientRect();
-        const x = rect.left + rect.width / 2 - bodyRect.left;
-        const y = rect.top + rect.height / 2 - bodyRect.top;
-        cy.wrap(handle).realMouseDown({ position: 'center' });
-        cy.get('body').realMouseMove(x + 40, y, { position: 'topLeft' });
-        cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
-          for (const cell of cells) {
-            expect(cell.style.width).to.equal('240px');
-          }
-          expect(cells[0].getBoundingClientRect().width).to.equal(cells[1].getBoundingClientRect().width);
+    it(`composes real pointer resizing, minimum-width clamping and release cleanup for column ${firstId}`, () => {
+      mount(
+        <FluentProvider theme={webLightTheme}>
+          <ResizeExample firstId={firstId} />
+        </FluentProvider>,
+      );
+      cy.get('#resize-name .fui-TableResizeHandle').realHover();
+      cy.get('#resize-name .fui-TableResizeHandle')
+        .should('be.visible')
+        .then(handle => {
+          const rect = handle[0].getBoundingClientRect();
+          const bodyRect = handle[0].ownerDocument.body.getBoundingClientRect();
+          const x = rect.left + rect.width / 2 - bodyRect.left;
+          const y = rect.top + rect.height / 2 - bodyRect.top;
+          cy.wrap(handle).realMouseDown({ position: 'center' });
+          cy.get('body').realMouseMove(x + 40, y, { position: 'topLeft' });
+          cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
+            for (const cell of cells) {
+              expect(cell.style.width).to.equal('240px');
+            }
+            expect(cells[0].getBoundingClientRect().width).to.equal(cells[1].getBoundingClientRect().width);
+          });
+          cy.get('#resize-name').should('have.css', 'pointer-events', 'none');
+          cy.get('body').realMouseMove(x - 200, y, { position: 'topLeft' });
+          cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
+            for (const cell of cells) {
+              expect(cell.style.width).to.equal('100px');
+            }
+          });
+          cy.get('body').realMouseUp();
+          cy.get('#resize-name').should('have.css', 'pointer-events', 'auto');
+          cy.get('body').realMouseMove(x + 80, y, { position: 'topLeft' });
+          cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
+            for (const cell of cells) {
+              expect(cell.style.width).to.equal('100px');
+            }
+          });
         });
-        cy.get('#resize-name').should('have.css', 'pointer-events', 'none');
-        cy.get('body').realMouseMove(x - 200, y, { position: 'topLeft' });
-        cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
-          for (const cell of cells) {
-            expect(cell.style.width).to.equal('100px');
-          }
-        });
-        cy.get('body').realMouseUp();
-        cy.get('#resize-name').should('have.css', 'pointer-events', 'auto');
-        cy.get('body').realMouseMove(x + 80, y, { position: 'topLeft' });
-        cy.get('#resize-name, #resize-cell-Alpha').should(cells => {
-          for (const cell of cells) {
-            expect(cell.style.width).to.equal('100px');
-          }
-        });
-      });
-  });
+    });
+  }
 });
 
 describe('Coupled navigation policy preservation', () => {

@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Support numeric zero column IDs in pointer and keyboard resizing, mode switching and focus cleanup.",
+  "packageName": "@fluentui/react-table",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

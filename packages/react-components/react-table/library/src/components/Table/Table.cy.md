@@ -28,6 +28,14 @@ Space activation. Real pointer dragging checks header/body width agreement,
 minimum-width clamping and movement after release; keyboard resizing checks
 normal and Shift precision steps.
 
+The final gate retains the string-ID resizing controls and repeats both native
+keyboard and pointer contracts for numeric column ID `0` (68 scenarios total).
+Header/body geometry, minimum clamping and release cleanup remain asserted.
+Escape and blur must hide the separator and remove its temporary tabindex;
+subsequent arrow keys must not resize. Hook units also verify switching from
+another numeric ID to zero and toggling zero off. The resizing hooks distinguish
+an absent ID (`undefined`) from every valid string or numeric ID.
+
 ## Coupled RTL grid geometry repair
 
 The existing Grid pattern remains unchanged: `useArrowNavigationGroup` with
