@@ -6,7 +6,7 @@
     "lib": ["ES2019", "DOM"],
     "noEmit": true
   },
-  "include": ["./MessageBarTitle.cy.tsx"],
+  "include": ["./MessageBarTitle.cy.tsx", "./MessageBarTitle.cy-jsx.stories.ts"],
   "exclude": [],
   "references": []
 }

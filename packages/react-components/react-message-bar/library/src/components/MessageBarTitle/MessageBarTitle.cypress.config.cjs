@@ -10,6 +10,7 @@ const webpack = baseConfig.component.devServer.webpackConfig;
 module.exports = {
   ...baseConfig,
   retries: 0,
+  downloadsFolder: path.join(__dirname, '.cypress-downloads'),
   screenshotOnRunFailure: false,
   video: false,
   component: {

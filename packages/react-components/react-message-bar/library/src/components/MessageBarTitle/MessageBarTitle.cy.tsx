@@ -312,6 +312,90 @@ describe('MessageBarTitle edge and accessibility contracts', () => {
       expect(result.violations.map(({ id, nodes }) => ({ id, nodes: nodes.map(node => node.html) }))).to.deep.equal([]);
     });
   });
+
+  it('characterizes an unpaired explicit title id and recovers its naming on the same mounted roots', () => {
+    const tree = (titleProps: MessageBarTitleProps = {}, props: MessageBarProps = {}) =>
+      wrap(composition(props, titleProps));
+    mount(tree()).then(({ rerender }) => {
+      cy.get(message).then(parent => {
+        cy.get(title).then(element => {
+          const parentNode = parent[0];
+          const titleNode = element[0];
+          const generated = titleNode.id;
+          assertNaming();
+          cy.then(() => rerender(tree({ id: 'unpaired-title' })));
+          cy.get(title).should('have.id', 'unpaired-title').and('have.text', 'Service notice');
+          cy.get(message).should(current => {
+            expect(current[0]).to.equal(parentNode);
+            expect(current[0].getAttribute('aria-labelledby')).to.equal(generated);
+            expect(current[0].ownerDocument.getElementById(generated), 'missing generated naming target').to.equal(
+              null,
+            );
+            expect(computeAccessibleName(current[0]), 'unpaired default group has no accessible name').to.equal('');
+          });
+          cy.get(title).should(current => expect(current[0]).to.equal(titleNode));
+          cy.then(() => rerender(tree({ id: 'unpaired-title' }, { 'aria-label': 'Fallback notice' })));
+          cy.get(message).should(current => {
+            expect(current[0].getAttribute('aria-labelledby')).to.equal(generated);
+            expect(current[0].ownerDocument.getElementById(generated)).to.equal(null);
+            expect(computeAccessibleName(current[0]), 'invalid reference permits explicit label fallback').to.equal(
+              'Fallback notice',
+            );
+          });
+          cy.then(() => rerender(tree({ id: 'unpaired-title' }, { 'aria-labelledby': 'unpaired-title' })));
+          assertNaming();
+          cy.get(message).should('not.have.attr', 'aria-label');
+          cy.get(message).should(current => expect(current[0]).to.equal(parentNode));
+          cy.get(title).should(current => expect(current[0]).to.equal(titleNode));
+          cy.then(() => rerender(tree()));
+          cy.get(title).should('have.id', generated);
+          assertNaming();
+          cy.get(message).should(current => expect(current[0]).to.equal(parentNode));
+          cy.get(title).should(current => expect(current[0]).to.equal(titleNode));
+        });
+      });
+    });
+  });
+
+  it('uses a valid body naming reference when an explicit title id leaves another reference unresolved', () => {
+    const tree = (generated?: string, paired = false) =>
+      wrap(
+        <MessageBar
+          data-testid="message"
+          {...(generated ? { 'aria-labelledby': `${paired ? 'explicit-title' : generated} fallback-body` } : {})}
+        >
+          <MessageBarBody>
+            <MessageBarTitle data-testid="title" {...(generated ? { id: 'explicit-title' } : {})}>
+              Service notice
+            </MessageBarTitle>
+            <span id="fallback-body">Body fallback</span>
+          </MessageBarBody>
+        </MessageBar>,
+      );
+    mount(tree()).then(({ rerender }) => {
+      cy.get(title).then(element => {
+        const node = element[0];
+        const generated = node.id;
+        assertNaming();
+        cy.then(() => rerender(tree(generated)));
+        cy.get(message).should(current => {
+          expect(current[0].getAttribute('aria-labelledby')).to.equal(`${generated} fallback-body`);
+          expect(current[0].ownerDocument.getElementById(generated)).to.equal(null);
+          expect(computeAccessibleName(current[0])).to.equal('Body fallback');
+        });
+        cy.get(title).should('have.id', 'explicit-title');
+        cy.then(() => rerender(tree(generated, true)));
+        cy.get(message).should(current => {
+          expect(current[0].getAttribute('aria-labelledby')).to.equal('explicit-title fallback-body');
+          expect(computeAccessibleName(current[0])).to.equal('Service notice Body fallback');
+        });
+        cy.get(title).should(current => expect(current[0]).to.equal(node));
+        cy.then(() => rerender(tree()));
+        cy.get(title).should('have.id', generated);
+        assertNaming();
+      });
+    });
+  });
 });
 
 describe('MessageBarTitle documented context and geometry', () => {

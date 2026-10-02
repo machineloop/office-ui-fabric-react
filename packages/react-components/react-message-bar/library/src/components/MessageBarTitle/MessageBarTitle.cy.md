@@ -58,12 +58,33 @@ not a recommendation to exceed the best-practice short-message guidance.
 An explicit native title `id` overrides the generated id; callers must also set
 the parent's `aria-labelledby` to that id. Automatic reconciliation of arbitrary
 caller ids is not implemented by MessageBar and is outside this directory's scope.
+The refinement characterizes that limitation on the same mounted parent and title:
+an unpaired native title id leaves the parent's generated `aria-labelledby`
+reference unresolved. The default group in that fixture has an empty computed
+accessible name; this is not a universal no-name claim. An explicit `aria-label`
+can supply a fallback, and a valid body id in a multi-id `aria-labelledby` supplies
+the body name while the missing reference is ignored. Pairing the parent reference
+with the explicit title id restores title naming, and removing both overrides
+restores the original generated association without remounting. This characterizes
+existing native-prop precedence, not automatic id reconciliation or a verified
+broken title contract.
 
-Final Chrome run: 50/50 passing, zero retries, pending or skipped cases. The
+Original Chrome run: 50/50 passing, zero retries, pending or skipped cases. The
 independent adversarial review's tabIndex-removal gap is closed with real forward
 and reverse Tab traversal and a positive focusability control before removal.
 Computed font-weight assertions normalize numeric theme tokens to CSS strings;
-custom typography uses the Theme's numeric weight type. The final typecheck
+custom typography uses the Theme's numeric weight type. The original typecheck
 reports only the two pre-existing FluentProvider TS2741/TS7026 diagnostics, with
 no MessageBarTitle diagnostics. Browser evidence is in the session artifact
 `files\title-final.log`. No production changes were needed.
+
+Queued refinement preserves all 50 original cases and adds the two naming
+characterizations above. The component-local source-importing type project now
+includes a React global JSX bridge, following the other coverage runners rather
+than substituting built declarations. Fresh refinement evidence is recorded in
+`46-MessageBarTitle-refinement-final-browser.log` and
+`46-MessageBarTitle-refinement-final-source-tsc.log` in the session artifacts.
+The fresh refinement run passes 52/52 in Chrome with zero retries, failures,
+pending or skipped cases, and zero source type diagnostics. All 46 production
+source fingerprints remain unchanged. Independent whole-suite adversarial review
+and final whole-suite closure are clean. No production changes were made.
