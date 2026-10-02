@@ -658,6 +658,13 @@ describe('Accordion source and conformance contracts', () => {
     cy.get('#header-c').should('have.attr', 'aria-disabled', 'true');
     cy.get('#collapse').realClick();
     cy.get('#header-c').should('not.have.attr', 'aria-disabled');
+    cy.get('#header-c')
+      .closest('.fui-Accordion')
+      .should($root => {
+        expect(
+          $root[0].getAnimations({ subtree: true }).filter(animation => animation.playState === 'running'),
+        ).to.have.length(0);
+      });
     cy.get('#header-c').realClick();
     expanded('c', false);
   });

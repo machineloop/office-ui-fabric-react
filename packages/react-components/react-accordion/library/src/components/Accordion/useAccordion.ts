@@ -122,15 +122,25 @@ function updateOpenItems<Value = AccordionItemValue>(
   if (multiple) {
     if (previousOpenItems.includes(value)) {
       if (previousOpenItems.length > 1 || collapsible) {
-        return previousOpenItems.filter(i => i !== value);
+        return previousOpenItems.filter(i => !isSameItemValue(i, value));
       }
     } else {
-      return [...previousOpenItems, value].sort();
+      const nextOpenItems = [...previousOpenItems, value];
+      // Preserve legacy primitive ordering without coercing opaque item identities.
+      return nextOpenItems.every(isSortablePrimitive) ? nextOpenItems.sort() : nextOpenItems;
     }
   } else {
-    return previousOpenItems[0] === value && collapsible ? [] : [value];
+    return previousOpenItems.length > 0 && isSameItemValue(previousOpenItems[0], value) && collapsible ? [] : [value];
   }
   return previousOpenItems;
+}
+
+function isSameItemValue(left: unknown, right: unknown) {
+  return left === right || Object.is(left, right);
+}
+
+function isSortablePrimitive(value: unknown) {
+  return value === null || (typeof value !== 'object' && typeof value !== 'function' && typeof value !== 'symbol');
 }
 
 /**

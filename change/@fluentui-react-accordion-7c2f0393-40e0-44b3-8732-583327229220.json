@@ -1,0 +1,7 @@
+{
+  "type": "patch",
+  "comment": "fix: preserve undefined, NaN and opaque item identities during expansion and closure",
+  "packageName": "@fluentui/react-accordion",
+  "email": "223556219+Copilot@users.noreply.github.com",
+  "dependentChangeType": "patch"
+}

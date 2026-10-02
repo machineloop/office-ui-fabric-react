@@ -29,6 +29,94 @@ import { useAccordionPanelBase_unstable, renderAccordionPanel_unstable } from '.
 import type { AccordionPanelBaseProps, AccordionPanelState } from '../AccordionPanel';
 
 describe('useAccordion_unstable', () => {
+  it.each([false, true])('opens and closes NaN identities consistently when multiple=%p', multiple => {
+    const { result } = renderHook(() => useAccordion_unstable({ multiple, collapsible: true }, React.createRef()));
+    act(() => result.current.requestToggle({ value: NaN, event: undefined! }));
+    expect(result.current.openItems).toEqual([NaN]);
+    act(() => result.current.requestToggle({ value: NaN, event: undefined! }));
+    expect(result.current.openItems).toEqual([]);
+  });
+
+  it('preserves symbol and opaque identities without invoking string conversion', () => {
+    const symbol = Symbol('section');
+    const stringify = jest.fn(() => {
+      throw new Error('Do not coerce identities');
+    });
+    const opaque = { toString: stringify };
+    const { result } = renderHook(() =>
+      useAccordion_unstable({ multiple: true, collapsible: true }, React.createRef()),
+    );
+    act(() => result.current.requestToggle({ value: symbol, event: undefined! }));
+    act(() => result.current.requestToggle({ value: opaque, event: undefined! }));
+    expect(result.current.openItems).toEqual([symbol, opaque]);
+    expect(stringify).not.toHaveBeenCalled();
+    act(() => result.current.requestToggle({ value: symbol, event: undefined! }));
+    expect(result.current.openItems).toEqual([opaque]);
+    act(() => result.current.requestToggle({ value: opaque, event: undefined! }));
+    expect(result.current.openItems).toEqual([]);
+  });
+
+  it('retains existing string ordering and treats negative and positive zero as the same identity', () => {
+    const { result } = renderHook(() =>
+      useAccordion_unstable({ multiple: true, collapsible: true }, React.createRef()),
+    );
+    act(() => result.current.requestToggle({ value: 'b', event: undefined! }));
+    act(() => result.current.requestToggle({ value: 'a', event: undefined! }));
+    expect(result.current.openItems).toEqual(['a', 'b']);
+    act(() => result.current.requestToggle({ value: -0, event: undefined! }));
+    act(() => result.current.requestToggle({ value: 0, event: undefined! }));
+    expect(result.current.openItems).toEqual(['a', 'b']);
+  });
+
+  it.each([undefined, []])('opens and closes an undefined identity from empty default %p', defaultOpenItems => {
+    const onToggle = jest.fn();
+    const { result } = renderHook(() =>
+      useAccordion_unstable({ defaultOpenItems, collapsible: true, onToggle }, React.createRef()),
+    );
+    expect(result.current.openItems).toEqual([]);
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([undefined]);
+    expect(onToggle.mock.calls[0][1]).toEqual({ value: undefined, openItems: [undefined] });
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([]);
+    expect(onToggle.mock.calls[1][1]).toEqual({ value: undefined, openItems: [] });
+  });
+
+  it('requests an undefined identity from controlled empty state and closes after owner acceptance', () => {
+    const onToggle = jest.fn();
+    const { result, rerender } = renderHook(
+      ({ openItems }: { openItems: unknown[] }) =>
+        useAccordion_unstable({ openItems, collapsible: true, onToggle }, React.createRef()),
+      { initialProps: { openItems: [] as unknown[] } },
+    );
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([]);
+    expect(onToggle.mock.calls[0][1]).toEqual({ value: undefined, openItems: [undefined] });
+    rerender({ openItems: [undefined] });
+    expect(result.current.openItems).toEqual([undefined]);
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([undefined]);
+    expect(onToggle.mock.calls[1][1]).toEqual({ value: undefined, openItems: [] });
+    rerender({ openItems: [] });
+    expect(result.current.openItems).toEqual([]);
+  });
+
+  it('retains a sole undefined identity when noncollapsible and after switching to multiple', () => {
+    const { result, rerender } = renderHook(
+      ({ multiple }) => useAccordion_unstable({ defaultOpenItems: [], multiple }, React.createRef()),
+      { initialProps: { multiple: false } },
+    );
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([undefined]);
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([undefined]);
+    rerender({ multiple: true });
+    act(() => result.current.requestToggle({ value: undefined, event: undefined! }));
+    expect(result.current.openItems).toEqual([undefined]);
+    act(() => result.current.requestToggle({ value: 'a', event: undefined! }));
+    expect(result.current.openItems).toEqual(['a', undefined]);
+  });
+
   it('preserves an empty default when multiple changes before the first toggle', () => {
     const { result, rerender } = renderHook(
       ({ multiple }) => useAccordion_unstable({ defaultOpenItems: [], multiple }, React.createRef()),
