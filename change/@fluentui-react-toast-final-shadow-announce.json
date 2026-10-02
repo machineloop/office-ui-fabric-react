@@ -1,0 +1,6 @@
+{
+  "type": "patch",
+  "comment": "Retain focused-toast announcement suppression when a custom mount node belongs to a shadow tree.",
+  "packageName": "@fluentui/react-toast",
+  "email": "jabrassi+odspmdb@microsoft.com"
+}

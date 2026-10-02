@@ -21,7 +21,8 @@ export function useToastAnnounce(
   const elementRef = React.useRef<HTMLDivElement | null>(null);
   const announceToast = React.useCallback<Announce>(
     (message, options) => {
-      const activeElement = elementRef.current?.ownerDocument.activeElement;
+      const root = elementRef.current?.getRootNode() as Document | ShadowRoot | undefined;
+      const activeElement = root?.activeElement;
       const focused = focusScope
         ? activeElement?.closest('[data-toaster-focus-scope]')?.getAttribute('data-toaster-focus-scope') === focusScope
         : !!activeElement && !!elementRef.current?.contains(activeElement);

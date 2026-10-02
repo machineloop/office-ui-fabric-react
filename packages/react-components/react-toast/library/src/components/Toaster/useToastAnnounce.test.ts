@@ -65,4 +65,28 @@ describe('useToastAnnounce', () => {
     otherPosition.remove();
     toaster.removeAttribute('data-toaster-focus-scope');
   });
+
+  it('retains focus suppression when a custom mount node belongs to a shadow tree', () => {
+    const host = document.createElement('div');
+    const shadow = host.attachShadow({ mode: 'open' });
+    const position = document.createElement('div');
+    const action = document.createElement('button');
+    position.setAttribute('data-toaster-focus-scope', 'shadow');
+    position.append(action);
+    shadow.append(position);
+    document.body.append(host);
+    const announce = jest.fn();
+    const { result, unmount } = renderHook(() => useToastAnnounce(announce, 'shadow'));
+    result.current.toasterRef(position);
+    action.focus();
+    expect(document.activeElement).toBe(host);
+    expect(shadow.activeElement).toBe(action);
+    result.current.announceToast('suppressed', { politeness: 'assertive' });
+    expect(announce).not.toHaveBeenCalled();
+    outside.focus();
+    result.current.announceToast('outside', { politeness: 'polite' });
+    expect(announce).toHaveBeenCalledWith('outside', { politeness: 'polite' });
+    unmount();
+    host.remove();
+  });
 });

@@ -23,6 +23,13 @@ const positions: ToastPosition[] = ['top-start', 'top-end', 'bottom-start', 'bot
 const stack = '.fui-Toaster';
 const item = (id: string) => `[data-testid="item-${id}"]`;
 const action = (id: string) => `[data-testid="action-${id}"]`;
+const ownedShadowHosts: HTMLElement[] = [];
+afterEach(() => {
+  for (const host of ownedShadowHosts) {
+    host.remove();
+  }
+  ownedShadowHosts.length = 0;
+});
 function testRoot(id: string) {
   return { 'data-testid': id } as React.HTMLAttributes<HTMLDivElement> & { 'data-testid': string };
 }
@@ -359,6 +366,42 @@ describe('Toaster source and conformance gaps', () => {
     cy.get('@firstInstanceAnnounce').should('have.been.calledOnce');
     cy.get('@secondInstanceAnnounce').should('have.been.calledTwice');
     cy.get('@secondInstanceAnnounce').its('lastCall.args.0').should('contain', 'Notice shared-announced');
+  });
+
+  it('retains announcement suppression for a custom mount node inside a shadow tree', () => {
+    cy.document().then(doc => {
+      const host = doc.createElement('div');
+      host.id = 'announcer-shadow-host';
+      const shadow = host.attachShadow({ mode: 'open' });
+      const mountNode = doc.createElement('div');
+      shadow.appendChild(mountNode);
+      doc.body.appendChild(host);
+      ownedShadowHosts.push(host);
+      const announce = cy.stub().as('shadowAnnounce');
+      const ref = setup({ announce, mountNode });
+      cy.then(() => ref.current!.notify('shadow-focused', { position: 'bottom-end' }));
+      cy.get('#announcer-shadow-host').shadow().find(action('shadow-focused')).should('be.visible').focus();
+      cy.get('#announcer-shadow-host')
+        .shadow()
+        .find(action('shadow-focused'))
+        .should($node => {
+          expect(shadow.activeElement).to.equal($node[0]);
+          expect(doc.activeElement).to.equal(host);
+        });
+      cy.get('@shadowAnnounce').should('have.been.calledOnce');
+      cy.then(() => ref.current!.notify('shadow-same-position', { position: 'bottom-end', intent: 'error' }));
+      cy.get('#announcer-shadow-host').shadow().find(item('shadow-same-position')).should('be.visible');
+      cy.then(() => ref.current!.notify('shadow-new-position', { position: 'top-start', intent: 'error' }));
+      cy.get('#announcer-shadow-host').shadow().find(item('shadow-new-position')).should('be.visible');
+      cy.get('@shadowAnnounce').should('have.been.calledOnce');
+      cy.get('#outside').focus();
+      cy.then(() => ref.current!.notify('shadow-restored', { position: 'top-start', intent: 'error' }));
+      cy.get('#announcer-shadow-host').shadow().find(item('shadow-restored')).should('be.visible');
+      cy.get('@shadowAnnounce')
+        .should('have.been.calledTwice')
+        .its('lastCall.args.0')
+        .should('contain', 'Notice shadow-restored');
+    });
   });
 
   for (const intent of ['info', 'success', 'warning', 'error'] as const) {

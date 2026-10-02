@@ -40,6 +40,13 @@ checks actual focus in the position's owning document against the private
 instance scope, rather than per-position event state. Native callback assertions
 do not claim screen-reader certification.
 
+A directly coupled preservation scenario brings the suite to 61: custom
+`mountNode` may be inside a shadow tree, where `document.activeElement` is the
+host rather than the focused toast action. Focus is read from the position's
+own document or shadow root. Same-position and newly mounted cross-position
+announcements remain suppressed until outside focus, with actual DOM focus
+and callback counts asserted. Fixture-owned shadow hosts are cleaned up.
+
 Independent adversarial review identified and refined these source-grounded
 regressions. Repairs address each:
 
