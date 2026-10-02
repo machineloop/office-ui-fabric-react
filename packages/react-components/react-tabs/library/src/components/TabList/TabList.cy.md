@@ -30,7 +30,7 @@ TabList context consumer. This is not a claim to exhaust arbitrary inputs.
 
 - Empty and singleton lists; native attributes, event bubbling/latest handlers,
   primary root props/render function, forwarded/composed refs and cleanup.
-- Default-state initialization versus subsequent changes; controlled precedence;
+- Default-state initialization versus subsequent changes; controlled selection;
   primitive and stable object identity selection; registry/current/previous
   selection through the public context hook.
 - Context boundaries, design-prop consumption, dynamic supported variants and
@@ -89,7 +89,26 @@ in TabList-evidence.json in the assigned session files directory.
 Accessibility coverage uses observable roles, names, relationships and focus,
 not axe or screen-reader certification.
 
-The complete browser suite contains 85 cases. Suite type checking has no
+## Mutation-derived controlled-value coverage
+
+Four cases exercise controlled `0`, `false`, `''` and `null` values, which the
+previous primitive-payload cases exercised only in uncontrolled lists. Each case
+uses only `selectedValue`, checks initial falsy identity, refusal to change
+selection on clicks without consumer acceptance, exact click callback values and
+targets, and external transitions to a truthy value and back without callback
+emission. After an external update, clicks use the latest callback rather than
+the original handler; repeated selection still reports the exact falsy value.
+The truthy tab is an ordinary choice, not a default. These positive controls
+distinguish valid falsy controlled state from an uncontrolled fallback.
+
+Independent review corrected the original four fixtures, which combined
+`selectedValue` with `defaultSelectedValue` and triggered the development error
+for unsupported controlled/uncontrolled props. That combination does not
+establish a supported precedence contract. Its earlier mutation evidence is
+superseded by a fresh full baseline, controlled-falsy mutant run and restored
+baseline using valid controlled props.
+
+The complete browser suite contains 89 cases. Suite type checking has no
 TabList-owned diagnostics but remains blocked by two independently reproduced
 provider diagnostics: renderFluentProvider.tsx TS2741 at 42:16 and TS7026 at 47:25.
 The reproduction used a temporary TabList-local configuration including only

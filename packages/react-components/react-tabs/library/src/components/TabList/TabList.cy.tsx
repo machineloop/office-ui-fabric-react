@@ -786,6 +786,97 @@ describe('TabList unit and source contracts', () => {
     });
   }
 
+  for (const value of [0, false, '', null]) {
+    it(`accepts controlled ${JSON.stringify(value)} with refusal, external updates and latest callbacks`, () => {
+      const onTabSelect = cy.stub().as('select');
+      const latestOnTabSelect = cy.stub().as('latestSelect');
+      const Controlled = () => {
+        const [selectedValue, setSelectedValue] = React.useState<unknown>(value);
+        const [useLatestHandler, setUseLatestHandler] = React.useState(false);
+        return (
+          <FluentProvider theme={teamsLightTheme}>
+            <button
+              data-testid="truthy"
+              onClick={() => {
+                setSelectedValue('initial');
+                setUseLatestHandler(true);
+              }}
+            >
+              Select truthy value
+            </button>
+            <button data-testid="falsy" onClick={() => setSelectedValue(value)}>
+              Restore falsy value
+            </button>
+            <TabList
+              data-testid="list"
+              aria-label="Controlled primitives"
+              selectedValue={selectedValue}
+              onTabSelect={useLatestHandler ? latestOnTabSelect : onTabSelect}
+            >
+              <Tab value="initial" data-testid="tab-a">
+                Truthy
+              </Tab>
+              <Tab value={value} data-testid="tab-b">
+                Falsy
+              </Tab>
+            </TabList>
+          </FluentProvider>
+        );
+      };
+      mount(<Controlled />);
+      selected('b');
+      cy.get('@select').should('not.have.been.called');
+      cy.get(tab('a')).click();
+      selected('b');
+      cy.get('@select')
+        .should('have.been.calledOnce')
+        .its('lastCall.args')
+        .should(args => {
+          expect(args).to.have.length(2);
+          expect(args[0].type).to.equal('click');
+          expect(args[0].target.closest('[role="tab"]').getAttribute('data-testid')).to.equal('tab-a');
+          expect(args[1]).to.deep.equal({ value: 'initial' });
+        });
+      cy.get('@latestSelect').should('not.have.been.called');
+      cy.get('[data-testid="truthy"]').click();
+      selected('a');
+      cy.get('@select').should('have.been.calledOnce');
+      cy.get('@latestSelect').should('not.have.been.called');
+      cy.get(tab('b')).click();
+      selected('a');
+      cy.get('@latestSelect')
+        .should('have.been.calledOnce')
+        .its('lastCall.args')
+        .should(args => {
+          expect(args).to.have.length(2);
+          expect(args[0].type).to.equal('click');
+          expect(args[0].target.closest('[role="tab"]').getAttribute('data-testid')).to.equal('tab-b');
+          expect(args[1]).to.deep.equal({ value });
+        });
+      cy.get('[data-testid="falsy"]').click();
+      selected('b');
+      cy.get('@select').should('have.been.calledOnce');
+      cy.get('@latestSelect').should('have.been.calledOnce');
+      cy.get(tab('b')).click();
+      selected('b');
+      cy.get('@latestSelect')
+        .should('have.been.calledTwice')
+        .its('lastCall.args')
+        .should(args => {
+          expect(args).to.have.length(2);
+          expect(args[0].type).to.equal('click');
+          expect(args[0].target.closest('[role="tab"]').getAttribute('data-testid')).to.equal('tab-b');
+          expect(args[1]).to.deep.equal({ value });
+        });
+      cy.get(tab('a')).click();
+      selected('b');
+      cy.get('@latestSelect').should('have.been.calledThrice').its('lastCall.args.1').should('deep.equal', {
+        value: 'initial',
+      });
+      cy.get('@select').should('have.been.calledOnce');
+    });
+  }
+
   it('selects serializable objects by reference, not by JSON equivalence', () => {
     const first = { id: 'a' };
     const second = { id: 'b' };
