@@ -12,6 +12,7 @@ import type { ActiveDescendantImperativeRef } from '@fluentui/react-aria';
 import { ListboxContext } from '../../contexts/ListboxContext';
 import type { ListboxContextValue } from '../../contexts/ListboxContext';
 import { useOptionCollection } from '../../utils/useOptionCollection';
+import type { OptionValue } from '../../utils/OptionCollection.types';
 import { Option } from './Option';
 import { optionClassNames } from './useOptionStyles.styles';
 
@@ -682,6 +683,93 @@ describe('Option - unit-derived lifecycle and event scenarios', () => {
         .then($updated => expect($updated[0]).to.equal(element));
     });
     cy.get('@register').should('have.been.calledTwice');
+  });
+
+  it('transfers stable Option data and its DOM ref when only the context registry reference changes', () => {
+    const oldEntries = new Map<string, OptionValue>();
+    const newEntries = new Map<string, OptionValue>();
+    const oldCleanup = cy.stub().callsFake(() => oldEntries.delete('registry'));
+    const newCleanup = cy.stub().callsFake(() => newEntries.delete('registry'));
+    const oldRegister = cy.stub().callsFake((data: OptionValue) => {
+      oldEntries.set(data.id, data);
+      return oldCleanup;
+    });
+    const newRegister = cy.stub().callsFake((data: OptionValue) => {
+      newEntries.set(data.id, data);
+      return newCleanup;
+    });
+    const select = cy.stub();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const Fixture = () => {
+      const [step, setStep] = React.useState(0);
+      return (
+        <ListboxContext.Provider
+          value={{
+            ...contextDefaults,
+            registerOption: step < 2 ? oldRegister : newRegister,
+            selectOption: select,
+          }}
+        >
+          <button id="update" onClick={() => setStep(step + 1)}>
+            Update
+          </button>
+          {step < 3 && (
+            <Option id="registry" value="key" text="Text" ref={rootRef}>
+              Content
+            </Option>
+          )}
+        </ListboxContext.Provider>
+      );
+    };
+    mount(<Fixture />);
+    option('registry').then($option => {
+      const element = $option[0];
+      const data: OptionValue = oldRegister.firstCall.args[0];
+      expect(data).to.deep.equal({ id: 'registry', text: 'Text', value: 'key', disabled: undefined });
+      expect(oldRegister).to.have.been.calledTwice;
+      expect(oldCleanup).to.have.been.calledOnce;
+      expect(oldEntries.get('registry')).to.equal(data);
+      expect(oldRegister.secondCall.args).to.deep.equal([data, element]);
+      expect(rootRef.current).to.equal(element);
+      cy.get('#update').click();
+      cy.then(() => {
+        expect(oldRegister).to.have.been.calledTwice;
+        expect(oldCleanup).to.have.been.calledOnce;
+        expect(newRegister).not.to.have.been.called;
+        expect(newEntries.size).to.equal(0);
+      });
+      cy.get('#update').click();
+      option('registry').should('have.attr', 'aria-selected', 'false');
+      option('registry').then($updated => expect($updated[0]).to.equal(element));
+      cy.then(() => {
+        expect(oldCleanup).to.have.been.calledTwice;
+        expect(newRegister).to.have.been.calledOnce;
+        expect(oldCleanup.secondCall.calledBefore(newRegister.firstCall)).to.equal(true);
+        expect(oldEntries.size).to.equal(0);
+        expect(newEntries.size).to.equal(1);
+        expect(newEntries.get('registry')).to.equal(data);
+        expect(newRegister.firstCall.args[0]).to.equal(data);
+        expect(newRegister.firstCall.args[1]).to.equal(element);
+        expect(rootRef.current).to.equal(element);
+      });
+      option('registry').click().should('have.attr', 'aria-selected', 'false');
+      cy.then(() => {
+        expect(select).to.have.been.calledOnce;
+        expect(select.firstCall.args[1]).to.equal(data);
+        expect(oldRegister).to.have.been.calledTwice;
+        expect(newRegister).to.have.been.calledOnce;
+      });
+      cy.get('#update').click();
+      option('registry').should('not.exist');
+      cy.then(() => {
+        expect(newCleanup).to.have.been.calledOnce;
+        expect(oldCleanup).to.have.been.calledTwice;
+        expect(oldEntries.size).to.equal(0);
+        expect(newEntries.size).to.equal(0);
+        expect(rootRef.current).to.equal(null);
+        expect(element.isConnected).to.equal(false);
+      });
+    });
   });
 
   it('updates registration text and default value when string children change, without leaving stale collection entries', () => {

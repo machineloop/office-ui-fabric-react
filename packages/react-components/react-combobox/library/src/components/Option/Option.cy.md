@@ -24,7 +24,7 @@ there is no standalone Option selection state or `closeOnSelect` Option prop.
 
 ## Browser scenarios
 
-The suite contains 53 cases in three groups:
+The suite contains 54 cases in three groups:
 
 1. **Documentation (11):** standalone rendering without local selection,
    string/complex/explicit text and values, empty value, authoritative parent
@@ -36,14 +36,15 @@ The suite contains 53 cases in three groups:
    native attributes and check render functions; mouse handlers and
    mousedown preventDefault; three sizes; light/dark check colors; LTR/RTL
    rectangles and check hit targets; active-descendant outline; forced colors.
-3. **Unit-derived/lifecycle (24):** registration data/ref/cleanup ordering,
+3. **Unit-derived/lifecycle (25):** registration data/ref/cleanup ordering,
    stable identities, updated child-text collection and zero entries after
    removal, memoized callback data/order, disabled default prevention, native
    onClick cancellation semantics, nearest context and dynamic selection/mode,
    latest native/context callbacks, updated text/value/disabled in both parent
    controls, removed/re-added IDs, empty explicit text, invalid missing-text
    runtime diagnostic, Combobox multiselect, changed-text typeahead and enabled
-   hover versus disabled/native styles; four real Tab/Shift+Tab parent cases,
+   hover versus disabled/native styles; registry-reference replacement with
+   stable Option props, data and DOM identity; four real Tab/Shift+Tab parent cases,
    multiselect Escape checks, two Combobox typed-text Escape cases (normal and
    freeform), and generated Combobox portal IDs with selection/reopen identity.
 
@@ -63,6 +64,12 @@ The suite contains 53 cases in three groups:
 - Shared mounting uses StrictMode. Initial registration occurs twice with one
   cleanup between them; unrelated rerenders add no registration. A data change
   cleans up before registering new data, and removal cleans up the final entry.
+  Changing only the context's `registerOption` reference also cleans up the old
+  registry before registering the same memoized data and actual DOM element in
+  the new registry. The replacement test checks both registries, forwarded ref,
+  click-data identity and final cleanup, with an unrelated rerender as a positive
+  control. Its context owns selection throughout; clicking does not introduce
+  local Option selection state or mix controlled and default parent props.
 - Options may remain mounted but hidden after Escape. Hidden DOM presence is not
   asserted as an accessible, open popup. Multiselect Escape preserves the exact
   DOM nodes, checked state and checks; reopen and Enter deselection verify the
