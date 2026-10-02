@@ -98,6 +98,54 @@ describe('AccordionItem documented ownership stories', () => {
 });
 
 describe('AccordionItem native and identity boundaries', () => {
+  for (const [slotDisabled, initiallyOpen] of [
+    [false, false],
+    [undefined, true],
+  ] as const) {
+    it(`keeps its ${
+      initiallyOpen ? 'open' : 'closed'
+    } state disabled despite a header slot override and recovers when enabled`, () => {
+      const toggle = cy.spy().as('itemDisabledOverrideToggle');
+      function Fixture() {
+        const [disabled, setDisabled] = React.useState(true);
+        return (
+          <>
+            <button id="enable-owner" onClick={() => setDisabled(false)}>
+              Enable owner
+            </button>
+            <Accordion multiple collapsible defaultOpenItems={initiallyOpen ? ['a'] : []} onToggle={toggle}>
+              <AccordionItem value="a" disabled={disabled}>
+                <AccordionHeader button={{ id: 'header-a', disabled: slotDisabled }}>Section a</AccordionHeader>
+                <AccordionPanel id="panel-a">Content a</AccordionPanel>
+              </AccordionItem>
+              {item('b', 'b')}
+            </Accordion>
+          </>
+        );
+      }
+      render(<Fixture />);
+      cy.get('#header-a').should('be.disabled').realClick();
+      expanded('a', initiallyOpen);
+      cy.get('#enable-owner').focus();
+      cy.get('#header-a').then($node => $node[0].focus());
+      cy.get('#enable-owner').should('be.focused');
+      cy.realPress('Tab');
+      cy.get('#header-b').should('be.focused');
+      cy.get('@itemDisabledOverrideToggle').should('not.have.been.called');
+      cy.realPress('Enter');
+      expanded('b', true);
+      expanded('a', initiallyOpen);
+      cy.get('@itemDisabledOverrideToggle').should('have.been.calledOnce');
+      cy.get('#enable-owner').realClick();
+      cy.get('#header-a').should('not.be.disabled').focus();
+      cy.realPress('Space');
+      expanded('a', !initiallyOpen);
+      expanded('b', true);
+      cy.get('@itemDisabledOverrideToggle').should('have.been.calledTwice');
+      cy.get('#panel-a').should(initiallyOpen ? 'not.exist' : 'be.visible');
+    });
+  }
+
   for (const key of ['Enter', 'Space'] as const) {
     it(`opens the owning item with native ${key} without changing sibling ownership`, () => {
       const toggle = cy.spy().as('toggle');
@@ -452,6 +500,7 @@ describe('AccordionItem source and conformance contracts', () => {
     render(<Owner />);
     cy.get('#header-a').realClick();
     expanded('a', true);
+    settledPanel('#panel-a');
     cy.get('#disable').realClick();
     cy.get('#header-a').should('be.disabled').realClick();
     expanded('a', true);

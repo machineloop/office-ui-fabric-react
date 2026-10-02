@@ -1,5 +1,14 @@
 # AccordionItem browser coverage
 
+The final gate adds two item-owned disability regressions (35 scenarios total).
+A closed item with header-slot `disabled: false` and an open item with an explicitly
+undefined slot disability remain owner-disabled: pointer attempts preserve
+expansion, the native header rejects focus, and Tab skips to an enabled sibling.
+Native Enter toggles only the sibling. Enabling the owner on the same mounted
+fixture restores native Space expansion/collapse while retaining sibling state.
+The directly coupled AccordionHeader repair enforces inherited disability; no
+AccordionItem production policy is replaced.
+
 The component-local runner discovers the story-suffixed browser fixture with
 Chrome and zero retries, independently of the normal library build.
 
