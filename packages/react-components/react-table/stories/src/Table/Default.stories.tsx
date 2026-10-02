@@ -69,7 +69,7 @@ const columns = [
 
 export const Default = (): JSXElement => {
   return (
-    <Table arial-label="Default table" style={{ minWidth: '510px' }}>
+    <Table aria-label="Default table" style={{ minWidth: '510px' }}>
       <TableHeader>
         <TableRow>
           {columns.map(column => (
