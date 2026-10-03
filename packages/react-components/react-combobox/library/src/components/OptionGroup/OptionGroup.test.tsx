@@ -36,4 +36,24 @@ describe('OptionGroup', () => {
 
     expect(root.getAttribute('aria-labelledby')).toEqual(label.id);
   });
+
+  it('uses a consumer label slot ID for the group accessible name', () => {
+    const { getByRole, getByText } = render(
+      <OptionGroup label={{ id: 'consumer-label', children: 'Land' }}>Cat</OptionGroup>,
+    );
+    expect(getByRole('group', { name: 'Land' }).getAttribute('aria-labelledby')).toBe('consumer-label');
+    expect(getByText('Land').id).toBe('consumer-label');
+  });
+
+  it('preserves an explicit aria-labelledby override', () => {
+    const { getByRole } = render(
+      <>
+        <span id="external-name">External name</span>
+        <OptionGroup label={{ id: 'consumer-label', children: 'Land' }} aria-labelledby="external-name">
+          Cat
+        </OptionGroup>
+      </>,
+    );
+    expect(getByRole('group', { name: 'External name' }).getAttribute('aria-labelledby')).toBe('external-name');
+  });
 });

@@ -14,6 +14,13 @@ import type { OptionGroupProps, OptionGroupState } from './OptionGroup.types';
 export const useOptionGroup_unstable = (props: OptionGroupProps, ref: React.Ref<HTMLElement>): OptionGroupState => {
   const labelId = useId('group-label');
   const { label } = props;
+  const labelSlot = slot.optional(label, {
+    defaultProps: {
+      id: labelId,
+      role: 'presentation',
+    },
+    elementType: 'span',
+  });
 
   return {
     components: {
@@ -27,17 +34,11 @@ export const useOptionGroup_unstable = (props: OptionGroupProps, ref: React.Ref<
         // but since it would be a breaking change to fix it, we are casting ref to it's proper type
         ref: ref as React.Ref<HTMLDivElement>,
         role: 'group',
-        'aria-labelledby': label ? labelId : undefined,
+        'aria-labelledby': labelSlot?.id,
         ...props,
       }),
       { elementType: 'div' },
     ),
-    label: slot.optional(label, {
-      defaultProps: {
-        id: labelId,
-        role: 'presentation',
-      },
-      elementType: 'span',
-    }),
+    label: labelSlot,
   };
 };
