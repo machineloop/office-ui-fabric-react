@@ -9,6 +9,7 @@ import {
   useEventCallback,
   useId,
   useMergedRefs,
+  useIsomorphicLayoutEffect,
 } from '@fluentui/react-utilities';
 import { useFluent_unstable } from '@fluentui/react-shared-contexts';
 import { useFieldContext_unstable } from '@fluentui/react-field';
@@ -75,14 +76,21 @@ export const useTagPickerControlBase_unstable = (
     const targetWindow = targetDocument?.defaultView;
 
     if (targetWindow) {
+      if (rafIdRef.current !== null) {
+        targetWindow.cancelAnimationFrame(rafIdRef.current);
+      }
       rafIdRef.current = targetWindow.requestAnimationFrame(() => {
-        innerRef.current?.style.setProperty(tagPickerControlAsideWidthToken, `${entry.contentRect.width}px`);
+        rafIdRef.current = null;
+        if (asideRef.current) {
+          innerRef.current?.style.setProperty(tagPickerControlAsideWidthToken, `${entry.contentRect.width}px`);
+        }
       });
     }
   });
+  const hasAside = Boolean(secondaryAction || expandIcon);
   const aside = slot.optional<ExtractSlotProps<Slot<'span'>>>(undefined, {
     elementType: 'span',
-    renderByDefault: Boolean(secondaryAction || expandIcon),
+    renderByDefault: hasAside,
     defaultProps: {
       ref: observerRef,
     },
@@ -91,8 +99,25 @@ export const useTagPickerControlBase_unstable = (
   if (aside) {
     aside.ref = mergedAsideRefs;
   }
+  useIsomorphicLayoutEffect(() => {
+    if (hasAside) {
+      return;
+    }
+    const targetWindow = targetDocument?.defaultView;
+    if (rafIdRef.current !== null && targetWindow) {
+      targetWindow.cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    const consumerWidth = props.style?.[tagPickerControlAsideWidthToken];
+    if (consumerWidth === undefined) {
+      innerRef.current?.style.removeProperty(tagPickerControlAsideWidthToken);
+    } else {
+      innerRef.current?.style.setProperty(tagPickerControlAsideWidthToken, String(consumerWidth));
+    }
+  }, [hasAside, props.style, targetDocument]);
 
   const handleMouseDown = useEventCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    props.onMouseDown?.(event);
     if (event.isDefaultPrevented()) {
       return;
     }
@@ -142,9 +167,12 @@ export const useTagPickerControlBase_unstable = (
   }
 
   React.useEffect(() => {
-    if (rafIdRef.current && targetDocument?.defaultView) {
-      targetDocument.defaultView.cancelAnimationFrame(rafIdRef.current);
-    }
+    return () => {
+      if (rafIdRef.current !== null && targetDocument?.defaultView) {
+        targetDocument.defaultView.cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+    };
   }, [targetDocument]);
 
   return state;
