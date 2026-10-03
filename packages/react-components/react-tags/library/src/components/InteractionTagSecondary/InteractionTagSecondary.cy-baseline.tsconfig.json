@@ -1,0 +1,6 @@
+{
+  "extends": "./InteractionTagSecondary.cy.tsconfig.json",
+  "include": ["../../index.ts", "./InteractionTagSecondary.cy-jsx.stories.ts"],
+  "exclude": [],
+  "references": []
+}
