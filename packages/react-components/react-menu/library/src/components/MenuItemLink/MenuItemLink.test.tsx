@@ -5,6 +5,9 @@ import { isConformant } from '../../testing/isConformant';
 import { Enter, Space } from '@fluentui/keyboard-keys';
 import { mockUseMenuContext } from '../../testing/mockUseMenuContext';
 import { MenuTriggerContextProvider } from '../../contexts/menuTriggerContext';
+import { useMenuItemLinkBase_unstable, useMenuItemLink_unstable } from './useMenuItemLink';
+import { renderMenuItemLink_unstable } from './renderMenuItemLink';
+import type { MenuItemLinkProps } from './MenuItemLink.types';
 
 jest.mock('../../contexts/menuContext');
 
@@ -32,6 +35,18 @@ describe('MenuItemLink', () => {
   it('renders a default state', () => {
     const result = render(<MenuItemLink href="#">Default MenuItemLink</MenuItemLink>);
     expect(result.container).toMatchSnapshot();
+  });
+
+  it('accepts an object content slot without forwarding it as the native RDFa content attribute', () => {
+    const { getByRole } = render(
+      <MenuItemLink href="#document" content={{ children: 'Resolved content', className: 'consumer-content' }}>
+        Fallback
+      </MenuItemLink>,
+    );
+    const link = getByRole('menuitem');
+    expect(link.textContent).toBe('Resolved content');
+    expect(link.getAttribute('content')).toBeNull();
+    expect(link.querySelector('.consumer-content')).not.toBeNull();
   });
 
   it('should swallow click events is `disabled` prop is set', () => {
@@ -133,5 +148,29 @@ describe('MenuItemLink', () => {
 
     // Assert
     expect(setOpen).toHaveBeenCalledTimes(0);
+  });
+
+  it.each([
+    ['styled', useMenuItemLink_unstable],
+    ['base', useMenuItemLinkBase_unstable],
+  ] as const)('retains internal pointer-focus refs while forwarding the consumer anchor ref (%s)', (_, useHook) => {
+    mockUseMenuContext();
+    const HookLink = React.forwardRef<HTMLAnchorElement, MenuItemLinkProps>((props, ref) =>
+      renderMenuItemLink_unstable(useHook(props, ref)),
+    );
+    const ref = React.createRef<HTMLAnchorElement>();
+    const { getAllByRole } = render(
+      <>
+        <HookLink href="#first">First</HookLink>
+        <HookLink href="#second" ref={ref}>
+          Second
+        </HookLink>
+      </>,
+    );
+    const [first, second] = getAllByRole('menuitem');
+    first.focus();
+    fireEvent.mouseMove(second);
+    expect(second.ownerDocument.activeElement).toBe(second);
+    expect(ref.current).toBe(second);
   });
 });

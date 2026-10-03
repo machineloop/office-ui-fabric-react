@@ -2,7 +2,7 @@
 
 import type * as React from 'react';
 import type { ExtractSlotProps, Slot } from '@fluentui/react-utilities';
-import { getIntrinsicElementProps, slot } from '@fluentui/react-utilities';
+import { getIntrinsicElementProps, slot, useMergedRefs } from '@fluentui/react-utilities';
 import type { MenuItemLinkProps, MenuItemLinkState } from './MenuItemLink.types';
 import { useMenuItem_unstable } from '../MenuItem/useMenuItem';
 import { useMenuItemBase_unstable } from '../MenuItem/useMenuItemBase';
@@ -23,10 +23,16 @@ export const useMenuItemLink_unstable = (
 ): MenuItemLinkState => {
   // casting because the root slot changes from div to a
   const baseState = useMenuItem_unstable(props as MenuItemProps, null);
+  const { content: _content, ...nativeProps } = props;
   // FIXME: casting because the root slot changes from div to a,
   // ideal solution would be to extract common logic from useMenuItem_unstable root
   // and use it in both without assuming element type
-  const _props = { ...props, ...(baseState.root as ExtractSlotProps<Slot<'a'>>), ref, tabIndex: props.tabIndex };
+  const _props = {
+    ...nativeProps,
+    ...(baseState.root as ExtractSlotProps<Slot<'a'>>),
+    ref: useMergedRefs(ref, baseState.root.ref as React.Ref<HTMLAnchorElement>),
+    tabIndex: props.tabIndex,
+  };
 
   return {
     ...baseState,
@@ -57,7 +63,13 @@ export const useMenuItemLinkBase_unstable = (
   ref: React.Ref<HTMLAnchorElement>,
 ): MenuItemLinkState => {
   const baseState = useMenuItemBase_unstable(props as MenuItemProps, null);
-  const _props = { ...props, ...(baseState.root as ExtractSlotProps<Slot<'a'>>), ref, tabIndex: props.tabIndex };
+  const { content: _content, ...nativeProps } = props;
+  const _props = {
+    ...nativeProps,
+    ...(baseState.root as ExtractSlotProps<Slot<'a'>>),
+    ref: useMergedRefs(ref, baseState.root.ref as React.Ref<HTMLAnchorElement>),
+    tabIndex: props.tabIndex,
+  };
 
   return {
     ...baseState,

@@ -8,7 +8,9 @@ export type MenuItemLinkSlots = {
 /**
  * MenuItemLink Props
  */
-export type MenuItemLinkProps = ComponentProps<MenuItemLinkSlots> & Pick<MenuItemProps, 'disabled'> & { href: string };
+export type MenuItemLinkProps = Omit<ComponentProps<MenuItemLinkSlots>, 'content'> &
+  Pick<MenuItemLinkSlots, 'content'> &
+  Pick<MenuItemProps, 'disabled'> & { href: string };
 
 /**
  * State used in rendering MenuItemLink
