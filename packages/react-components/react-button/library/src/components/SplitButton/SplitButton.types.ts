@@ -20,9 +20,10 @@ export type SplitButtonSlots = {
   primaryActionButton?: Slot<typeof Button>;
 };
 
+// Preserve the root event used by ForwardRefComponent to infer the wrapping div's ref type.
 export type SplitButtonProps = ComponentProps<SplitButtonSlots> &
-  Omit<ButtonProps, 'root' | 'as'> &
-  Omit<MenuButtonProps, 'root' | 'as'>;
+  Omit<ButtonProps, 'root' | 'as' | 'onLostPointerCaptureCapture'> &
+  Omit<MenuButtonProps, 'root' | 'as' | 'onLostPointerCaptureCapture'>;
 
 export type SplitButtonState = ComponentState<SplitButtonSlots> &
   Omit<ButtonState, 'components' | 'iconOnly' | 'root'> &

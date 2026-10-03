@@ -34,6 +34,22 @@ describe('SplitButton', () => {
     expect(menuButton).toBeTruthy();
   });
 
+  it('forwards the public root ref to the wrapping div, independently of button slot refs', () => {
+    const rootRef = React.createRef<HTMLDivElement>();
+    const primaryRef = React.createRef<HTMLButtonElement>();
+    const menuRef = React.createRef<HTMLButtonElement>();
+    const { container, getAllByRole } = render(
+      <SplitButton ref={rootRef} primaryActionButton={{ ref: primaryRef }} menuButton={{ ref: menuRef }}>
+        Send
+      </SplitButton>,
+    );
+    const [primary, menu] = getAllByRole('button');
+    expect(rootRef.current).toBe(container.firstElementChild);
+    expect(rootRef.current?.tagName).toBe('DIV');
+    expect(primaryRef.current).toBe(primary);
+    expect(menuRef.current).toBe(menu);
+  });
+
   it('primary action button and menu button can both be focused', () => {
     const { getAllByRole } = render(<SplitButton>This is a button</SplitButton>);
     const [primaryActionButton, menuButton] = getAllByRole('button');
