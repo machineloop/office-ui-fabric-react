@@ -75,25 +75,23 @@ export const useCardHeaderBase_unstable = (
   } = useCardContext_unstable();
   const headerRef = React.useRef<HTMLDivElement>(null);
 
-  const hasChildId = React.useRef(false);
+  const explicitHeaderId = slot.resolveShorthand(header)?.id;
+  const hasChildId = Boolean(getChildWithId(slot.resolveShorthand(header)?.children));
   const generatedId = useId('fui-CardHeader__header', referenceId);
 
-  // eslint-disable-next-line react-hooks/refs
   const headerSlot = slot.optional(header, {
     renderByDefault: true,
     defaultProps: {
       ref: headerRef,
-      // eslint-disable-next-line react-hooks/refs
-      id: !hasChildId.current ? referenceId : undefined,
+      id: !hasChildId ? referenceId : undefined,
     },
     elementType: 'div',
   });
   React.useEffect(() => {
-    const headerId = !hasChildId.current ? headerRef.current?.id : undefined;
+    const headerId = explicitHeaderId || (!hasChildId ? headerRef.current?.id : undefined);
     const childWithId = getChildWithId(headerSlot?.children);
-    hasChildId.current = Boolean(childWithId);
     setReferenceId(getReferenceId(headerId, childWithId, generatedId));
-  }, [generatedId, header, headerSlot, setReferenceId]);
+  }, [generatedId, header, headerSlot, explicitHeaderId, hasChildId, setReferenceId]);
   return {
     components: { root: 'div', image: 'div', header: 'div', description: 'div', action: 'div' },
 
