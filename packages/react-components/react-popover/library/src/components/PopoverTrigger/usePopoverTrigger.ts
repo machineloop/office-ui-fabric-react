@@ -54,6 +54,7 @@ export const usePopoverTrigger_unstable = (props: PopoverTriggerProps): PopoverT
       // stop propagation to avoid conflicting with other elements that listen for `Escape`
       // e,g: Dialog, Popover, Menu and Tooltip
       e.preventDefault();
+      e.stopPropagation();
     }
   };
 
@@ -76,13 +77,13 @@ export const usePopoverTrigger_unstable = (props: PopoverTriggerProps): PopoverT
     onMouseEnter: useEventCallback(mergeCallbacks(child?.props.onMouseEnter, onMouseEnter)),
     onMouseLeave: useEventCallback(mergeCallbacks(child?.props.onMouseLeave, onMouseLeave)),
     onContextMenu: useEventCallback(mergeCallbacks(child?.props.onContextMenu, onContextMenu)),
+    onKeyDown: useEventCallback(mergeCallbacks(child?.props.onKeyDown, onKeyDown)),
     ref: useMergedRefs(triggerRef, getReactElementRef(child)),
   } as const;
 
   const triggerChildProps = {
     ...contextMenuProps,
     onClick: useEventCallback(mergeCallbacks(child?.props.onClick, onClick)),
-    onKeyDown: useEventCallback(mergeCallbacks(child?.props.onKeyDown, onKeyDown)),
   };
 
   const ariaButtonTriggerChildProps = useARIAButtonProps(

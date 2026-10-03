@@ -98,6 +98,50 @@ describe('PopoverTrigger', () => {
     expect(getByRole('button').getAttribute('aria-expanded')).toBeNull();
   });
 
+  it('dismisses a context popover on trigger Escape after the child handler', () => {
+    const setOpen = jest.fn();
+    const childKeyDown = jest.fn();
+    mockPopoverContext({ open: true, openOnContext: true, setOpen });
+    const { getByRole } = render(
+      <PopoverTrigger>
+        <button onKeyDown={childKeyDown}>Trigger</button>
+      </PopoverTrigger>,
+    );
+    fireEvent.keyDown(getByRole('button'), { key: 'Escape' });
+    expect(childKeyDown).toHaveBeenCalledTimes(1);
+    expect(setOpen).toHaveBeenCalledTimes(1);
+    expect(setOpen).toHaveBeenCalledWith(expect.objectContaining({ key: 'Escape', defaultPrevented: true }), false);
+    expect(childKeyDown.mock.invocationCallOrder[0]).toBeLessThan(setOpen.mock.invocationCallOrder[0]);
+  });
+
+  it('preserves child cancellation of context-trigger Escape', () => {
+    const setOpen = jest.fn();
+    mockPopoverContext({ open: true, openOnContext: true, setOpen });
+    const { getByRole } = render(
+      <PopoverTrigger>
+        <button onKeyDown={event => event.preventDefault()}>Trigger</button>
+      </PopoverTrigger>,
+    );
+    fireEvent.keyDown(getByRole('button'), { key: 'Escape' });
+    expect(setOpen).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])('stops handled Escape propagation with openOnContext=%s', openOnContext => {
+    const setOpen = jest.fn();
+    const ancestorKeyDown = jest.fn();
+    mockPopoverContext({ open: true, openOnContext, setOpen });
+    const { getByRole } = render(
+      <div onKeyDown={ancestorKeyDown}>
+        <PopoverTrigger>
+          <button>Trigger</button>
+        </PopoverTrigger>
+      </div>,
+    );
+    fireEvent.keyDown(getByRole('button'), { key: 'Escape' });
+    expect(setOpen).toHaveBeenCalledTimes(1);
+    expect(ancestorKeyDown).not.toHaveBeenCalled();
+  });
+
   it('should retain original child callback ref', () => {
     // Arrange
     const ref = jest.fn();
