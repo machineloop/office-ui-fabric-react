@@ -71,6 +71,31 @@ const Grouped = ({
 };
 
 describe('OptionGroup documented scenarios', () => {
+  it('renders a visible separator between groups but not after the last group', () => {
+    mount(
+      <Dropdown aria-label="Separated groups" defaultOpen>
+        <OptionGroup label="Land" data-test="first-group">
+          <Option>Cat</Option>
+        </OptionGroup>
+        <OptionGroup label="Sea" data-test="last-group">
+          <Option>Fish</Option>
+        </OptionGroup>
+      </Dropdown>,
+    );
+    cy.get('[data-test="first-group"]').should(group => {
+      const separator = group[0].ownerDocument.defaultView!.getComputedStyle(group[0], '::after');
+      expect(separator.content, 'generated separator').to.equal('""');
+      expect(separator.display).to.equal('block');
+      expect(separator.borderBottomStyle).to.equal('solid');
+      expect(separator.borderBottomWidth).to.equal('1px');
+      expect(separator.borderBottomColor).not.to.equal('rgba(0, 0, 0, 0)');
+    });
+    cy.get('[data-test="last-group"]').should(group => {
+      const separator = group[0].ownerDocument.defaultView!.getComputedStyle(group[0], '::after');
+      expect(separator.content, 'no trailing separator').to.equal('none');
+    });
+  });
+
   (['Combobox', 'Dropdown'] as const).forEach(host => {
     [false, true].forEach(custom => {
       it(`${host} ${

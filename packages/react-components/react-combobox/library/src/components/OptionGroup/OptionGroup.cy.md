@@ -49,6 +49,13 @@ actual DIV root ref type rather than an unsafe cast.
 
 ## Running and limitations
 
+## Mutation-derived regression
+
+A compile-only removal of the generated separator survived the original 18
+cases. The added browser case independently checks a generated, visible 1px
+solid separator between groups and no trailing separator after the last group.
+Group role and custom label-ID regressions were already caught by the suite.
+
 Use `Invoke-Coverage.ps1 -Component OptionGroup -Package combobox -Target cypress`
 from the persistent `coverage-81-143` artifact directory, and the same command
 with `-Target typecheck`. Component-local config has no retries or skipped tests.
