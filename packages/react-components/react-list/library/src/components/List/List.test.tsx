@@ -615,4 +615,30 @@ describe('List', () => {
       });
     });
   });
+
+  describe('explicit root regressions', () => {
+    it.each(['ul', 'ol'] as const)('preserves an explicit %s root with li children and a forwarded ref', as => {
+      const ref = React.createRef<HTMLUListElement | HTMLOListElement>();
+      const { getByRole } = render(
+        <List as={as} ref={ref} navigationMode="items">
+          <ListItem>Item</ListItem>
+        </List>,
+      );
+      const root = getByRole('list');
+      expect(root.tagName).toBe(as.toUpperCase());
+      expect(ref.current).toBe(root);
+      expect(getByRole('listitem').tagName).toBe('LI');
+    });
+
+    it('uses a div root by default for composite navigation', () => {
+      const { getByRole } = render(
+        <List navigationMode="composite">
+          <ListItem>
+            <span role="gridcell">Item</span>
+          </ListItem>
+        </List>,
+      );
+      expect(getByRole('grid').tagName).toBe('DIV');
+    });
+  });
 });

@@ -6,13 +6,14 @@ import { teamsLightTheme } from '@fluentui/react-theme';
 import { List } from './List';
 import { ListItem } from '../ListItem';
 import type { JSXElement, SelectionItemId } from '@fluentui/react-utilities';
+import 'cypress-real-events';
 
 const mount = (element: JSXElement) => {
   mountBase(<FluentProvider theme={teamsLightTheme}>{element}</FluentProvider>);
 };
 
 /**
- * Validates focus movement based on the sequence of keybaord commands
+ * Validates focus movement based on the sequence of keyboard commands
  * Use focused:<data-test> to validate the focused element after a given step
  * @param sequence - Array of commands to execute
  * @example
@@ -27,14 +28,27 @@ const testSequence = (sequence: Array<string>) => {
   cy.get('#outside-button').should('be.focused');
 
   cy.get('[data-test^=list-item-]').first().focus();
-  cy.get('[data-test^=list-item-]').should('be.focused');
+  cy.get('[data-test^=list-item-]').first().should('be.focused');
 
   for (const command of sequence) {
     if (command.startsWith('focused:')) {
       const tid = command.split(':')[1];
       cy.focused().should('have.attr', 'data-test', tid);
     } else {
-      cy.focused().type(`{${command}}`);
+      const keys: Record<string, Parameters<typeof cy.realPress>[0]> = {
+        DownArrow: 'ArrowDown',
+        UpArrow: 'ArrowUp',
+        RightArrow: 'ArrowRight',
+        LeftArrow: 'ArrowLeft',
+        Esc: 'Escape',
+        Enter: 'Enter',
+        Home: 'Home',
+        End: 'End',
+        PageUp: 'PageUp',
+        PageDown: 'PageDown',
+        ' ': 'Space',
+      };
+      cy.realPress(keys[command]);
     }
   }
 };
@@ -53,23 +67,39 @@ const mountSimpleList = () => {
   );
 };
 
-const mountListWithSecondaryActions = () => {
+const mountListWithSecondaryActions = (selectionMode?: 'single' | 'multiselect') => {
+  const checkmark = selectionMode ? { root: { role: 'gridcell' } } : undefined;
   mount(
     <>
       <button id="outside-button">Outside Button</button>
 
-      <List navigationMode="composite">
-        <ListItem data-test="list-item-1">
-          List Item 1<button data-test="list-item-1-button-1">1:button1</button>
-          <button data-test="list-item-1-button-2">1:button2</button>
+      <List navigationMode="composite" selectionMode={selectionMode}>
+        <ListItem data-test="list-item-1" checkmark={checkmark}>
+          <span role="gridcell">List Item 1</span>
+          <span role="gridcell">
+            <button data-test="list-item-1-button-1">1:button1</button>
+          </span>
+          <span role="gridcell">
+            <button data-test="list-item-1-button-2">1:button2</button>
+          </span>
         </ListItem>
-        <ListItem data-test="list-item-2">
-          List Item 2<button data-test="list-item-2-button-1">2:button1</button>
-          <button data-test="button-2-2">2:button2</button>
+        <ListItem data-test="list-item-2" checkmark={checkmark}>
+          <span role="gridcell">List Item 2</span>
+          <span role="gridcell">
+            <button data-test="list-item-2-button-1">2:button1</button>
+          </span>
+          <span role="gridcell">
+            <button data-test="button-2-2">2:button2</button>
+          </span>
         </ListItem>
-        <ListItem data-test="list-item-3">
-          List Item 3<button data-test="button-3-1">3:button1</button>
-          <button data-test="button-3-2">3:button2</button>
+        <ListItem data-test="list-item-3" checkmark={checkmark}>
+          <span role="gridcell">List Item 3</span>
+          <span role="gridcell">
+            <button data-test="button-3-1">3:button1</button>
+          </span>
+          <span role="gridcell">
+            <button data-test="button-3-2">3:button2</button>
+          </span>
         </ListItem>
       </List>
     </>,
@@ -186,7 +216,7 @@ const validateSetOfListItems = (expectedStates: Array<boolean>) =>
  * @example
  * toggleListItem('1');
  */
-const toggleListItem = (shortId: String) => cy.get(`[data-test="list-item-${shortId}"]`).click();
+const toggleListItem = (shortId: string) => cy.get(`[data-test="list-item-${shortId}"]`).click();
 
 /**
  * Toggles the last item in the list
@@ -473,55 +503,20 @@ describe('List', () => {
 
     describe('with focusable children', () => {
       it('default list is grid/row for composite', () => {
-        mount(
-          <List navigationMode="composite">
-            <ListItem data-test="list-item-1">
-              List Item 1<button>Button 1</button>
-            </ListItem>
-            <ListItem data-test="list-item-2">
-              List Item 2<button>Button 2</button>
-            </ListItem>
-            <ListItem data-test="list-item-3">
-              List Item 3<button>Button 3</button>
-            </ListItem>
-          </List>,
-        );
+        mountListWithSecondaryActions();
         cy.get('.fui-List').should('have.attr', 'role', 'grid');
         cy.get('[data-test=list-item-1]').should('have.attr', 'role', 'row');
       });
 
       it("single select list is grid/row and doesn't have multiselectable aria prop", () => {
-        mount(
-          <List selectionMode="single" navigationMode="composite">
-            <ListItem data-test="list-item-1">
-              List Item 1<button>Button 1</button>
-            </ListItem>
-            <ListItem data-test="list-item-2">
-              List Item 2<button>Button 2</button>
-            </ListItem>
-            <ListItem data-test="list-item-3">
-              List Item 3<button>Button 3</button>
-            </ListItem>
-          </List>,
-        );
+        mountListWithSecondaryActions('single');
         cy.get('.fui-List').should('have.attr', 'role', 'grid');
+        cy.get('.fui-List').should('not.have.attr', 'aria-multiselectable');
         cy.get('[data-test=list-item-1]').should('have.attr', 'role', 'row');
       });
 
       it('multiple select list is grid/row and has multiselectable aria prop', () => {
-        mount(
-          <List selectionMode="multiselect" navigationMode="composite">
-            <ListItem data-test="list-item-1">
-              List Item 1<button>Button 1</button>
-            </ListItem>
-            <ListItem data-test="list-item-2">
-              List Item 2<button>Button 2</button>
-            </ListItem>
-            <ListItem data-test="list-item-3">
-              List Item 3<button>Button 3</button>
-            </ListItem>
-          </List>,
-        );
+        mountListWithSecondaryActions('multiselect');
         cy.get('.fui-List').should('have.attr', 'aria-multiselectable', 'true');
         cy.get('.fui-List').should('have.attr', 'role', 'grid');
         cy.get('[data-test=list-item-1]').should('have.attr', 'role', 'row');
