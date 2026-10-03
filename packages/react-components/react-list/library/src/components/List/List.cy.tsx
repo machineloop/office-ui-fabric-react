@@ -451,6 +451,7 @@ describe('List', () => {
       it('default list is list/listitem', () => {
         mountSimpleList();
         cy.get('.fui-List').should('have.attr', 'role', 'list');
+        cy.get('.fui-List').should('have.css', 'list-style-type', 'none');
         cy.get('[data-test=list-item-1]').should('have.attr', 'role', 'listitem');
       });
 

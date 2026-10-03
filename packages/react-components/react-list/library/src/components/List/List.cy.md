@@ -1,5 +1,14 @@
 # List Cypress coverage (row 81)
 
+## Compilation-only mutation verification
+
+Fresh full-component runs (77 cases) killed vertical-to-horizontal navigation
+and disconnected-root-ref mutations. A `list-style-type: disc` mutant compiled
+and loaded in the browser but survived, exposing missing coverage of the native
+list marker reset. The default-list contract now asserts computed
+`list-style-type: none`; the same mutant is rerun before the restored baseline.
+Production source is hash-checked and never modified by the mutation loader.
+
 The original `List.cy.tsx` retains its 27 navigation, selection, controlled/default
 state, disabled-item and accessibility-role cases. Keyboard sequences now use
 `cypress-real-events`, with a focus assertion after every movement. Composite
