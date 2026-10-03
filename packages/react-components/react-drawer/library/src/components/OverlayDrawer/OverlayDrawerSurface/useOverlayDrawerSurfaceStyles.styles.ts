@@ -21,6 +21,11 @@ const useBackdropStyles = makeStyles({
   drawerHidden: {
     pointerEvents: 'none',
   },
+  motionDisabledHidden: {
+    '&[hidden]': {
+      display: 'none',
+    },
+  },
 });
 
 /**
@@ -34,12 +39,17 @@ export const useOverlayDrawerSurfaceStyles_unstable = (state: DialogSurfaceState
 
   const mountedAndClosed = !unmountOnClose && !open;
 
+  // Drawer reset styles override the browser's native hidden rule.
+  // eslint-disable-next-line react-hooks/immutability
+  state.root.className = mergeClasses(state.root.hidden && backdropStyles.motionDisabledHidden, state.root.className);
+
   if (backdrop) {
     // eslint-disable-next-line react-hooks/immutability
     backdrop.className = mergeClasses(
       backdropResetStyles,
       treatBackdropAsNested && backdropStyles.nested,
       mountedAndClosed && backdropStyles.drawerHidden,
+      backdrop.hidden && backdropStyles.motionDisabledHidden,
       backdrop.className,
     );
   }

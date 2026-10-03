@@ -68,4 +68,28 @@ describe('OverlayDrawer', () => {
     expect(mountNodeElement).toBeTruthy();
     expect(drawerInsideMountNode).toBeTruthy();
   });
+
+  it('hides kept-mounted motion-disabled surfaces and backdrops until opened', () => {
+    const { getByTestId, baseElement, rerender } = render(
+      <OverlayDrawer data-testid="kept" open={false} unmountOnClose={false} surfaceMotion={null} backdropMotion={null}>
+        <button>Action</button>
+      </OverlayDrawer>,
+    );
+    const surface = getByTestId('kept');
+    const backdrop = baseElement.querySelector('.fui-OverlayDrawer__backdrop') as HTMLElement;
+    expect(surface.hidden).toBe(true);
+    expect(backdrop.hidden).toBe(true);
+    const hiddenRules = Array.from(surface.ownerDocument.styleSheets)
+      .flatMap(sheet => Array.from(sheet.cssRules) as CSSStyleRule[])
+      .filter(rule => rule.selectorText?.includes('[hidden]') && rule.style.display === 'none');
+    expect(hiddenRules.some(rule => surface.matches(rule.selectorText))).toBe(true);
+    expect(hiddenRules.some(rule => backdrop.matches(rule.selectorText))).toBe(true);
+    rerender(
+      <OverlayDrawer data-testid="kept" open unmountOnClose={false} surfaceMotion={null} backdropMotion={null}>
+        <button>Action</button>
+      </OverlayDrawer>,
+    );
+    expect(surface.hidden).toBe(false);
+    expect(getComputedStyle(surface).display).toBe('flex');
+  });
 });
