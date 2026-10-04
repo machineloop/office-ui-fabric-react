@@ -1,0 +1,10 @@
+{
+  "extends": "./DataGridHeaderCell.cy.tsconfig.json",
+  "include": [
+    "./DataGridHeaderCell.tsx",
+    "./DataGridHeaderCell.cy-jsx.stories.ts",
+    "./DataGridHeaderCell.cy-aliases.stories.ts",
+    "../../../../stories/src/DataGrid/*.stories.tsx"
+  ],
+  "exclude": []
+}
