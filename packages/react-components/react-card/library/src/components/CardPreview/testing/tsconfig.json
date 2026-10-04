@@ -1,0 +1,6 @@
+{
+  "extends": "../CardPreview.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../CardPreview.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

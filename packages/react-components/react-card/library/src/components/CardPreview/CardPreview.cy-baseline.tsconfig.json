@@ -1,0 +1,12 @@
+{
+  "extends": "./CardPreview.cy.tsconfig.json",
+  "include": [
+    "./CardPreview.tsx",
+    "./testing/CardPreview.cy-jsx.stories.ts",
+    "./testing/CardPreview.cy-aliases.stories.ts",
+    "../Card/Card.tsx",
+    "../../../../stories/src/CardPreview/*.stories.tsx",
+    "../../../../stories/src/Card/*.stories.tsx"
+  ],
+  "exclude": []
+}
