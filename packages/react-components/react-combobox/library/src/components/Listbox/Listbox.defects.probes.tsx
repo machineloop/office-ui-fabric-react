@@ -1,5 +1,9 @@
+'use client';
+
 import * as React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies -- Opt-in Cypress probe uses the existing test dependency.
 import { mount } from '@fluentui/scripts-cypress';
+// eslint-disable-next-line import/no-extraneous-dependencies -- Opt-in Cypress fixture uses the existing test dependency.
 import { FluentProvider } from '@fluentui/react-provider';
 import { teamsLightTheme } from '@fluentui/react-theme';
 import { Option } from '@fluentui/react-combobox';

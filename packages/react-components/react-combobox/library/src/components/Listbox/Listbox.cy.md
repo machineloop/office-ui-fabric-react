@@ -79,7 +79,7 @@ Uncontrolled fixtures use only defaults. Parent defaults pair selected keys with
 
 ## Retained inherited defect
 
-`Listbox.defects.cy.tsx` contains **four intentionally failing correctness probes**,
+`Listbox.defects.probes.tsx` contains **four intentionally failing correctness probes**,
 not skipped tests or passing assertions for broken behavior. All four first prove
 the active ID references a live Option, then remove it using a real button click.
 The two original single-list probes are retained unweakened; two additional
@@ -113,35 +113,63 @@ navigation and exact callbacks again.
 ## Validation and limits
 
 Use the existing `react-combobox:e2e` Nx target with `**/Listbox.cy.tsx` for the
-82-case standard suite, and explicitly opt in to `**/Listbox.defects.cy.tsx`
-only for the four expected failures. Run the full standard suite twice.
-Do not use `**/Listbox*.cy.tsx` or `**/*.cy.tsx` as a green Listbox baseline:
-those broader patterns also include the deliberately red defect file.
+82-case standard suite, and explicitly opt in to `**/Listbox.defects.probes.tsx`
+only for the four expected failures. Use the component-local
+`cypress.probes.config.cjs` and `--spec` with the exact probe path; `--spec`
+alone does not override default discovery. The local config includes only
+that exact probe. Run the full standard suite twice.
+The package imports the shared default patterns `**/*.cy.tsx` and `**/*.e2e.tsx`:
+neither matches the renamed probe, while `Listbox.cy.tsx` stays automatically
+included. `**/Listbox*.cy.tsx` also excludes the probe. No shared config changes
+are needed, and nominal failures are not skipped or suppressed.
 Report **82 standard passes plus four sensitive defect failures, BUGUNFIXED**,
 never that all supported functional behavior is correct.
 No Cypress retries, sleeps, exception suppression, snapshots as functional
 coverage, skip/only markers or shared configuration edits are added.
 
 `Listbox.cy.tsconfig.json` isolates these files without weakening inherited
-compiler settings. `Listbox.cy-baseline.tsconfig.json` excludes the new suites
+compiler settings and explicitly includes `Listbox.defects.probes.tsx`.
+`Listbox.cy-baseline.tsconfig.json` excludes the new suites
 and checks production Combobox and FluentProvider exports. Both reproduce the
 same two existing FluentProvider renderer diagnostics (TS2741 at 42:16 and
 TS7026 at 47:25), with zero diagnostics in the new files. The broader package
 Cypress check additionally reports existing sibling renderer diagnostics; it
 is not represented as a clean package-wide type check.
 
+The nonstandard probe no longer receives filename-based Cypress lint overrides.
+It declares `use client` for its React state and annotates only the two existing
+test-only imports; its local Cypress config also annotates its test dependency.
+The ordinary package ESLint configuration checks all owned files, with no
+shared lint changes or assertion edits.
+
 Exact case titles, rounds, commands, counts, exit codes, failures/corrections,
 source hashes, source inventories, baseline diagnostics and screenshots are in
 the session's `coverage101-120/Listbox-evidence.json` and referenced logs.
 The authoritative exact standard filename is `Listbox.cy.tsx`; the separate
-intentionally red filename is `Listbox.defects.cy.tsx`. With the recorded
+intentionally red filename is `Listbox.defects.probes.tsx`. Historical logs and
+run records retain `Listbox.defects.cy.tsx`, its former name, unchanged; the
+scope-fix evidence records the rename and current commands. With the recorded
 `Listbox-run.ps1` runner, explicit commands are:
 
 ```powershell
-& .\Listbox-run.ps1 -Name followup-standard-final-1 -Kind cypress -Spec '**/Listbox.cy.tsx'
-& .\Listbox-run.ps1 -Name followup-standard-2 -Kind cypress -Spec '**/Listbox.cy.tsx'
-& .\Listbox-run.ps1 -Name followup-defects -Kind cypress -Spec '**/Listbox.defects.cy.tsx'
+& .\Listbox-run.ps1 -Name scopefix-standard-verified -Kind cypress -Spec '**/Listbox.cy.tsx'
+& .\Listbox-run.ps1 -Name scopefix-defects-verified -Kind cypress -Spec '**/Listbox.defects.probes.tsx'
 ```
+
+The probe runner passes these explicit Cypress arguments to the existing Nx
+target (paths are relative to the package project):
+
+```powershell
+--config-file src/components/Listbox/cypress.probes.config.cjs --spec src/components/Listbox/Listbox.defects.probes.tsx
+```
+
+The direct `--config specPattern=**/Listbox.defects.probes.tsx --spec` combination
+returned no specs on Windows Cypress 14.4.1; the CLI pattern override also
+failed to discover the unchanged standard suite without `--spec`. The local
+config avoids the unsuccessful CLI override and gives both selectors the same
+exact path. It inherits the shared base
+unchanged; the recorded runner supplies `LISTBOX_CYPRESS_BASE_CONFIG` to reuse
+the existing Windows execution adapter without editing it.
 
 The isolated runner uses port 18241 and external artifact folders, not shared
 progress ledgers or repository output directories.

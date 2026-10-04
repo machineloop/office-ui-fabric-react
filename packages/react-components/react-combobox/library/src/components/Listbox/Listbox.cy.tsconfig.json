@@ -1,4 +1,4 @@
 {
   "extends": "../../../tsconfig.cy.json",
-  "include": ["Listbox.cy.tsx", "Listbox.defects.cy.tsx", "Listbox.cy.styles.ts"]
+  "include": ["Listbox.cy.tsx", "Listbox.defects.probes.tsx", "Listbox.cy.styles.ts"]
 }
