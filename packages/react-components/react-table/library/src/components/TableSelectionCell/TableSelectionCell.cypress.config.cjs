@@ -17,7 +17,7 @@ module.exports = {
   videosFolder: path.join(__dirname, '.cypress-videos'),
   component: {
     ...baseConfig.component,
-    specPattern: [path.join(__dirname, 'TableSelectionCell.cy.stories.tsx')],
+    specPattern: [path.join(__dirname, 'TableSelectionCell.cy.tsx')],
     supportFile: path.relative(library, path.join(support, 'component.js')),
     indexHtmlFile: path.relative(library, path.join(support, 'component-index.html')),
     devServer: {

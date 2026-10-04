@@ -10,7 +10,11 @@
     "lib": ["ES2019", "DOM"],
     "noEmit": true
   },
-  "include": ["./TableSelectionCell.cy.stories.tsx", "./TableSelectionCell.cy-jsx.stories.ts"],
+  "include": [
+    "./TableSelectionCell.cy.tsx",
+    "./TableSelectionCell.cy.stories.tsx",
+    "./TableSelectionCell.cy-jsx.stories.ts"
+  ],
   "exclude": [],
   "references": []
 }

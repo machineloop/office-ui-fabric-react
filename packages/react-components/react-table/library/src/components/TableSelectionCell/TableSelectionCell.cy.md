@@ -4,6 +4,11 @@
 
 Only this component directory is changed. Production implementation is unchanged.
 `TableSelectionCell.cy.stories.tsx` contains **45 executed scenarios**, including nine actual selection story compositions.
+`TableSelectionCell.cy.tsx` is the canonical Cypress entry point: it imports that
+suite and its type-only JSX bridge, so normal `**/*.cy.tsx` discovery and the
+package Cypress TypeScript project include the scenarios without changing
+shared configuration. The standalone config selects only this entry point,
+avoiding duplicate registration.
 
 Sources inspected:
 
@@ -101,7 +106,7 @@ or weakening test types.
 Run from repository root in PowerShell:
 
 ```powershell
-& .\node_modules\.bin\cypress.cmd run --component --browser chrome --headless --project packages\react-components\react-table\library --config-file src\components\TableSelectionCell\TableSelectionCell.cypress.config.cjs --spec "$PWD\packages\react-components\react-table\library\src\components\TableSelectionCell\TableSelectionCell.cy.stories.tsx"
+& .\node_modules\.bin\cypress.cmd run --component --browser chrome --headless --project packages\react-components\react-table\library --config-file src\components\TableSelectionCell\TableSelectionCell.cypress.config.cjs --spec "$PWD\packages\react-components\react-table\library\src\components\TableSelectionCell\TableSelectionCell.cy.tsx"
 & .\node_modules\.bin\eslint.cmd --parser-options '{"projectService":false,"project":"packages/react-components/react-table/library/src/components/TableSelectionCell/TableSelectionCell.cy.tsconfig.json"}' packages\react-components\react-table\library\src\components\TableSelectionCell\TableSelectionCell.cy.stories.tsx
 & .\node_modules\.bin\eslint.cmd packages\react-components\react-table\library\src\components\TableSelectionCell\TableSelectionCell.cypress.config.cjs
 & .\node_modules\.bin\tsc.cmd --project packages\react-components\react-table\library\src\components\TableSelectionCell\TableSelectionCell.cy.tsconfig.json --pretty false
@@ -116,7 +121,11 @@ The authoritative current evidence is in
 `C:\Users\jabrassi\.scout\copilot\session-state\5ed21290-e28e-4743-8b3d-3864ac6a202e\files\coverage-121-140\TableSelectionCell`:
 `final-cypress.log` records the complete current 45-case run, `lint.log` records
 the current scoped lint check, and `typecheck.log` records the successful current
-TypeScript check. These were generated after the reviewed spec and JSX bridge
+TypeScript check. `canonical-cypress.log` independently records **45/45** using
+the package's standard `cypress.config.ts` and canonical `.cy.tsx` discovery;
+`canonical-typecheck.log` records exit **0** for the package's standard
+`tsconfig.cy.json`. Canonical Cypress uses the available Node 22 runtime required
+by the shipped ESM helper. These were generated after the reviewed spec and JSX bridge
 changes. Earlier `TableSelectionCell.cy-run.log`, `TableSelectionCell.cy-lint.log`
 and `TableSelectionCell.cy-typecheck.log` remain historical evidence, not proof
 of the final assertions. The original typecheck log records the earlier JSX
