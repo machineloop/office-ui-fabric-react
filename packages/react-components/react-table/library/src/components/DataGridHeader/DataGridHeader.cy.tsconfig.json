@@ -1,0 +1,21 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node", "cypress-real-events", "static-assets"],
+    "typeRoots": [
+      "../../../../../../../node_modules",
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../typings"
+    ],
+    "lib": ["ES2019", "DOM"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "./DataGridHeader.cy.tsx",
+    "./DataGridHeader.cy-jsx.stories.ts",
+    "./DataGridHeader.cy-standalone-aliases.stories.ts"
+  ],
+  "exclude": [],
+  "references": []
+}
