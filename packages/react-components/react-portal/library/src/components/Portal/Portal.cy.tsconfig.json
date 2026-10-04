@@ -1,0 +1,22 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node", "cypress-real-events", "static-assets"],
+    "typeRoots": [
+      "../../../../../../../node_modules",
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../typings"
+    ],
+    "lib": ["ES2019", "DOM"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "./testing/Portal.cy-entry.stories.tsx",
+    "./testing/Portal.cy.stories.tsx",
+    "./testing/Portal.cy-jsx.stories.ts",
+    "./testing/Portal.cy-aliases.stories.ts"
+  ],
+  "exclude": [],
+  "references": []
+}

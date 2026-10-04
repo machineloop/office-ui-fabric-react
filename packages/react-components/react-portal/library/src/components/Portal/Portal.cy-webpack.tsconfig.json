@@ -1,0 +1,9 @@
+{
+  "extends": "./Portal.cy.tsconfig.json",
+  "include": [
+    "../../../../../../../packages/**/*.ts",
+    "../../../../../../../packages/**/*.tsx",
+    "../../../../../../../scripts/**/*.ts"
+  ],
+  "exclude": []
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "./Portal.cy.tsconfig.json",
+  "include": [
+    "./testing/Portal.cy-jsx.stories.ts",
+    "./testing/Portal.cy-aliases.stories.ts",
+    "./Portal.tsx",
+    "../../../../stories/src/Portal/PortalDefault.stories.tsx",
+    "../../../../stories/src/toMountNodeProps/Default.stories.tsx",
+    "../../../../../react-provider/stories/src/Provider/FluentProviderApplyStylesToPortals.stories.tsx"
+  ],
+  "exclude": []
+}

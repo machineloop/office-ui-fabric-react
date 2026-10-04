@@ -1,0 +1,37 @@
+{
+  "name": "react-portal-functional-tests",
+  "$schema": "../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/react-components/react-portal/library/src/components/Portal",
+  "tags": ["vNext", "platform:web"],
+  "implicitDependencies": ["react-portal"],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node packages/react-components/react-portal/library/src/components/Portal/Portal.exec.cjs e2e",
+        "cwd": "."
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [],
+      "options": {
+        "command": "node packages/react-components/react-portal/library/src/components/Portal/Portal.exec.cjs typecheck",
+        "cwd": "."
+      }
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [],
+      "options": {
+        "command": "node packages/react-components/react-portal/library/src/components/Portal/Portal.exec.cjs typecheck",
+        "cwd": "."
+      }
+    }
+  }
+}

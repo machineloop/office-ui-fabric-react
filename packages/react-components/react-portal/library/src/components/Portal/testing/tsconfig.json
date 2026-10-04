@@ -1,0 +1,6 @@
+{
+  "extends": "../Portal.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx"],
+  "exclude": [],
+  "references": []
+}
