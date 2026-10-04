@@ -128,12 +128,14 @@ const Controls = () => (
 );
 const update = (rerender: (element: React.ReactNode) => void, element: React.ReactElement) =>
   rerender(<FluentProvider theme={webLightTheme}>{element}</FluentProvider>);
+const auditSubfolder = `DataGridCell-audits-${Date.now()}-${Cypress._.uniqueId()}`;
 const retainAudit = (name: string, result: axe.AxeResults) => {
-  const directory: unknown = Cypress.env('DataGridCellEvidence');
+  const override: unknown = Cypress.env('DataGridCellEvidence');
+  const directory = override === undefined ? `${Cypress.config('downloadsFolder')}/${auditSubfolder}` : override;
   if (typeof directory !== 'string' || !directory) {
-    throw new Error('Set DataGridCellEvidence to the session evidence directory');
+    throw new Error('DataGridCellEvidence must be a non-empty directory path when provided');
   }
-  return cy.writeFile(`${directory}\\${name}.json`, {
+  return cy.writeFile(`${directory.replace(/\\/g, '/').replace(/\/$/, '')}/${name}.json`, {
     violations: result.violations,
     incomplete: result.incomplete,
     passes: result.passes.map(finding => finding.id),

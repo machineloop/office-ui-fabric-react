@@ -30,9 +30,12 @@ Set the contract's Node runtime first in PATH, `NX_DAEMON=false`, `NODE_PATH` to
 the checkout's `node_modules`, and `TS_NODE_COMPILER` to its TypeScript compiler.
 Set `FLUENT_REPO`, `FLUENT_PROJECT` to the library, `FLUENT_SPEC` to the exact
 component glob, and `WEBPACK_DEV_SERVER_PORT=18241`. Set all Cypress artifact
-folders and `CYPRESS_DataGridCellEvidence` to the component's session evidence
-directory. The audit writer requires this directory; it does not silently fall
-back to writing into the checkout.
+folders to the desired artifact directory. All three axe audits always execute
+and retain JSON payloads. By default, they write to a unique
+`DataGridCell-audits-<timestamp>-<id>` subfolder of Cypress's standard
+`downloadsFolder`. Optionally set `CYPRESS_DataGridCellEvidence` (or
+`Cypress.env('DataGridCellEvidence')`) to override the audit directory. No private
+environment variable or task harness is required by the tests.
 
 Use Node plus the checkout's `.yarn\releases\yarn-4.18.0.cjs`:
 
