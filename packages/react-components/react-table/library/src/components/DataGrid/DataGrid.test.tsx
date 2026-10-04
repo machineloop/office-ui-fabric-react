@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { DataGrid } from './DataGrid';
 import { isConformant } from '../../testing/isConformant';
 import type { DataGridProps } from './DataGrid.types';
@@ -9,6 +9,7 @@ import { DataGridBody } from '../DataGridBody/DataGridBody';
 import { DataGridRow } from '../DataGridRow/DataGridRow';
 import { DataGridCell } from '../DataGridCell/DataGridCell';
 import { DataGridHeader } from '../DataGridHeader/DataGridHeader';
+import { renderToString } from 'react-dom/server';
 
 const measureElementRef = jest.fn();
 jest.mock('../../hooks/useMeasureElement', () => {
@@ -33,6 +34,42 @@ const testItems: Item[] = [
 ];
 
 describe('DataGrid', () => {
+  it('server-renders named grid markup and selected numeric-zero identity without claiming browser focus behavior', () => {
+    const markup = renderToString(
+      <DataGrid
+        items={testItems.slice(0, 1)}
+        columns={testColumns}
+        selectionMode="multiselect"
+        defaultSelectedItems={[0]}
+        aria-label="Server records"
+      >
+        <DataGridHeader>
+          <DataGridRow<Item>>{({ renderHeaderCell }) => <DataGridCell>{renderHeaderCell()}</DataGridCell>}</DataGridRow>
+        </DataGridHeader>
+        <DataGridBody<Item>>
+          {({ item, rowId }) => (
+            <DataGridRow<Item> key={rowId} data-row={rowId}>
+              {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
+            </DataGridRow>
+          )}
+        </DataGridBody>
+      </DataGrid>,
+    );
+    const container = document.createElement('div');
+    container.innerHTML = markup;
+    const grid = within(container).getByRole('grid', { name: 'Server records' });
+    const rowGroups = within(grid).getAllByRole('rowgroup');
+    expect(rowGroups).toHaveLength(2);
+    expect(within(rowGroups[0]).getAllByRole('row')).toHaveLength(1);
+    const rows = within(rowGroups[1]).getAllByRole('row');
+    expect(rows.map(row => [row.getAttribute('data-row'), row.getAttribute('aria-selected')])).toEqual([['0', 'true']]);
+    expect(
+      within(rows[0])
+        .getAllByRole('gridcell')
+        .map(cell => cell.textContent),
+    ).toEqual(['', 'first', 'second', 'third']);
+  });
+
   isConformant<DataGridProps>({
     Component: DataGrid,
     displayName: 'DataGrid',

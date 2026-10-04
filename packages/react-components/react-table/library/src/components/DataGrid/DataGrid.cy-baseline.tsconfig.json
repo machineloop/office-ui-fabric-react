@@ -1,0 +1,9 @@
+{
+  "extends": "./DataGrid.cy.tsconfig.json",
+  "include": [
+    "../../index.ts",
+    "../../../../../react-provider/library/src/index.ts",
+    "../../../../../react-tooltip/library/src/index.ts"
+  ],
+  "exclude": []
+}

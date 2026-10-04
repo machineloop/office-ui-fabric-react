@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.cy.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["./DataGrid.cy.tsx"],
+  "exclude": [],
+  "references": []
+}
