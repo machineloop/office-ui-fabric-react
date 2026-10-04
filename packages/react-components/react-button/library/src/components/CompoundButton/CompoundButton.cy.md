@@ -59,6 +59,14 @@ primary/secondary contents. Consumers must not assume a title is naming-neutral.
 
 ## Execution and isolation
 
+The four before/after × LTR/RTL layout cases also measure the horizontal distance
+between the icon and content-container bounding boxes against
+`spacingHorizontalM` (with a half-pixel rounding tolerance). Non-overlap alone
+missed an owned margin-direction regression: inherited Button margins can still
+separate the slots while the Compound-specific token gap is lost. This
+strengthening adds assertions to existing cases, preserving the 179-case standard
+inventory and keeping the three opt-in known-zero correctness probes separate.
+
 Use the existing `react-button:e2e` Nx target with a command override selecting
 `CompoundButton.cypress.config.cjs`, component mode and Electron. The nested
 configuration is portable, selects exactly `CompoundButton.cy.tsx`, defaults to

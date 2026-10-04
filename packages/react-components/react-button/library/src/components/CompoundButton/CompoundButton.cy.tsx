@@ -1334,8 +1334,9 @@ describe('CompoundButton documented contracts', () => {
           const icon = root.querySelector('[data-testid="glyph"]')?.parentElement;
           const text = root.querySelector('[data-testid="primary"]');
           const details = root.querySelector(`.${compoundButtonClassNames.secondaryContent}`);
-          expect(icon && text && details).not.to.equal(null);
-          if (!icon || !text || !details) {
+          const container = root.querySelector(`.${compoundButtonClassNames.contentContainer}`);
+          expect(icon && text && details && container).not.to.equal(null);
+          if (!icon || !text || !details || !container) {
             throw new Error('Missing compound layout slots');
           }
           expect(root.children[iconPosition === 'before' ? 0 : 1]).to.equal(icon);
@@ -1343,6 +1344,12 @@ describe('CompoundButton documented contracts', () => {
           const textRect = text.getBoundingClientRect();
           const before = (iconPosition === 'before') === (dir === 'ltr');
           expect(before ? iconRect.right <= textRect.left : textRect.right <= iconRect.left).to.equal(true);
+          const contentRect = container.getBoundingClientRect();
+          const gap = before ? contentRect.left - iconRect.right : iconRect.left - contentRect.right;
+          expect(gap, 'compound icon-to-content token gap').to.be.closeTo(
+            parseFloat(teamsLightTheme.spacingHorizontalM),
+            0.5,
+          );
           expect(details.getBoundingClientRect().top).to.be.at.least(textRect.bottom);
         });
         content().should('have.css', 'text-align', dir === 'ltr' ? 'left' : 'right');
