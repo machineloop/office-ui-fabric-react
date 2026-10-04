@@ -50,13 +50,28 @@ project, and `src\components\ProgressBar\ProgressBar.cypress.config.cjs`.
 Set `WEBPACK_DEV_SERVER_PORT=18241` and Cypress screenshots/videos/downloads
 environment paths to external evidence folders before running.
 
-Each case resets and restores real media emulation. Timeline assertions use
-animation readiness and a finite number of native animation frames, never
-sleep, seek, accelerated playback or fake timers. Reduced-motion media changes
-receive a finite frame barrier before capturing the live animation. The
-transition case observes an intermediate width before natural completion.
+Each case resets and restores real media emulation, including after failures.
+Indeterminate timeline assertions use animation readiness and a finite number of
+native animation frames, never sleep, accelerated playback or fake timers.
+Reduced-motion media changes receive a finite frame barrier before capturing the
+live animation.
 All cases run without test retries, skips, exclusive tests, snapshots or
 exception suppression.
+
+The width-transition case starts with actual quarter-width geometry and changes
+the value through the real React button handler. At that commit a layout effect
+captures and pauses the native animations before delayed event/frame delivery
+can finish them. It seeks the actual effect to half its measured duration,
+captures the native width `transitionrun` event, and separately asserts exactly
+one owned CSS width transition with the independent expected duration of 300ms.
+Actual visible width must lie strictly between the endpoints. All captured
+animations then resume at normal speed and their native `finished` promises
+must resolve before checking the endpoint and immediate zero reset. No width
+style writes or replacement motion are used. Failure cleanup removes the event
+listener and cancels captured animations; no browser scheduler is replaced.
+Assertions remain in the returned Cypress chain. Historical late-frame failures
+remain auditable but are superseded, not causal mutation evidence or proof of
+stability.
 
 This is finite coverage in Electron/Chromium, not exhaustive permutations of
 infinite numeric inputs, universal browser coverage, or proof of assistive

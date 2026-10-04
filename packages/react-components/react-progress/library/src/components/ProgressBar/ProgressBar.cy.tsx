@@ -6,6 +6,7 @@ import { webLightTheme, webDarkTheme } from '@fluentui/react-theme';
 import { createMotionComponent, motionTokens } from '@fluentui/react-motion';
 import { computeAccessibleName, computeAccessibleDescription } from 'dom-accessibility-api';
 import type { ExtractSlotProps, SlotRenderFunction } from '@fluentui/react-utilities';
+import { useIsomorphicLayoutEffect } from '@fluentui/react-utilities';
 import { ProgressBar } from './ProgressBar';
 import type { ProgressBarProps, ProgressBarSlots } from './ProgressBar.types';
 import { progressBarClassNames } from './useProgressBarStyles.styles';
@@ -29,15 +30,20 @@ function media(reducedMotion = false, forcedColors = false) {
   );
 }
 
+const cleanups: (() => void)[] = [];
+
 beforeEach(() => media());
-afterEach(() =>
-  cy.then(() =>
+afterEach(() => {
+  while (cleanups.length) {
+    cleanups.pop()!();
+  }
+  return cy.then(() =>
     Cypress.automation('remote:debugger:protocol', {
       command: 'Emulation.setEmulatedMedia',
       params: { features: [] },
     }),
-  ),
-);
+  );
+});
 
 function nextFrames(element: HTMLElement, count: number) {
   return new Cypress.Promise<void>(resolve => {
@@ -577,45 +583,79 @@ describe('ProgressBar unit and source regressions', () => {
   });
 
   it('observes a real intermediate width transition and natural completion before an immediate reset', () => {
+    let animations: Animation[] = [];
+    let duration: ReturnType<AnimationEffect['getTiming']>['duration'];
+    let transitionRun: Promise<TransitionEvent>;
+    let element: HTMLDivElement;
     const Fixture = () => {
       const [value, setValue] = React.useState(0.25);
+      const barRef = React.useRef<HTMLDivElement>(null);
+      useIsomorphicLayoutEffect(() => {
+        if (value === 0.75) {
+          // Capture at the real React commit, before a delayed event/frame can reach the endpoint.
+          animations = barRef.current!.getAnimations();
+          animations.forEach(animation => animation.pause());
+          const measuredDuration = animations[0]?.effect?.getTiming().duration;
+          duration = measuredDuration;
+          if (typeof measuredDuration === 'number' && Number.isFinite(measuredDuration) && measuredDuration > 0) {
+            animations.forEach(animation => {
+              animation.currentTime = measuredDuration / 2;
+            });
+          }
+        }
+      }, [value]);
       return (
         <FluentProvider theme={webLightTheme}>
           <button onClick={() => setValue(0.75)}>Advance</button>
           <button onClick={() => setValue(0)}>Reset</button>
           <div style={{ width }}>
-            <ProgressBar data-testid="progress" value={value} />
+            <ProgressBar data-testid="progress" value={value} bar={{ ref: barRef }} />
           </div>
         </FluentProvider>
       );
     };
     mount(<Fixture />);
     range(0.25);
-    let transition: Promise<void>;
     cy.get(root)
       .find(bar)
       .then($bar => {
-        const element = $bar[0];
-        transition = new Promise<void>(resolve => {
-          element.addEventListener(
-            'transitionrun',
-            () => {
-              nextFrames(element, 1).then(() => {
-                const intermediate = element.getBoundingClientRect().width;
-                expect(intermediate, 'observed intermediate fill, not just final CSS').to.be.greaterThan(width * 0.25);
-                expect(intermediate).to.be.lessThan(width * 0.75);
-                const animations = element.getAnimations();
-                expect(animations).to.have.length(1);
-                expect(animations[0].effect?.getTiming().duration).to.equal(300);
-                animations[0].finished.then(() => resolve());
-              });
-            },
-            { once: true },
-          );
+        element = $bar[0] as HTMLDivElement;
+        expect(element.getAnimations(), 'no transition before the state update').to.have.length(0);
+        transitionRun = new Promise(resolve => {
+          const onRun = (event: TransitionEvent) => {
+            if (event.target === element && event.propertyName === 'width') {
+              resolve(event);
+            }
+          };
+          element.addEventListener('transitionrun', onRun);
+          cleanups.push(() => {
+            element.removeEventListener('transitionrun', onRun);
+            animations.forEach(animation => animation.cancel());
+          });
         });
       });
     cy.contains('button', 'Advance').realClick();
-    cy.then(() => transition);
+    cy.then(() => transitionRun).then(event => {
+      expect(event.elapsedTime, 'native width transition started').to.equal(0);
+      expect(animations, 'all native animations on the bar').to.have.length(1);
+      expect((animations[0] as CSSTransition).transitionProperty).to.equal('width');
+      expect((animations[0].effect as KeyframeEffect).target, 'owned transition effect').to.equal(element);
+      expect(duration, 'independent production duration contract').to.equal(300);
+      return Promise.all(animations.map(animation => animation.ready));
+    });
+    cy.then(() => {
+      expect(animations[0].playState).to.equal('paused');
+      expect(animations[0].currentTime, 'measured interior timestamp').to.equal(Number(duration) / 2);
+      const intermediate = element.getBoundingClientRect().width;
+      expect(intermediate, 'actual visible intermediate fill').to.be.greaterThan(width * 0.25);
+      expect(intermediate).to.be.lessThan(width * 0.75);
+      animations.forEach(animation => animation.play());
+      return Promise.all(animations.map(animation => animation.finished));
+    });
+    cy.then(() => {
+      expect(animations.every(animation => animation.playState === 'finished')).to.equal(true);
+      expect(element.getBoundingClientRect().width, 'naturally completed endpoint').to.equal(width * 0.75);
+    });
     range(0.75);
     cy.contains('button', 'Reset').realClick();
     cy.get(root)
