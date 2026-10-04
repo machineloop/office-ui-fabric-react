@@ -1,0 +1,4 @@
+{
+  "extends": "../../../tsconfig.cy.json",
+  "include": ["../../../src/index.ts", "../../../../../react-provider/library/src/index.ts"]
+}
