@@ -1,0 +1,4 @@
+{
+  "extends": "./DataGridCell.cy.tsconfig.json",
+  "include": ["DataGridCell.cy-baseline.stories.ts"]
+}
