@@ -1,0 +1,8 @@
+.temp/
+.cypress-build/
+.cypress-downloads/
+.cypress-screenshots/
+.cypress-videos/
+.nx-cache/
+.nx-data/
+reports/

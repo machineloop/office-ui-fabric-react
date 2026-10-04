@@ -1,0 +1,10 @@
+{
+  "extends": "./ToolbarButton.cy.tsconfig.json",
+  "include": [
+    "./ToolbarButton.tsx",
+    "./testing/ToolbarButton.cy-jsx.stories.ts",
+    "./testing/ToolbarButton.cy-aliases.stories.ts",
+    "../../../../stories/src/Toolbar/*.stories.tsx"
+  ],
+  "exclude": []
+}

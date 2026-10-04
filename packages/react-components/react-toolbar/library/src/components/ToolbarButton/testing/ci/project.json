@@ -1,0 +1,32 @@
+{
+  "name": "toolbarbutton-functional-tests",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["vNext", "platform:web", "test"],
+  "implicitDependencies": ["react-toolbar"],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/components/ToolbarButton/ToolbarButton.run.cjs standard",
+        "cwd": "packages/react-components/react-toolbar/library"
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-toolbar/library/src/components/ToolbarButton/**/*",
+        "{workspaceRoot}/packages/react-components/react-toolbar/library/cypress.config.ts",
+        "{workspaceRoot}/scripts/cypress/**/*"
+      ],
+      "cache": false
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node node_modules/typescript/bin/tsc -p packages/react-components/react-toolbar/library/src/components/ToolbarButton/testing/tsconfig.json --pretty false",
+        "cwd": "."
+      },
+      "inputs": ["{workspaceRoot}/packages/react-components/react-toolbar/library/src/components/ToolbarButton/**/*"],
+      "cache": false
+    }
+  }
+}
