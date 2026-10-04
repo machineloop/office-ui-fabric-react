@@ -1,0 +1,10 @@
+{
+  "extends": "./DrawerFooter.cy.tsconfig.json",
+  "include": [
+    "./DrawerFooter.tsx",
+    "./DrawerFooter.cy-jsx.stories.ts",
+    "./DrawerFooter.cy-aliases.stories.ts",
+    "../../../../stories/src/Drawer/*.stories.tsx"
+  ],
+  "exclude": []
+}

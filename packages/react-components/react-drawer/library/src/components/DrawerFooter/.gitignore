@@ -1,0 +1,5 @@
+reports/
+.cypress-downloads/
+.cypress-screenshots/
+.cypress-videos/
+.cypress-build/

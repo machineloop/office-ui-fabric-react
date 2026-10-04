@@ -1,4 +1,7 @@
 import * as React from 'react';
+import './DrawerFooter.cy.stories';
+import type {} from './DrawerFooter.cy-jsx.stories';
+import type {} from './DrawerFooter.cy-aliases.stories';
 import { mount } from '@fluentui/scripts-cypress';
 
 import { FluentProvider } from '@fluentui/react-provider';
