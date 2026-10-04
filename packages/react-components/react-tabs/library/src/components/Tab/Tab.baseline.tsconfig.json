@@ -1,0 +1,5 @@
+{
+  "extends": "./Tab.cy.tsconfig.json",
+  "include": ["Tab.baseline.tsx"],
+  "references": []
+}
