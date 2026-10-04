@@ -1,5 +1,15 @@
 # CardHeader browser contracts
 
+## Compilation-only mutation verification
+
+The title-child naming and description-driven grid layout mutations were caught.
+A zero-default-gap mutation compiled, executed in the browser, and survived all
+24 cases: only consumer-overridden spacing was asserted. Default story
+combinations now independently assert the image's computed 12px right margin and
+the action's computed 12px left margin, in both flex and grid layouts. The
+zero-gap mutation must fail these assertions before the restored suite is green.
+The mutation loader never writes production files.
+
 No existing component-local Cypress cases. Passive header composition is tested through the current shared-source/Nx harness in Electron only, with no retries/skips/arbitrary sleeps and no universal/pixel/screen-reader certification.
 
 Read component API/hooks/render/styles/unit/conformance, parent selectable reference/checkbox integration; package README/Spec and stories README; CardHeader Default/index/Description, Card Default/Action/Selectable/BestPractices modules and related header usage inventory.

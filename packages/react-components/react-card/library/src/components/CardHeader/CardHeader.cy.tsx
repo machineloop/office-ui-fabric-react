@@ -46,7 +46,10 @@ describe('CardHeader documented scenarios (round 1)', () => {
           root().should('not.have.attr', 'role');
           slot('header').should('have.text', 'App Name');
           if (hasImage) {
-            slot('image').should('have.prop', 'tagName', 'IMG').and('have.attr', 'alt', 'PowerPoint logo');
+            slot('image')
+              .should('have.prop', 'tagName', 'IMG')
+              .and('have.attr', 'alt', 'PowerPoint logo')
+              .and('have.css', 'margin-right', '12px');
           } else {
             slot('image').should('not.exist');
           }
@@ -58,6 +61,7 @@ describe('CardHeader documented scenarios (round 1)', () => {
           cy.get('[data-test="before"]').focus().realPress('Tab');
           if (hasAction) {
             slot('action')
+              .should('have.css', 'margin-left', '12px')
               .find('[data-test="action"]')
               .should('be.focused')
               .and('have.attr', 'aria-label', 'More options');
