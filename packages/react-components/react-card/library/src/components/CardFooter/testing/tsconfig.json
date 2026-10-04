@@ -1,0 +1,6 @@
+{
+  "extends": "../CardFooter.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../CardFooter.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

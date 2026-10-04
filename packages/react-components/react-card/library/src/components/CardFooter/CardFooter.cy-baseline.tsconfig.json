@@ -1,0 +1,12 @@
+{
+  "extends": "./CardFooter.cy.tsconfig.json",
+  "include": [
+    "./CardFooter.tsx",
+    "./testing/CardFooter.cy-jsx.stories.ts",
+    "./testing/CardFooter.cy-aliases.stories.ts",
+    "../Card/Card.tsx",
+    "../../../../stories/src/CardFooter/*.stories.tsx",
+    "../../../../stories/src/Card/*.stories.tsx"
+  ],
+  "exclude": []
+}
