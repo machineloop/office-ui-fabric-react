@@ -1,0 +1,22 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node", "cypress-real-events", "static-assets"],
+    "typeRoots": [
+      "../../../../../../../node_modules",
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../typings"
+    ],
+    "lib": ["ES2019", "DOM"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "./TagPickerOptionGroup.cy.tsx",
+    "./TagPickerOptionGroup.cy.stories.tsx",
+    "./TagPickerOptionGroup.cy-jsx.stories.ts",
+    "./TagPickerOptionGroup.cy-standalone-jsx.stories.ts"
+  ],
+  "exclude": [],
+  "references": []
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "./TagPickerOptionGroup.cy.tsconfig.json",
+  "include": [
+    "./TagPickerOptionGroup.tsx",
+    "./TagPickerOptionGroup.cy-jsx.stories.ts",
+    "./TagPickerOptionGroup.cy-standalone-jsx.stories.ts",
+    "../../../../stories/src/TagPicker/TagPickerGrouped.stories.tsx"
+  ]
+}
