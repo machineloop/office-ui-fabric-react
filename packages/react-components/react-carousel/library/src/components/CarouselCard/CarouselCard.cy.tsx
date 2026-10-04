@@ -757,6 +757,100 @@ describe('CarouselCard documented API and stories', () => {
       });
     });
     cy.get('[data-testid="explicit"]').should('have.attr', 'id', 'consumer-id');
+
+    const ref = React.createRef<HTMLDivElement>();
+    const DynamicId = () => {
+      const styles = useCardCoverageStyles();
+      const [id, setId] = React.useState('dynamic-first');
+      const [added, setAdded] = React.useState(false);
+      const [removed, setRemoved] = React.useState(false);
+      const ids = [...(removed ? [] : [id]), 'dynamic-stable', ...(added ? ['dynamic-added'] : [])];
+      return (
+        <>
+          <button onClick={() => setId('dynamic-latest')}>Rename native id</button>
+          <button onClick={() => setAdded(true)}>Add after rename</button>
+          <button onClick={() => setRemoved(true)}>Remove renamed card</button>
+          <Carousel className={styles.root} aria-label="Dynamic ids" groupSize={1}>
+            <CarouselViewport>
+              <CarouselSlider cardFocus>
+                {!removed && (
+                  <CarouselCard
+                    ref={ref}
+                    id={id}
+                    data-testid="dynamic-root"
+                    data-value={id}
+                    aria-labelledby="dynamic-title"
+                    aria-roledescription="slide"
+                  >
+                    <h2 id="dynamic-title">Current card</h2>
+                  </CarouselCard>
+                )}
+                <CarouselCard id="dynamic-stable" aria-label="Stable card" />
+                {added && <CarouselCard id="dynamic-added" aria-label="Added card" />}
+              </CarouselSlider>
+            </CarouselViewport>
+            <CarouselNav aria-label="Dynamic pages">
+              {index => (
+                <CarouselNavButton
+                  aria-label={`Dynamic page ${index + 1}`}
+                  aria-controls={ids[index]}
+                  data-testid={`dynamic-page-${index}`}
+                />
+              )}
+            </CarouselNav>
+            <ContextOutput prefix="dynamic" />
+          </Carousel>
+        </>
+      );
+    };
+    mount(<DynamicId />);
+    cy.get('[data-testid="dynamic-context"]')
+      .should('contain.text', '"ids":["dynamic-first","dynamic-stable"]')
+      .and('contain.text', '"count":2');
+    cy.get('[data-testid="dynamic-page-0"]').should('have.attr', 'aria-controls', 'dynamic-first');
+    cy.get<HTMLDivElement>('[data-testid="dynamic-root"]')
+      .should('have.attr', 'id', 'dynamic-first')
+      .and('have.attr', 'role', 'tabpanel')
+      .and('have.attr', 'data-value', 'dynamic-first')
+      .then(elements => {
+        const original = elements[0];
+        expect(ref.current, 'initial forwarded ref').to.equal(original);
+        cy.contains('button', 'Rename native id').click();
+        cy.get<HTMLDivElement>('[data-testid="dynamic-root"]')
+          .should('have.attr', 'id', 'dynamic-latest')
+          .and('have.attr', 'data-value', 'dynamic-latest')
+          .and('have.attr', 'aria-labelledby', 'dynamic-title')
+          .and('have.attr', 'aria-roledescription', 'slide')
+          .should(current => {
+            expect(current[0], 'same root after native id update').to.equal(original);
+            expect(ref.current, 'same forwarded ref').to.equal(original);
+            expect(original.ownerDocument.getElementById('dynamic-first'), 'old id is absent').to.equal(null);
+          });
+        cy.get('#dynamic-title').should('have.text', 'Current card');
+        cy.get('[data-testid="dynamic-page-0"]').should('have.attr', 'aria-controls', 'dynamic-latest');
+        cy.get('.fui-CarouselCard').should('have.length', 2);
+        cy.contains('button', 'Add after rename').click();
+        cy.get('[data-testid="dynamic-context"]')
+          .should('contain.text', '"ids":["dynamic-latest","dynamic-stable","dynamic-added"]')
+          .and('contain.text', '"count":3')
+          .and('contain.text', '"groups":[[0],[1],[2]]');
+        cy.get('#dynamic-stable').focus();
+        cy.get('[data-testid="dynamic-page-1"]').should('have.attr', 'aria-selected', 'true');
+        cy.contains('button', 'Remove renamed card').click();
+        cy.get('[data-testid="dynamic-root"]')
+          .should('not.exist')
+          .then(() => {
+            expect(ref.current, 'removed ref is detached').to.equal(null);
+            expect(original.isConnected, 'removed root is disconnected').to.equal(false);
+          });
+        cy.get('[data-testid="dynamic-context"]')
+          .should('contain.text', '"ids":["dynamic-stable","dynamic-added"]')
+          .and('contain.text', '"count":2');
+        cy.get('#dynamic-stable').focus();
+        cy.get('[data-testid="dynamic-page-0"]')
+          .should('have.attr', 'aria-controls', 'dynamic-stable')
+          .and('have.attr', 'aria-selected', 'true');
+      });
   });
 
   it('forwards native naming descriptions roledescription language and data attributes', () => {

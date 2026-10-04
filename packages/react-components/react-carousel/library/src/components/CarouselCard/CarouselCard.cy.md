@@ -79,7 +79,7 @@ Per-round logs, exact case names/results, commands, source hashes, limitations,
 defect dispositions and independently isolated baseline type diagnostics belong
 in session evidence `coverage101-120/CarouselCard-evidence.json`.
 
-Final finite inventory: 57 executed cases (18 documented, 17 edges/accessibility,
+Pinned finite inventory: 57 executed cases (18 documented, 17 edges/accessibility,
 22 unit/source-derived), including the three characterizations. All existing unit
 cases and the committed root Carousel suite are preserved. The unchanged strict
 package Cypress type configuration has four inherited diagnostics in
@@ -91,3 +91,25 @@ screen-reader speech, an automated axe audit, exhaustive infinite inputs or
 universal browser behavior. Source-branch pointer cancellation tests dispatch
 explicit pointer events followed by real keyboard input; real clicks and native
 pointer dragging separately exercise integration.
+
+## Isolated mutation follow-up
+
+The isolated campaign strengthens the existing native-ID case with lifecycle
+assertions, preserving all 57 primary cases and their original assertions.
+The immutable runner rejects count overrides, so no new test case is added.
+Freezing `props.id` at mount survived the original suite: its generated-ID
+stability, static explicit-ID, and keyed membership tests never changed the ID of
+an existing card. This is a supported native-prop gap, not an equivalent mutant.
+
+The added fixture positively checks the original ID, DOM registration and ref before
+renaming. It checks the latest ID and native data value on the same root, current
+navigation `aria-controls`, stable naming/decorator attributes and no old-ID
+element. Adding a card then checks the actual updated registration IDs, counts
+and groups; removal checks null ref, disconnected DOM, no ghost registration and
+remaining-card index selection. It invents no Card `value` or `index` API and uses
+only cardFocus, uncontrolled navigation, and valid native relationships.
+
+All three known-defect characterizations remain separate and unchanged. No
+production fix is implied. Campaign execution uses port 18341; raw mutation,
+restoration, identity and strict type-parity evidence live in the session's
+`mutations101-120/campaign/CarouselCard/CarouselCard-report.json`.
