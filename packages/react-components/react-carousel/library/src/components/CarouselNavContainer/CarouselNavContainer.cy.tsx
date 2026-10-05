@@ -130,6 +130,7 @@ describe('CarouselNavContainer edges and accessibility', () => {
       it(`${name} real ${action} invokes context then current native callback then root bubble`, () => {
         const calls: string[] = [];
         const enable = cy.stub();
+        let initialEnableCalls: number;
         const slotProps = { 'aria-label': name, onClick: () => calls.push('user') };
         mount(
           <PassiveFixture
@@ -147,17 +148,30 @@ describe('CarouselNavContainer edges and accessibility', () => {
             }}
           />,
         );
-        cy.then(() => calls.splice(0));
+        cy.wrap(enable)
+          .should('have.been.called')
+          .and(stub => expect(stub.lastCall.args).to.deep.equal([false]));
+        cy.then(() => {
+          initialEnableCalls = enable.callCount;
+          calls.splice(0);
+        });
         if (action === 'pointer') {
           control(name).realClick();
         } else {
           control(name).focus();
           cy.realPress(action);
         }
-        cy.then(() => {
-          expect(calls).to.deep.equal(name === 'autoplay' ? ['user', 'bubble'] : [name, 'reset', 'user', 'bubble']);
-          expect(enable.lastCall.args).to.deep.equal([name === 'autoplay']);
-        });
+        cy.wrap(enable)
+          .should('have.been.called')
+          .and(stub => {
+            if (name === 'autoplay') {
+              expect(stub.callCount).to.be.greaterThan(initialEnableCalls);
+            }
+            expect(stub.lastCall.args).to.deep.equal([name === 'autoplay']);
+          });
+        cy.then(() =>
+          expect(calls).to.deep.equal(name === 'autoplay' ? ['user', 'bubble'] : [name, 'reset', 'user', 'bubble']),
+        );
       });
     });
   });
@@ -562,6 +576,7 @@ describe('CarouselNavContainer documentation', () => {
 
   it('autoplay precedes prev child next and initializes unchecked despite stale component comment', () => {
     const enable = cy.stub();
+    let initialEnableCalls: number;
     mount(<PassiveFixture autoplay={{ 'aria-label': 'Autoplay' }} value={{ enableAutoplay: enable }} />);
     nav()
       .children()
@@ -572,10 +587,20 @@ describe('CarouselNavContainer documentation', () => {
         expect(children[3].classList.contains(carouselNavContainerClassNames.next)).to.equal(true);
       });
     control('autoplay').should('have.attr', 'aria-pressed', 'false').find('svg').should('exist');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([false]));
+    cy.wrap(enable)
+      .should('have.been.called')
+      .and(stub => expect(stub.lastCall.args).to.deep.equal([false]));
+    cy.then(() => {
+      initialEnableCalls = enable.callCount;
+    });
     control('autoplay').realClick();
     control('autoplay').should('have.attr', 'aria-pressed', 'true');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([true]));
+    cy.wrap(enable)
+      .should('have.been.called')
+      .and(stub => {
+        expect(stub.callCount).to.be.greaterThan(initialEnableCalls);
+        expect(stub.lastCall.args).to.deep.equal([true]);
+      });
   });
 
   it('label tooltips provide localized accessible names and autoplayTooltip alone creates autoplay', () => {
@@ -761,6 +786,7 @@ describe('CarouselNavContainer unit and source derived', () => {
   it('controlled autoplay requests checked changes without changing pressed state until external feedback', () => {
     const change = cy.stub();
     const enable = cy.stub();
+    let initialEnableCalls: number;
     const Fixture = () => {
       const [checked, setChecked] = React.useState(false);
       return (
@@ -776,19 +802,40 @@ describe('CarouselNavContainer unit and source derived', () => {
       );
     };
     mount(<Fixture />);
+    cy.wrap(enable)
+      .should('have.been.called')
+      .and(stub => expect(stub.lastCall.args).to.deep.equal([false]));
+    cy.then(() => {
+      initialEnableCalls = enable.callCount;
+    });
     control('autoplay').realClick().should('have.attr', 'aria-pressed', 'false');
+    cy.wrap(change).should('have.been.calledOnce');
+    cy.wrap(enable)
+      .should('have.been.called')
+      .and(stub => expect(stub.lastCall.args).to.deep.equal([false]));
     cy.then(() => {
       expect(change.callCount).to.equal(1);
       expect(change.firstCall.args[1]).to.include({ type: 'click', checked: true });
-      expect(enable.lastCall.args).to.deep.equal([false]);
     });
     cy.get('#feedback').realClick();
     control('autoplay').should('have.attr', 'aria-pressed', 'true');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([true]));
+    cy.wrap(enable)
+      .should('have.been.called')
+      .and(stub => {
+        expect(stub.callCount).to.be.greaterThan(initialEnableCalls);
+        expect(stub.lastCall.args).to.deep.equal([true]);
+      });
   });
 
   it('uncontrolled autoplay defaultChecked toggles and unmount disables context, remount reinitializes', () => {
     const enable = cy.stub();
+    const expectAutoplayCalls = (states: boolean[]) =>
+      cy
+        .wrap(enable)
+        .should('have.been.called')
+        .and(stub => {
+          expect(stub.getCalls().map(call => call.args)).to.deep.equal(states.map(state => [state]));
+        });
     const Fixture = () => {
       const [shown, setShown] = React.useState(true);
       return (
@@ -805,15 +852,18 @@ describe('CarouselNavContainer unit and source derived', () => {
     };
     mount(<Fixture />);
     control('autoplay').should('have.attr', 'aria-pressed', 'true');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([true]));
+    // StrictMode replays mount effects; each state change cleans up before enabling its new value.
+    expectAutoplayCalls([true, false, true]);
     control('autoplay').realClick().should('have.attr', 'aria-pressed', 'false');
+    expectAutoplayCalls([true, false, true, false, false]);
     control('autoplay').realClick().should('have.attr', 'aria-pressed', 'true');
+    expectAutoplayCalls([true, false, true, false, false, false, true]);
     cy.get('#toggle').realClick();
     control('autoplay').should('not.exist');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([false]));
+    expectAutoplayCalls([true, false, true, false, false, false, true, false]);
     cy.get('#toggle').realClick();
     control('autoplay').should('have.attr', 'aria-pressed', 'true');
-    cy.then(() => expect(enable.lastCall.args).to.deep.equal([true]));
+    expectAutoplayCalls([true, false, true, false, false, false, true, false, true, false, true]);
   });
 
   it('latest context and native callbacks are used after layout children slot props and active index change', () => {

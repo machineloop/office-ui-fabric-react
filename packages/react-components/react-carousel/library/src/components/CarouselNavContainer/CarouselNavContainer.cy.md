@@ -56,3 +56,44 @@ container-controlled index, no roving root, no announcements, arbitrary invalid
 input behavior, exhaustive infinite style combinations, actual AT speech or
 universal browser guarantees are claimed. Tooltip portals and forced-colors
 emulation are checked in Chromium/Electron, not via snapshots or sleeps.
+
+## Autoplay effect settlement
+
+The uncontrolled defaultChecked lifecycle case waits with ordinary retryable
+Cypress stub assertions, separately from DOM pressed-state assertions. It checks
+the complete ordered argument history at mount, both toggles, unmount and remount.
+The native mount helper enables React StrictMode: initial mount and remount each
+produce `true, false, true`; each checked-state change first cleans up with `false`
+and then enables its new value; unmount adds `false`. Exact histories prevent a
+previous callback from satisfying a later transition. No callback is skipped and
+no sleeps, retries or scheduler overrides are introduced.
+
+The unchecked initialization/toggle and controlled-feedback cases use the same
+retryable called guard before inspecting exact last arguments. They settle the
+initial callback and record its count; transitions that actually change checked
+state must publish a newer callback. Controlled clicks still request exactly one
+checked change while the parent refuses it: pressed state and the last enable
+argument remain false until external feedback, without requiring an invented
+effect call for the refused request. Native pointer/Enter/Space cases settle the
+initial enable callback before clearing event data, and settle autoplay's fresh
+callback before taking the unchanged exact event-order snapshot. Prev/next do not
+require a new autoplay callback. The controlled request callback is also settled
+before its exact one-shot data snapshot. Existing stronger StrictMode lifecycle
+histories remain unchanged.
+
+The complete consistency fix changes only this spec and these coverage notes.
+Two fresh full runs and the final restored guard each pass 89/89 with no
+pending/skipped cases. The native-handler catalog rerun completes all 89 with
+81 passing and eight causal AssertionErrors for removed next-slot callbacks;
+the autoplay settlement cases pass. The other four catalog kills are preserved
+historical evidence, not fresh changed-spec results. Lint and read-only formatting
+checks pass; types retain exactly the four inherited diagnostics with baseline
+parity. Production, dependencies and the global harness remain unchanged.
+
+The final-current-master historical run
+`20261005-041037-484-CarouselNavContainer-final-restored-master` completed 89 cases
+with 88 passing and one TypeError: `enable.lastCall` was null even though the first
+mount already exposed `aria-pressed="true"`. DOM publication alone is not a passive
+effect barrier. This is a test synchronization correction, not a production fix
+or an added case; the suite remains 89 cases. Fresh isolated evidence and mutation
+causality are recorded in the CarouselNavContainer campaign report.
