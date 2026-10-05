@@ -1,0 +1,7 @@
+.temp/
+.runner-temp/
+.cypress-build/
+.cypress-downloads/
+.cypress-screenshots/
+.cypress-videos/
+reports/

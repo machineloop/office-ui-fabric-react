@@ -1,0 +1,6 @@
+{
+  "extends": "../AvatarGroupPopover.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../AvatarGroupPopover.cy.tsx"],
+  "exclude": [],
+  "references": []
+}
