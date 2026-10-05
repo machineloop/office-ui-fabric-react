@@ -215,7 +215,63 @@ function audit(phase = 'final', profile?: Profile) {
               expect(sentinel?.getAttribute('role')).to.equal('none');
               expect(sentinel?.childElementCount).to.equal(0);
               expect(sentinel?.textContent).to.equal('');
-              expect(sentinel?.outerHTML).to.equal(node.html);
+              const template = document.createElement('template');
+              template.innerHTML = node.html;
+              const captured = template.content.querySelector<HTMLElement>('i');
+              if (!sentinel || !captured) {
+                throw new Error('Known sentinel requires captured and live elements');
+              }
+              expect(template.content.childElementCount).to.equal(1);
+              expect(template.content.firstElementChild).to.equal(captured);
+              expect(captured.childElementCount).to.equal(0);
+              expect(captured.textContent).to.equal('');
+              const attributesOf = (element: HTMLElement) =>
+                Array.from(element.attributes)
+                  .filter(attribute => attribute.name !== 'style')
+                  .map(attribute => [attribute.name, attribute.value])
+                  .sort(([left], [right]) => left.localeCompare(right));
+              const styleOf = (element: HTMLElement) =>
+                Array.from(element.style)
+                  .filter(property => property !== 'top' && property !== 'left')
+                  .sort()
+                  .map(property => [
+                    property,
+                    element.style.getPropertyValue(property),
+                    element.style.getPropertyPriority(property),
+                  ]);
+              expect(attributesOf(captured)).to.deep.equal(attributesOf(sentinel));
+              expect(styleOf(captured)).to.deep.equal(styleOf(sentinel));
+              for (let ancestor: HTMLElement | null = sentinel; ancestor; ancestor = ancestor.parentElement) {
+                const transform = document.defaultView!.getComputedStyle(ancestor).transform;
+                if (transform && transform !== 'none') {
+                  expect(ancestor.scrollTop, 'stable story transformed ancestor has no vertical offset').to.equal(0);
+                  expect(ancestor.scrollLeft, 'stable story transformed ancestor has no horizontal offset').to.equal(0);
+                }
+              }
+              for (const property of ['top', 'left']) {
+                expect(captured.style.getPropertyPriority(property)).to.equal('');
+                expect(sentinel.style.getPropertyPriority(property)).to.equal('');
+                expect(['', '0px'], 'captured sentinel position is unset or the measured zero offset').to.include(
+                  captured.style.getPropertyValue(property),
+                );
+                expect(['', '0px'], 'live sentinel position is unset or the measured zero offset').to.include(
+                  sentinel.style.getPropertyValue(property),
+                );
+              }
+              for (const attribute of ['aria-hidden', 'tabindex', 'role', 'data-tabster-dummy']) {
+                expect(captured.getAttribute(attribute)).to.equal(sentinel.getAttribute(attribute));
+              }
+              for (const [property, value] of [
+                ['position', 'fixed'],
+                ['height', '1px'],
+                ['width', '1px'],
+                ['opacity', '0.001'],
+                ['z-index', '-1'],
+                ['content-visibility', 'hidden'],
+              ] as const) {
+                expect(captured.style.getPropertyValue(property)).to.equal(value);
+                expect(document.defaultView!.getComputedStyle(sentinel).getPropertyValue(property)).to.equal(value);
+              }
               expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
                 String(node.target[0]).startsWith('.fui-TeachingPopoverCarouselNav')
                   ? /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/

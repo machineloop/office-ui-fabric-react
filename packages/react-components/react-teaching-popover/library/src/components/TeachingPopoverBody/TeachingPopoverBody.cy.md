@@ -1,5 +1,23 @@
 # TeachingPopoverBody row 138 functional coverage
 
+## Final-sweep sentinel comparison correction
+
+The full current-master sweep exposed a timing-dependent comparison between
+axe's captured sentinel HTML and the live node: Tabster may add `top`/`left`
+positioning after capture. Both captured and live nodes now independently
+require the exact accessibility attributes, empty content and fixed hidden
+one-pixel sentinel CSS. Findings, targets, checks, severity and related-node
+capture identity remain exact. Only transient positional serialization is no
+longer used as an accessibility oracle; no node is mutated, no unknown result
+is allowed and no test retry is introduced.
+
+Review additionally pinned the positional exception itself: every transformed
+ancestor must have measured zero scroll offsets, and captured/live `top` and
+`left` must each be either unset or `0px`. Every non-style attribute and every
+other inline style/value/priority remains an exact captured/live comparison.
+Unexpected positional values therefore fail rather than disappearing behind
+normalization.
+
 ## Scope and original inventory
 
 Only this component directory is authored. Production component, hook, types,
