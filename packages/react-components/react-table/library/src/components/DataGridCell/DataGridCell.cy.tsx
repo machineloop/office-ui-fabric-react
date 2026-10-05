@@ -306,22 +306,6 @@ describe('DataGridCell edges and accessibility (round 2)', () => {
     });
   });
 
-  it('native td callback ref detaches when the cell is removed', () => {
-    const ref = cy.stub().as('nativeRef');
-    mount(
-      <Native>
-        <DataGridCell as="td" ref={ref} id="native-ref" rowSpan={2}>
-          Native
-        </DataGridCell>
-      </Native>,
-    ).then(({ rerender }) => {
-      cy.get('#native-ref').then($cell => expect(ref.lastCall.args[0]).to.equal($cell[0]));
-      cy.then(() => update(rerender, <Native>{null}</Native>));
-      cy.get('#native-ref').should('not.exist');
-      cy.get('@nativeRef').should('have.been.calledWith', null);
-    });
-  });
-
   it('root render function preserves generated attributes, ref and interactive children', () => {
     const ref = React.createRef<HTMLDivElement>();
     const renderRoot: SlotRenderFunction<ExtractSlotProps<DataGridCellSlots['root']>> = (Component, props) =>
@@ -499,6 +483,91 @@ describe('DataGridCell edges and accessibility (round 2)', () => {
       cell().click();
       cy.get('@old').should('have.been.calledOnce');
       cy.get('@latest').should('have.been.calledOnce');
+    });
+  });
+
+  it('native td callback ref detaches when the cell is removed', () => {
+    const old = cy.stub().as('nativeOldClick');
+    const latest = cy.stub().as('nativeLatestClick');
+    const parent = cy.stub().as('nativeParentClick');
+    const ref = cy.stub().as('nativeEventRef');
+    const fixture = (handler: typeof old, changed = false, removed = false) => (
+      <div onClick={event => parent(event.nativeEvent)}>
+        <Native>
+          {!removed && (
+            <DataGridCell
+              as="td"
+              id="native-event"
+              ref={ref}
+              colSpan={2}
+              rowSpan={2}
+              headers="name-header amount-header"
+              focusMode={changed ? 'none' : 'cell'}
+              tabIndex={changed ? -1 : 2}
+              className={changed ? 'latest-native-class' : 'initial-native-class'}
+              title={changed ? 'Latest native props' : 'Initial native props'}
+              onClick={event =>
+                handler({
+                  type: event.type,
+                  target: event.target,
+                  currentTarget: event.currentTarget,
+                  nativeEvent: event.nativeEvent,
+                })
+              }
+            >
+              <span id="native-event-child">{changed ? 'Latest content' : 'Initial content'}</span>
+            </DataGridCell>
+          )}
+        </Native>
+      </div>
+    );
+    let original: HTMLElement;
+    mount(fixture(old)).then(({ rerender }) => {
+      cy.get('#native-event')
+        .should('have.prop', 'tagName', 'TD')
+        .and('have.attr', 'role', 'gridcell')
+        .and('have.attr', 'tabindex', '2')
+        .and('have.attr', 'colspan', '2')
+        .and('have.attr', 'rowspan', '2')
+        .and('have.attr', 'headers', 'name-header amount-header')
+        .and('have.class', 'initial-native-class')
+        .and('have.css', 'display', 'table-cell');
+      cy.get('#native-event').then($cell => {
+        original = $cell[0];
+        expect(ref.lastCall.args[0]).to.equal(original);
+      });
+      cy.get('#native-event-child').realClick();
+      cy.get('@nativeOldClick').should('have.been.calledOnce');
+      cy.get('@nativeParentClick').should('have.been.calledOnce');
+      cy.get('#native-event-child').then($child => {
+        const received = old.firstCall.args[0];
+        expect(received.type).to.equal('click');
+        expect(received.target).to.equal($child[0]);
+        expect(received.currentTarget).to.equal(original);
+        expect(received.nativeEvent.isTrusted).to.equal(true);
+        expect(received.nativeEvent.type).to.equal('click');
+        expect(received.nativeEvent).to.equal(parent.firstCall.args[0]);
+      });
+      cy.then(() => update(rerender, fixture(latest, true)));
+      cy.get('#native-event')
+        .should('have.attr', 'tabindex', '-1')
+        .and('have.attr', 'title', 'Latest native props')
+        .and('have.class', 'latest-native-class')
+        .and('not.have.class', 'initial-native-class')
+        .and('not.have.attr', 'data-tabster');
+      cy.get('#native-event').then($cell => expect($cell[0]).to.equal(original));
+      cy.get('#native-event-child').should('have.text', 'Latest content').realClick();
+      cy.get('@nativeOldClick').should('have.been.calledOnce');
+      cy.get('@nativeLatestClick').should('have.been.calledOnce');
+      cy.get('@nativeParentClick').should('have.been.calledTwice');
+      cy.then(() => {
+        expect(latest.firstCall.args[0].currentTarget).to.equal(original);
+        expect(latest.firstCall.args[0].nativeEvent).to.equal(parent.lastCall.args[0]);
+        expect(latest.firstCall.args[0].nativeEvent).not.to.equal(old.firstCall.args[0].nativeEvent);
+      });
+      cy.then(() => update(rerender, fixture(latest, true, true)));
+      cy.get('#native-event').should('not.exist');
+      cy.get('@nativeEventRef').should('have.been.calledWith', null);
     });
   });
 

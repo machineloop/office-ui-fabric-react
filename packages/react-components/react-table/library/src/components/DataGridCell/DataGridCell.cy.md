@@ -90,3 +90,33 @@ This finite inventory does not exhaust arbitrary content, column IDs, browser
 implementations, touch/virtualization integrations, or actual screen-reader
 speech. No production fix, dependency installation, commit, or next-component
 work is included.
+
+## Isolated representative mutation follow-up
+
+The isolated standard suite retains **76 cases**, all existing case contracts,
+and all axe assertions/audit writes. The expanded native ref cleanup fixture
+checks trusted native click target/currentTarget identity, the same original
+event bubbling to its parent, replacement consumer callbacks after props change,
+stable td identity, explicit tabindex precedence, native attributes, classes,
+updated content, and callback ref detachment. Existing div callback cases provide
+the contrasting non-native positive controls. This closes a genuine gap exposed
+by dropping only explicit td click callbacks in DataGridCell's own hook.
+The runner freezes the assigned primary count and rejects `Expected=77` before
+creating a run. Therefore the existing native ref case was strengthened rather
+than adding a separate case or changing harness configuration.
+
+Five representative in-memory mutations cover none-mode group attributes,
+numeric-zero column sizing context, consumer tabindex precedence, native click
+forwarding, and the own style hook's native-layout variant forwarding to
+TableCell. Shared TableCell/Tabster hooks and production files remain immutable.
+The first group-mode removal candidate was excluded because existing unchecked
+property access produced TypeError as well as assertion failures; it is not
+counted as a kill and was replaced by a typed-assertion-only candidate.
+
+Exact before/after manifests, assertion causality, source/dependency hashes,
+restorations, and validation logs are retained in the session harness under
+`mutations101-120/campaign/DataGridCell/DataGridCell-report.json`. This finite
+campaign is not an exhaustive correctness or accessibility certification. Raw
+type checks still reproduce five inherited diagnostics; the unchanged local
+JSX compatibility declaration only makes the scoped check green, not the raw
+package baseline.
