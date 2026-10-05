@@ -1,0 +1,34 @@
+{
+  "name": "carouselnavimagebutton-functional-tests",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["vNext", "platform:web", "test"],
+  "implicitDependencies": ["react-carousel"],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node src/components/CarouselNavImageButton/CarouselNavImageButton.run.cjs standard",
+        "cwd": "packages/react-components/react-carousel/library"
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/**/*",
+        "{workspaceRoot}/packages/react-components/react-carousel/library/cypress.config.ts",
+        "{workspaceRoot}/scripts/cypress/**/*"
+      ],
+      "cache": false
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node node_modules/typescript/bin/tsc -p packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/testing/tsconfig.json --pretty false",
+        "cwd": "."
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/**/*"
+      ],
+      "cache": false
+    }
+  }
+}

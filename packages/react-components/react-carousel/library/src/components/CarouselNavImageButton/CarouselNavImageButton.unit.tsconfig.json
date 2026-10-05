@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.spec.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["./CarouselNavImageButton.functional.test.tsx"],
+  "exclude": [],
+  "references": []
+}

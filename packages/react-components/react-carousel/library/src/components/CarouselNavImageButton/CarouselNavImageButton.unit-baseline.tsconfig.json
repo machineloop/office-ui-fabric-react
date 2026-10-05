@@ -1,0 +1,5 @@
+{
+  "extends": "./CarouselNavImageButton.unit.tsconfig.json",
+  "include": ["./CarouselNavImageButton.tsx"],
+  "exclude": []
+}

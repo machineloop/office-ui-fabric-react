@@ -1,0 +1,12 @@
+{
+  "extends": "./CarouselNavImageButton.cy.tsconfig.json",
+  "include": [
+    "./CarouselNavImageButton.tsx",
+    "./testing/CarouselNavImageButton.cy-jsx.stories.ts",
+    "../Carousel/Carousel.tsx",
+    "../CarouselNav/CarouselNav.tsx",
+    "../../../../stories/src/Carousel/CarouselImageBox.stories.tsx",
+    "../../../../stories/src/CarouselNav/CarouselNavDefault.stories.tsx"
+  ],
+  "exclude": []
+}
