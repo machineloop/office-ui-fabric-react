@@ -1,0 +1,39 @@
+{
+  "name": "idprefixprovider-functional-tests",
+  "$schema": "../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["vNext", "platform:web", "test"],
+  "implicitDependencies": [
+    "react-utilities",
+    "react-components",
+    "react-provider",
+    "react-field",
+    "react-input",
+    "react-theme"
+  ],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node testing/IdPrefixProvider/IdPrefixProvider.run.cjs standard",
+        "cwd": "packages/react-components/react-utilities"
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-utilities/testing/IdPrefixProvider/**/*",
+        "{workspaceRoot}/packages/react-components/react-utilities/cypress.config.ts",
+        "{workspaceRoot}/scripts/cypress/**/*"
+      ],
+      "cache": false
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node node_modules/typescript/bin/tsc -p packages/react-components/react-utilities/testing/IdPrefixProvider/testing/tsconfig.json --pretty false && node node_modules/typescript/bin/tsc -p packages/react-components/react-utilities/testing/IdPrefixProvider/testing/tsconfig.units.json --pretty false",
+        "cwd": "."
+      },
+      "inputs": ["{workspaceRoot}/packages/react-components/react-utilities/testing/IdPrefixProvider/**/*"],
+      "cache": false
+    }
+  }
+}

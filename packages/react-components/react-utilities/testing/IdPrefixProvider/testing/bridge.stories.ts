@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import type { JSXIntrinsicElement, JSXIntrinsicElementKeys } from '../../../../index';
+import type { JSXIntrinsicElement, JSXIntrinsicElementKeys } from '../../../src/index';
 
 declare global {
   namespace JSX {

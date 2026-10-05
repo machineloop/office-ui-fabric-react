@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IdPrefixProvider } from '../../../../index';
+import { IdPrefixProvider } from '../../../src/index';
 
 export const valid = [
   <IdPrefixProvider key="string" value="prefix">

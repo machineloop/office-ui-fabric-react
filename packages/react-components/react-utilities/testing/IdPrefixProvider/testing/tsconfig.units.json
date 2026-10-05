@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.spec.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./legacy.test.tsx",
+    "./bridge.stories.ts",
+    "../../../src/hooks/useId.test.tsx",
+    "../../../src/ssr/SSRContext.test.tsx",
+    "../../../src/ssr/SSRContext-node.test.tsx"
+  ],
+  "exclude": [],
+  "references": []
+}

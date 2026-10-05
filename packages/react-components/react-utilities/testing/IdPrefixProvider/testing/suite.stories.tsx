@@ -7,25 +7,19 @@ import * as axe from 'axe-core';
 import { computeAccessibleName, computeAccessibleDescription } from 'dom-accessibility-api';
 import { mount } from '@fluentui/scripts-cypress';
 // nx-ignore-next-line
-import { FluentProvider } from '@fluentui/react-provider';
-// nx-ignore-next-line
-import { Field } from '@fluentui/react-field';
-// nx-ignore-next-line
-import { Input } from '@fluentui/react-input';
-// nx-ignore-next-line
-import { webLightTheme } from '@fluentui/react-theme';
-import { IdPrefixProvider, useId } from '../../../useId';
-import { IdPrefixProvider as PublicProvider, useId as publicUseId } from '../../../../index';
-import { IdPrefixProvider as HooksProvider } from '../../../index';
-import { SSRProvider } from '../../../../ssr';
-import { HookOrder, Lifecycle, Probe } from './fixtures.cy';
+import { Field, FluentProvider, Input, webLightTheme } from '@fluentui/react-components';
+import { IdPrefixProvider, useId } from '../../../src/hooks/useId';
+import { IdPrefixProvider as PublicProvider, useId as publicUseId } from '../../../src/index';
+import { IdPrefixProvider as HooksProvider } from '../../../src/hooks/index';
+import { SSRProvider } from '../../../src/ssr';
+import { HookOrder, Lifecycle, Probe } from './fixtures.stories';
 
 const rawRound: unknown = Cypress.env('coverageRound') ?? 3;
 if ((typeof rawRound !== 'number' && typeof rawRound !== 'string') || ![1, 2, 3, '1', '2', '3'].includes(rawRound)) {
   throw new Error('coverageRound must be exactly 1, 2, or 3');
 }
 const round = Number(rawRound);
-const scope = 'src/hooks/testing/IdPrefixProvider';
+const scope = 'testing/IdPrefixProvider';
 const evidence = `${scope}/.evidence/audits-${Date.now()}-${Cypress._.random(100000, 999999)}`;
 const titles: string[] = [];
 const roots: Root[] = [];

@@ -1,12 +1,12 @@
 {
-  "extends": "../../../../../tsconfig.cy.json",
+  "extends": "../../../tsconfig.cy.json",
   "compilerOptions": {
     "noEmit": true,
     "lib": ["ES2019", "dom", "dom.iterable"],
     "types": ["node", "cypress", "cypress-real-events"],
     "skipLibCheck": true
   },
-  "include": ["./*.cy.ts", "./*.cy.tsx", "../IdPrefixProvider.cy.tsx"],
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../IdPrefixProvider.cy.tsx"],
   "exclude": [],
   "references": []
 }

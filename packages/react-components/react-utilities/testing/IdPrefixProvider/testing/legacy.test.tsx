@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { renderHook } from '@testing-library/react';
-import { IdPrefixProvider, resetIdsForTests, useId } from '../../../useId';
-import { SSRProvider } from '../../../../ssr';
+import { IdPrefixProvider, resetIdsForTests, useId } from '../../../src/hooks/useId';
+import { SSRProvider } from '../../../src/ssr';
 
 // Unit-only compatibility branch; this is not native browser evidence.
 jest.mock('react', () => ({ ...jest.requireActual('react'), useId: undefined }));

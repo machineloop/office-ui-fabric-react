@@ -1,7 +1,7 @@
 'use strict';
 const path = require('node:path');
-const repo = path.resolve(__dirname, '../../../../../../..');
-const pkg = path.resolve(__dirname, '../../../..');
+const repo = path.resolve(__dirname, '../../../../..');
+const pkg = path.resolve(__dirname, '../..');
 const { baseConfig } = require(path.join(repo, 'scripts/cypress/lib-commonjs/index.cjs'));
 const webpack = baseConfig.component.devServer.webpackConfig;
 module.exports = {

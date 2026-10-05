@@ -5,9 +5,10 @@ const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const owned = __dirname;
-const repo = path.resolve(owned, '../../../../../../..');
-const pkg = path.resolve(owned, '../../../..');
+const repo = path.resolve(owned, '../../../../..');
+const pkg = path.resolve(owned, '../..');
 const scope = path.relative(repo, owned).replaceAll('\\', '/');
+const historicalScope = 'packages/react-components/react-utilities/src/hooks/testing/IdPrefixProvider';
 const mode = process.argv[2] ?? 'cypress';
 const rawRound = process.argv[3] ?? '3';
 const label = process.argv[4] ?? 'verification';
@@ -96,14 +97,14 @@ function outside() {
   const dirty = git(['diff', '--name-only', 'HEAD']).split('\n');
   const untracked = git(['ls-files', '--others', '--exclude-standard']).split('\n');
   const files = [...new Set([...tracked, ...dirty, ...untracked])].filter(
-    file => file && !file.startsWith(`${scope}/`),
+    file => file && ![scope, historicalScope].some(root => file.startsWith(`${root}/`)),
   );
   return {
     head: git(['rev-parse', 'HEAD']),
     branch: git(['branch', '--show-current']),
     status: git(['status', '--porcelain', '--untracked-files=all'])
       .split('\n')
-      .filter(line => !line.slice(3).startsWith(`${scope}/`)),
+      .filter(line => ![scope, historicalScope].some(root => line.slice(3).startsWith(`${root}/`))),
     files: files.map(file => ({
       path: file,
       hash: fs.existsSync(path.join(repo, file)) ? hash(path.join(repo, file)) : null,
@@ -111,7 +112,10 @@ function outside() {
   };
 }
 function run(entry, args, name, cwd = repo) {
-  const command = [process.execPath, path.join(repo, entry), ...args];
+  return runNode([path.join(repo, entry), ...args], name, cwd);
+}
+function runNode(args, name, cwd = repo) {
+  const command = [process.execPath, ...args];
   const fd = fs.openSync(path.join(receipt, `${name}.log`), 'wx');
   let result;
   try {
@@ -127,6 +131,60 @@ function run(entry, args, name, cwd = repo) {
   process.stdout.write(`${name}: exit ${record.exitCode}\n`);
   return record;
 }
+function globalDiscovery() {
+  const output = path.join(receipt, 'package-discovery.json');
+  const record = runNode(
+    [
+      '--input-type=module',
+      '-e',
+      `
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
+const configPath = path.resolve('cypress.config.ts');
+const require = createRequire(pathToFileURL(configPath));
+const { default: config } = await import(pathToFileURL(configPath).href);
+const patterns = config.component.specPattern;
+if (!Array.isArray(patterns) || !patterns.every(pattern => typeof pattern === 'string')) {
+  throw new Error('expected the actual package specPattern array');
+}
+const exclude = config.component.excludeSpecPattern ?? [];
+const normalize = value => value.replaceAll('\\\\', '/');
+const matches = [...new Set(patterns.flatMap(pattern =>
+  require('glob').sync(normalize(pattern), {
+    cwd: process.cwd(), absolute: true, nodir: true,
+    ignore: (Array.isArray(exclude) ? exclude : [exclude]).map(normalize),
+  }).map(file => normalize(path.resolve(file))),
+))].sort();
+fs.writeFileSync(process.argv[1], JSON.stringify({ configPath, patterns, exclude, matches }, null, 2), { flag: 'wx' });
+`,
+      output,
+    ],
+    'package-discovery',
+    pkg,
+  );
+  assert.equal(record.exitCode, 0, fs.readFileSync(path.join(receipt, record.log), 'utf8'));
+  const discovery = JSON.parse(fs.readFileSync(output, 'utf8'));
+  const providerMatches = discovery.matches.filter(file =>
+    [scope, historicalScope].some(root => file.startsWith(`${repo.replaceAll('\\', '/')}/${root}/`)),
+  );
+  assert.deepEqual(providerMatches, [`${owned.replaceAll('\\', '/')}/IdPrefixProvider.cy.tsx`]);
+  const historicalFiles = walk(path.join(repo, historicalScope)).map(file =>
+    path.relative(path.join(repo, historicalScope), file),
+  );
+  assert.deepEqual(historicalFiles, ['.gitignore'], 'old scope retains only its historical evidence ignore file');
+  save('global-discovery', {
+    ...discovery,
+    configSHA256: hash(path.join(pkg, 'cypress.config.ts')),
+    providerMatches,
+    providerSpecCount: 1,
+    oldScopeSpecCount: 0,
+    helperSpecCount: 0,
+    historicalFiles,
+    command: record,
+  });
+}
 const before = sources();
 const protectedBefore = outside();
 save('source-before', before);
@@ -138,12 +196,17 @@ save('cache-paths', {
   native: env.NX_NATIVE_FILE_CACHE_DIRECTORY,
 });
 const baselinePath = path.join(evidenceRoot, 'entry.json');
-if (!fs.existsSync(baselinePath)) {
+const baselineExisted = fs.existsSync(baselinePath);
+if (!baselineExisted) {
   fs.writeFileSync(baselinePath, JSON.stringify(protectedBefore, null, 2), { flag: 'wx' });
 }
+save('entry-initialization', { baselinePath, baselineExisted, initialized: !baselineExisted, scope, historicalScope });
 process.stdout.write(`Evidence: ${receipt}\n`);
 try {
   if (mode === 'cypress' || mode === 'standard') {
+    if (mode === 'standard') {
+      globalDiscovery();
+    }
     const port = spawnSync(
       process.execPath,
       [
@@ -161,11 +224,9 @@ try {
       'chrome',
       '--headless',
       '--config-file',
-      mode === 'standard'
-        ? 'cypress.config.ts'
-        : 'src/hooks/testing/IdPrefixProvider/IdPrefixProvider.cypress.config.cjs',
+      mode === 'standard' ? 'cypress.config.ts' : 'testing/IdPrefixProvider/IdPrefixProvider.cypress.config.cjs',
       '--spec',
-      'src/hooks/testing/IdPrefixProvider/IdPrefixProvider.cy.tsx',
+      'testing/IdPrefixProvider/IdPrefixProvider.cy.tsx',
       '--reporter',
       'junit',
       '--reporter-options',
@@ -329,7 +390,7 @@ try {
         'src/hooks/useId.test.tsx',
         'src/ssr/SSRContext.test.tsx',
         'src/ssr/SSRContext-node.test.tsx',
-        'src/hooks/testing/IdPrefixProvider/testing/legacy.test.tsx',
+        'testing/IdPrefixProvider/testing/legacy.test.tsx',
         '--json',
         `--outputFile=${path.join(receipt, 'units.json')}`,
         '--cacheDirectory',
@@ -341,6 +402,7 @@ try {
     assert.equal(command.exitCode, 0);
     const result = JSON.parse(fs.readFileSync(path.join(receipt, 'units.json'), 'utf8'));
     assert(result.success && !result.numFailedTests && !result.numPendingTests && !result.numTodoTests);
+    assert.equal(result.numPassedTests, 18);
     assert.equal(result.numPassedTestSuites, 4);
     assert(!result.snapshot.failure && !result.snapshot.unmatched && !result.snapshot.updated);
   } else if (mode === 'isolation') {
@@ -349,7 +411,10 @@ try {
     assert(!config.error);
     const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, pkg);
     assert.deepEqual(parsed.errors, []);
-    const inScope = file => file.replaceAll('\\', '/').startsWith(`${owned.replaceAll('\\', '/')}/`);
+    const inScope = file =>
+      [scope, historicalScope].some(root =>
+        file.replaceAll('\\', '/').startsWith(`${repo.replaceAll('\\', '/')}/${root}/`),
+      );
     const roots = parsed.fileNames.filter(inScope);
     const program = ts.createProgram(parsed.fileNames, parsed.options);
     const inputs = program
@@ -379,6 +444,7 @@ try {
     assert.deepEqual(emitted, [], 'actual package SWC emits zero owned modules');
     save('isolation', { roots, inputs, candidates, emitted, fixtureEmission: 0 });
   } else if (mode === 'discovery') {
+    globalDiscovery();
     const projectRecord = run(
       'node_modules/nx/bin/nx.js',
       ['show', 'project', 'idprefixprovider-functional-tests', '--json'],
@@ -391,6 +457,7 @@ try {
     assert.deepEqual(project.tags, ['vNext', 'platform:web', 'test']);
     assert.deepEqual(project.implicitDependencies, [
       'react-utilities',
+      'react-components',
       'react-provider',
       'react-field',
       'react-input',
@@ -404,7 +471,7 @@ try {
     save('project', project);
     for (const [name, file] of [
       ['production', 'packages/react-components/react-utilities/src/hooks/useId.ts'],
-      ['fixture', `${scope}/testing/fixtures.cy.tsx`],
+      ['fixture', `${scope}/testing/fixtures.stories.tsx`],
       ['canonical', `${scope}/IdPrefixProvider.cy.tsx`],
       ['consumer', 'packages/react-components/react-field/library/src/components/Field/Field.tsx'],
     ]) {
@@ -421,7 +488,9 @@ try {
     const { fileMap } = JSON.parse(
       fs.readFileSync(path.join(env.NX_WORKSPACE_DATA_DIRECTORY, 'file-map.json'), 'utf8'),
     );
-    assert(fileMap.projectFileMap['react-utilities'].some(file => file.file === `${scope}/testing/fixtures.cy.tsx`));
+    assert(
+      fileMap.projectFileMap['react-utilities'].some(file => file.file === `${scope}/testing/fixtures.stories.tsx`),
+    );
     assert(
       fileMap.projectFileMap['idprefixprovider-functional-tests'].some(
         file => file.file === `${scope}/testing/ci/project.json`,
@@ -430,7 +499,7 @@ try {
     save('ownership', { fixtureOwner: 'react-utilities', projectOwner: 'idprefixprovider-functional-tests' });
     const graph = JSON.parse(fs.readFileSync(path.join(env.NX_WORKSPACE_DATA_DIRECTORY, 'project-graph.json'), 'utf8'));
     const application = 'idprefixprovider-functional-tests';
-    const consumerProjects = ['react-provider', 'react-field', 'react-input', 'react-theme'];
+    const consumerProjects = ['react-components', 'react-provider', 'react-field', 'react-input', 'react-theme'];
     assert(
       !graph.dependencies['react-utilities'].some(edge => consumerProjects.includes(edge.target)),
       'test-only consumer imports must not create production utility-to-consumer edges',

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IdPrefixProvider, useId } from '../../../useId';
+import { IdPrefixProvider, useId } from '../../../src/hooks/useId';
 
 export type ProbeProps = {
   name: string;
