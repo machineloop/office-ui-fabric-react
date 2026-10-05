@@ -1,0 +1,35 @@
+{
+  "name": "tagpickerbutton-functional-tests",
+  "$schema": "../../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["vNext", "platform:web", "test"],
+  "implicitDependencies": ["react-tag-picker"],
+  "targets": {
+    "e2e": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node src/components/TagPickerButton/TagPickerButton.run.cjs standard",
+        "cwd": "packages/react-components/react-tag-picker/library"
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-tag-picker/library/src/components/TagPickerButton/**/*",
+        "{workspaceRoot}/packages/react-components/react-tag-picker/library/cypress.config.ts",
+        "{workspaceRoot}/scripts/cypress/**/*"
+      ],
+      "cache": false
+    },
+    "type-check": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "command": "node node_modules/typescript/bin/tsc -p packages/react-components/react-tag-picker/library/src/components/TagPickerButton/testing/tsconfig.json --pretty false",
+        "cwd": "."
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/react-components/react-tag-picker/library/src/components/TagPickerButton/**/*"
+      ],
+      "cache": false
+    }
+  }
+}
