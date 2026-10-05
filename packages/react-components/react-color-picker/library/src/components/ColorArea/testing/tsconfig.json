@@ -1,0 +1,6 @@
+{
+  "extends": "../ColorArea.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../ColorArea.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

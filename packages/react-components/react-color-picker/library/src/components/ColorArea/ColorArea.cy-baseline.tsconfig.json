@@ -1,0 +1,9 @@
+{
+  "extends": "./ColorArea.cy.tsconfig.json",
+  "include": [
+    "./.baseline.cy.tsx",
+    "./testing/ColorArea.cy-jsx.stories.ts",
+    "./ColorArea.tsx",
+    "../../../../stories/src/ColorPicker/*.stories.tsx"
+  ]
+}
