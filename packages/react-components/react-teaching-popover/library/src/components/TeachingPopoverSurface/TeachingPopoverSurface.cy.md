@@ -251,6 +251,46 @@ modules, **zero fixture inputs/emission**, not merely configuration-string check
 
 ## Receipt semantics
 
+### Final-sweep modal selector reliability follow-up
+
+The first strict all-component Node 22/CommonJS sweep passed the preceding 2,034
+cases before Surface's open-modal checkpoint failed on axe's selector serialization:
+`i:nth-child(4)` and the static `#surface > i:nth-child(4)` identify the same
+sentinel. This is not a changed rule, severity, check, node count or accessibility
+outcome. Only the modal profile accepts two finite spellings for each of the
+independently declared first/fourth root-child targets. Both raw and static
+selectors must match exactly one element globally and identify the same empty
+`i` directly under the unique modal `#surface`, with the exact first/last Tabster
+marker, `aria-hidden="true"`, `tabindex="0"` and `role="none"`. Scenario and phase
+are checked as an exact static pair. Other profiles retain exact target strings.
+
+`actualShape` and `fullResults` remain raw and unfiltered, including related-node
+targets. The separately named `semanticShape` changes only those two proven modal
+target spellings. Raw evidence is written before classification, even when a
+guard fails. Successful modal receipts include the captured whole browser
+document and selector identity proofs; the runner independently reconstructs raw
+shapes from full engine results and repeats DOM queries against that document
+before comparing the semantic shape to the static expectation. It does not
+trust proof flags, omit findings, or derive expected targets from axe output.
+
+The existing classifier guard receipts still reject unknown/duplicate rules,
+duplicate nodes, unknown checks, wrong targets and wrong impacts. Each modal
+receipt also exercises both finite aliases against a detached real-DOM fixture
+and rejects unknown selectors, wrong elements, duplicate/absent matches, wrong
+checkpoint context and wrong markers. These guards run within the existing cases:
+**23 / 62 / 90 bodies, 90 final / 100 total full-default axe audits, 11 classifier
+guard receipts and five captures** remain unchanged at full coverage. The nine
+violation-bearing and seven incomplete-bearing audits remain known findings;
+this follow-up does not claim clean accessibility or repair production Tabster.
+
+The first follow-up Node 18 run also exposed a mount-time pointer precondition:
+a portal can mount under the parked pointer before the scenario's deliberate
+enter/leave sequence. That raw failure is retained. The handler scenario now
+resets only enter/leave histories after its real outside hover establishes the
+starting position, while requiring zero setup click/down/up calls. Those three
+activation histories are never erased. The measured native enter, leave, click, down and up still must each
+occur exactly once, with trusted original events.
+
 `.evidence` is generated and ignored. Each run records its exact executable,
 arguments, cwd, exits, raw logs/JUnit, recursive owned source hashes (including
 testing/CI files), outside hashes/status/HEAD before and after, and preservation

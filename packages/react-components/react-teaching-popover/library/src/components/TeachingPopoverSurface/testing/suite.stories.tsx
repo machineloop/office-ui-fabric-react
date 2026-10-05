@@ -237,6 +237,82 @@ function expected(profile: Profile) {
         : [],
   };
 }
+const modalTargets = ['#surface > i:nth-child(1)', '#surface > i:nth-child(4)'];
+function semanticModalShape(
+  document: Document,
+  actualShape: { violations: ReturnType<typeof shape>; incomplete: ReturnType<typeof shape> },
+  profile: Profile,
+  scenarioTitle: string,
+  phase: string,
+) {
+  const semanticShape = Cypress._.cloneDeep(actualShape);
+  const selectorProofs: Array<{
+    rawTarget: string[];
+    staticTarget: string[];
+    rawCount: number;
+    staticCount: number;
+    sameElement: boolean;
+    html: string;
+  }> = [];
+  if (profile === 'modal') {
+    expect(
+      [
+        [
+          'default modal exposes the actual open sentinel checkpoint and restores observed focus after close',
+          'open-modal',
+        ],
+        [
+          'controlled modal refusal retains actual open dialog checkpoint before external closure',
+          'controlled-refused-modal',
+        ],
+      ].some(([title, checkpoint]) => title === scenarioTitle && checkpoint === phase),
+      'static modal scenario/checkpoint pair',
+    ).to.equal(true);
+    expect(actualShape.violations).to.deep.equal([]);
+    expect(actualShape.incomplete).to.have.length(1);
+    expect(actualShape.incomplete[0].id).to.equal('aria-hidden-focus');
+    expect(actualShape.incomplete[0].nodes).to.have.length(2);
+    const roots = document.querySelectorAll('#surface');
+    expect(roots).to.have.length(1);
+    expect(roots[0].classList.contains('fui-TeachingPopoverSurface')).to.equal(true);
+    expect(roots[0].getAttribute('role')).to.equal('dialog');
+    expect(roots[0].getAttribute('aria-modal')).to.equal('true');
+    for (const [index, staticSelector] of modalTargets.entries()) {
+      const node = actualShape.incomplete[0].nodes[index];
+      expect(node.target).to.have.length(1);
+      expect(node.target[0], `known modal selector alias must identify ${staticSelector}`).to.be.oneOf([
+        staticSelector,
+        `i:nth-child(${index === 0 ? 1 : 4})`,
+      ]);
+      const rawNodes = document.querySelectorAll(String(node.target[0]));
+      const staticNodes = document.querySelectorAll(staticSelector);
+      expect(rawNodes, 'raw selector is globally unique').to.have.length(1);
+      expect(staticNodes, 'independent static selector is globally unique').to.have.length(1);
+      expect(rawNodes[0], 'both selectors identify the same live sentinel').to.equal(staticNodes[0]);
+      const sentinel = staticNodes[0];
+      expect(sentinel.parentElement).to.equal(roots[0]);
+      expect(sentinel.tagName).to.equal('I');
+      expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+        `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
+      );
+      expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+      expect(sentinel.getAttribute('tabindex')).to.equal('0');
+      expect(sentinel.getAttribute('role')).to.equal('none');
+      expect(sentinel.childNodes).to.have.length(0);
+      selectorProofs.push({
+        rawTarget: [...node.target].map(String),
+        staticTarget: [staticSelector],
+        rawCount: rawNodes.length,
+        staticCount: staticNodes.length,
+        sameElement: rawNodes[0] === staticNodes[0],
+        html: sentinel.outerHTML,
+      });
+      semanticShape.incomplete[0].nodes[index].target = [staticSelector];
+    }
+  }
+  expect(semanticShape).to.deep.equal(expected(profile));
+  return { semanticShape, selectorProofs };
+}
 function audit(phase = 'final', profile: Profile = finalProfile) {
   return cy
     .get('#row140-stage')
@@ -272,7 +348,8 @@ function audit(phase = 'final', profile: Profile = finalProfile) {
       return auditor.run(roots).then(fullResults => {
         const actualShape = { violations: shape(fullResults.violations), incomplete: shape(fullResults.incomplete) };
         const expectedShape = expected(profile);
-        cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
+        const auditFile = `${evidence}/audit-${++ordinal}.json`;
+        const rawRecord = {
           scenario: Cypress.currentTest.title,
           phase,
           profile,
@@ -281,7 +358,7 @@ function audit(phase = 'final', profile: Profile = finalProfile) {
           fullResults,
           actualShape,
           expectedShape,
-          classified: Cypress._.isEqual(actualShape, expectedShape),
+          classified: false,
           events: records,
           nativeCommands,
           auditedRoots: roots.map(node => ({
@@ -290,7 +367,22 @@ function audit(phase = 'final', profile: Profile = finalProfile) {
             role: node.getAttribute('role'),
             exposed: !node.closest('[aria-hidden="true"]'),
           })),
-        }).then(() => {
+        };
+        cy.writeFile(auditFile, rawRecord).then(() => {
+          const { semanticShape, selectorProofs } = semanticModalShape(
+            document,
+            actualShape,
+            profile,
+            Cypress.currentTest.title,
+            phase,
+          );
+          cy.writeFile(auditFile, {
+            ...rawRecord,
+            semanticShape,
+            selectorProofs,
+            modalSelectorDocument: profile === 'modal' ? document.documentElement.outerHTML : null,
+            classified: Cypress._.isEqual(semanticShape, expectedShape),
+          });
           expect(fullResults.passes.length).to.be.greaterThan(0);
           if (document.querySelector('iframe')) {
             expect(
@@ -306,7 +398,7 @@ function audit(phase = 'final', profile: Profile = finalProfile) {
               'full rules traversed actual shadow descendants',
             ).to.equal(true);
           }
-          expect(actualShape).to.deep.equal(expectedShape);
+          expect(semanticShape).to.deep.equal(expectedShape);
           expect(Cypress.currentRetry).to.equal(0);
           if (profile !== 'clean') {
             if (profile === 'image') {
@@ -409,11 +501,57 @@ function audit(phase = 'final', profile: Profile = finalProfile) {
               if (guard === 'wrong-impact') {
                 rules[0].impact = negative && profile === 'image' ? 'serious' : 'critical';
               }
-              expect(() => expect(bad).to.deep.equal(expectedShape)).to.throw();
+              expect(() => semanticModalShape(document, bad, profile, Cypress.currentTest.title, phase)).to.throw();
+            }
+            const selectorGuards: string[] = [];
+            if (profile === 'modal') {
+              const fixture = document.implementation.createHTMLDocument('Modal selector guards');
+              fixture.body.append(document.querySelector('#surface')!.cloneNode(true));
+              const aliasShape = Cypress._.cloneDeep(actualShape);
+              aliasShape.incomplete[0].nodes.forEach((node, index) => {
+                node.target = [`i:nth-child(${index === 0 ? 1 : 4})`];
+              });
+              semanticModalShape(fixture, aliasShape, profile, Cypress.currentTest.title, phase);
+              for (const guard of [
+                'unknown-selector',
+                'wrong-element',
+                'duplicate-selector',
+                'absent-selector',
+                'wrong-context',
+                'wrong-marker',
+              ]) {
+                const badDocument = document.implementation.createHTMLDocument('Negative modal selector guard');
+                badDocument.body.append(fixture.querySelector('#surface')!.cloneNode(true));
+                const bad = Cypress._.cloneDeep(aliasShape);
+                if (guard === 'unknown-selector') {
+                  bad.incomplete[0].nodes[1].target = ['#surface i:last-child'];
+                } else if (guard === 'wrong-element') {
+                  bad.incomplete[0].nodes[1].target = ['i:nth-child(1)'];
+                } else if (guard === 'duplicate-selector') {
+                  const duplicate = badDocument.createElement('div');
+                  duplicate.append(badDocument.querySelector(modalTargets[0])!.cloneNode(true));
+                  badDocument.body.append(duplicate);
+                } else if (guard === 'absent-selector') {
+                  badDocument.querySelector(modalTargets[1])!.remove();
+                } else if (guard === 'wrong-marker') {
+                  badDocument.querySelector(modalTargets[1])!.setAttribute('data-tabster-dummy', 'unknown');
+                }
+                expect(() =>
+                  semanticModalShape(
+                    badDocument,
+                    bad,
+                    profile,
+                    Cypress.currentTest.title,
+                    guard === 'wrong-context' ? 'final' : phase,
+                  ),
+                ).to.throw();
+                selectorGuards.push(guard);
+              }
             }
             cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
               scenario: Cypress.currentTest.title,
               rejected: guards,
+              selectorRejected: selectorGuards,
             });
           }
         });
@@ -542,6 +680,15 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
     const up = cy.stub();
     standalone({ onMouseEnter: enter, onMouseLeave: leave, onClick: click, onPointerDown: down, onPointerUp: up });
     cy.get('#row140-stage > p').realHover();
+    cy.then(() => {
+      // Mounting a portal under the parked pointer can emit an initial enter/leave.
+      for (const handler of [click, down, up]) {
+        expect(handler, 'mount and outside hover must not activate the surface').not.to.have.been.called;
+      }
+      for (const handler of [enter, leave]) {
+        handler.resetHistory();
+      }
+    });
     surface().realHover().realClick();
     cy.get('#row140-stage > p').realHover();
     cy.wrap(enter).should('have.been.calledOnce');

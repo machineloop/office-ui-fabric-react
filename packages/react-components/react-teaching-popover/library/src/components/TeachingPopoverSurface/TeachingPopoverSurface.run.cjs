@@ -294,7 +294,6 @@ try {
       assert(audit.fullResults.passes.length > 0);
       assert(audit.auditedRoots.length > 0);
       assert.equal(audit.classified, true);
-      assert.deepEqual(audit.actualShape, audit.expectedShape);
       const shape = rules =>
         rules.map(rule => ({
           id: rule.id,
@@ -307,11 +306,97 @@ try {
             none: node.none.map(check => ({ id: check.id, data: check.data, impact: check.impact })),
           })),
         }));
-      assert.deepEqual(
-        { violations: shape(audit.fullResults.violations), incomplete: shape(audit.fullResults.incomplete) },
-        audit.expectedShape,
-        'independently reconstruct finding shapes from unfiltered raw engine results',
-      );
+      const rawShape = {
+        violations: shape(audit.fullResults.violations),
+        incomplete: shape(audit.fullResults.incomplete),
+      };
+      assert.deepEqual(rawShape, audit.actualShape, 'independently reconstruct unfiltered raw finding shapes');
+      const semanticShape = structuredClone(rawShape);
+      if (audit.profile === 'modal') {
+        const staticTargets = ['#surface > i:nth-child(1)', '#surface > i:nth-child(4)'];
+        assert.deepEqual(audit.expectedShape, {
+          violations: [],
+          incomplete: [
+            {
+              id: 'aria-hidden-focus',
+              impact: 'serious',
+              nodes: staticTargets.map(target => ({
+                target: [target],
+                impact: 'serious',
+                anyChecks: [],
+                all: [{ id: 'focusable-modal-open', data: null, impact: 'serious' }],
+                none: [],
+              })),
+            },
+          ],
+        });
+        assert(
+          [
+            [
+              'default modal exposes the actual open sentinel checkpoint and restores observed focus after close',
+              'open-modal',
+            ],
+            [
+              'controlled modal refusal retains actual open dialog checkpoint before external closure',
+              'controlled-refused-modal',
+            ],
+          ].some(([scenario, phase]) => scenario === audit.scenario && phase === audit.phase),
+        );
+        assert.equal(typeof audit.modalSelectorDocument, 'string');
+        const { JSDOM } = require(path.join(repo, 'node_modules/jsdom'));
+        const dom = new JSDOM(audit.modalSelectorDocument);
+        try {
+          const document = dom.window.document;
+          const roots = document.querySelectorAll('#surface');
+          assert.equal(roots.length, 1);
+          assert(roots[0].classList.contains('fui-TeachingPopoverSurface'));
+          assert.equal(roots[0].getAttribute('role'), 'dialog');
+          assert.equal(roots[0].getAttribute('aria-modal'), 'true');
+          assert.deepEqual(rawShape.violations, []);
+          assert.equal(rawShape.incomplete.length, 1);
+          assert.equal(rawShape.incomplete[0].id, 'aria-hidden-focus');
+          assert.equal(rawShape.incomplete[0].nodes.length, 2);
+          assert.equal(audit.selectorProofs.length, 2);
+          staticTargets.forEach((staticSelector, index) => {
+            const node = rawShape.incomplete[0].nodes[index];
+            assert.equal(node.target.length, 1);
+            assert([staticSelector, `i:nth-child(${index === 0 ? 1 : 4})`].includes(node.target[0]));
+            const rawNodes = document.querySelectorAll(node.target[0]);
+            const staticNodes = document.querySelectorAll(staticSelector);
+            assert.equal(rawNodes.length, 1);
+            assert.equal(staticNodes.length, 1);
+            assert.equal(rawNodes[0], staticNodes[0]);
+            const sentinel = staticNodes[0];
+            assert.equal(sentinel.parentElement, roots[0]);
+            assert.equal(sentinel.tagName, 'I');
+            assert.equal(
+              sentinel.getAttribute('data-tabster-dummy'),
+              `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
+            );
+            assert.equal(sentinel.getAttribute('aria-hidden'), 'true');
+            assert.equal(sentinel.getAttribute('tabindex'), '0');
+            assert.equal(sentinel.getAttribute('role'), 'none');
+            assert.equal(sentinel.childNodes.length, 0);
+            assert.deepEqual(audit.selectorProofs[index], {
+              rawTarget: node.target,
+              staticTarget: [staticSelector],
+              rawCount: 1,
+              staticCount: 1,
+              sameElement: true,
+              html: sentinel.outerHTML,
+            });
+            assert.equal(sentinel.outerHTML, audit.fullResults.incomplete[0].nodes[index].html);
+            semanticShape.incomplete[0].nodes[index].target = [staticSelector];
+          });
+        } finally {
+          dom.window.close();
+        }
+      } else {
+        assert.equal(audit.modalSelectorDocument, null);
+        assert.deepEqual(audit.selectorProofs, []);
+      }
+      assert.deepEqual(semanticShape, audit.semanticShape, 'independently reconstruct only finite modal aliases');
+      assert.deepEqual(semanticShape, audit.expectedShape, 'all non-target raw fields remain exact');
       const stable = audit.profile.startsWith('stable-');
       const negative = audit.profile === 'unnamed' || audit.profile === 'image';
       const modal = audit.profile === 'modal' || stable;
@@ -375,7 +460,7 @@ try {
                 [audit.profile === 'stable-basic' ? 'i:nth-child(6)' : 'i:nth-child(5)'],
               ];
         assert.deepEqual(
-          rule.nodes.map(node => node.target),
+          semanticShape.incomplete[0].nodes.map(node => node.target),
           targets,
         );
         for (const node of rule.nodes) {
@@ -463,6 +548,23 @@ try {
           ]),
       ),
     );
+    for (const guard of guards) {
+      const audit = audits.find(item => item.scenario === guard.scenario && item.profile !== 'clean');
+      assert(audit);
+      assert.deepEqual(
+        guard.selectorRejected,
+        audit.profile === 'modal'
+          ? [
+              'unknown-selector',
+              'wrong-element',
+              'duplicate-selector',
+              'absent-selector',
+              'wrong-context',
+              'wrong-marker',
+            ]
+          : [],
+      );
+    }
     const captures = fs.existsSync(path.join(receipt, 'screenshots'))
       ? walk(path.join(receipt, 'screenshots')).filter(file => file.endsWith('.png'))
       : [];
