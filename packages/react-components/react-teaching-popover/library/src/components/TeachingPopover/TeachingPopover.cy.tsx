@@ -150,3 +150,5 @@ describe('TeachingPopover', () => {
     });
   });
 });
+
+import './testing/suite.stories';

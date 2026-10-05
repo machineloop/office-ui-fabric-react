@@ -1,0 +1,12 @@
+{
+  "extends": "../../../../tsconfig.cy.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "lib": ["ES2019", "dom", "dom.iterable"],
+    "types": ["node", "cypress", "cypress-real-events"]
+  },
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../TeachingPopover.cy.tsx"],
+  "exclude": [],
+  "references": []
+}
