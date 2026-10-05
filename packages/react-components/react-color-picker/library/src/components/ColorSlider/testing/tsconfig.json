@@ -1,0 +1,6 @@
+{
+  "extends": "../ColorSlider.cy.tsconfig.json",
+  "include": ["./*.stories.ts", "./*.stories.tsx", "../ColorSlider.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

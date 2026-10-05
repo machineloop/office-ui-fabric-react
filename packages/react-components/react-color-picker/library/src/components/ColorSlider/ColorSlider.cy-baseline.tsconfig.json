@@ -1,0 +1,14 @@
+{
+  "extends": "./ColorSlider.cy.tsconfig.json",
+  "include": [
+    "./ColorSlider.tsx",
+    "./testing/ColorSlider.cy-jsx.stories.ts",
+    "../../../../stories/src/ColorPicker/ColorSliderDefault.stories.tsx",
+    "../../../../stories/src/ColorPicker/ColorSliderChannels.stories.tsx",
+    "../../../../stories/src/ColorPicker/ColorPickerDefault.stories.tsx",
+    "../../../../stories/src/ColorPicker/ColorPickerShape.stories.tsx",
+    "../../../../stories/src/ColorPicker/ColorPickerPopup.stories.tsx",
+    "../../../../stories/src/ColorPicker/ColorAndSwatchPicker.stories.tsx",
+    "../../../../../react-swatch-picker/stories/src/SwatchPicker/EmptySwatch.stories.tsx"
+  ]
+}
