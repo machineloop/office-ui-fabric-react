@@ -46,6 +46,28 @@ These explicitly named characterizations preserve unchanged source behavior and
 are not production fixes. Earlier failing expectations and their corrections are
 retained in the external evidence rather than discarded.
 
+## Final baseline follow-up: scheduler scope
+
+The original 54 cases and their titles are retained. The four direction/circular
+focus cases observe real layout delivery, settle native focus through a real
+pointer click and browser frame, and observe a trusted `focusin` event before
+checking native arrow navigation. Reverse and trailing-boundary navigation,
+selected values, physical alignment and mover context remain asserted.
+
+The two fade paging cases now control only the browser frame scheduler, using
+the real Embla/Fade callbacks at 60Hz after native layout delivery. Native
+pagination and callback identity, intermediate complementary opacity, idle frame
+queue, exact final opacity **1/0**, reverse navigation and physical geometry are
+checked. Scheduler functions and focus/layout observers are cleaned up per test,
+including failures. Slide cases still use native frames. No DOM styles or engine
+state are fabricated, and no sleeps, retries or exception suppression are used.
+
+This deterministic non-jump fade coverage is **not** a fix or guarantee for
+unmodified native fade timing. The original master failure with opacity stuck at
+0.38 is preserved in campaign `CarouselSlider\finalbaseline-followup` evidence;
+the inherited native-timing limitation remains unresolved. Controlled-frame
+success must not be reported as native-timing correctness or a production fix.
+
 ## Boundaries
 
 There is no Slider index/defaultIndex, appearance, motion, drag, alignment,

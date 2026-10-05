@@ -139,6 +139,78 @@ const aligned = (key: string, dir: 'ltr' | 'rtl' = 'ltr', offset = 0, width = 48
     expect(Math.abs(actual - offset), 'settled physical offset').to.be.lessThan(1);
   });
 
+const cleanups: (() => void)[] = [];
+// File-wide cleanup restores observers/frame controls even when a modified case fails.
+afterEach(() =>
+  cleanups
+    .splice(0)
+    .reverse()
+    .forEach(cleanup => cleanup()),
+);
+
+const nativeFrame = () =>
+  cy.window().then(win => new Cypress.Promise<void>(resolve => win.requestAnimationFrame(() => resolve())));
+
+const observeLayout = () =>
+  track().then(
+    elements =>
+      new Cypress.Promise<void>(resolve => {
+        const observer = new elements[0].ownerDocument.defaultView!.ResizeObserver(() => {
+          observer.disconnect();
+          resolve();
+        });
+        observer.observe(elements[0]);
+        cleanups.push(() => observer.disconnect());
+      }),
+  );
+
+const controlFrames = () =>
+  cy.window().then(win => {
+    const frames = new Map<number, FrameRequestCallback>();
+    let nextId = 0;
+    let timestamp = win.performance.now();
+    const originalRequest = win.requestAnimationFrame;
+    const originalCancel = win.cancelAnimationFrame;
+    // Only the browser scheduler is controlled; real Embla/Fade callbacks own every DOM update.
+    const requested = cy.stub(win, 'requestAnimationFrame').callsFake((callback: FrameRequestCallback) => {
+      const id = --nextId;
+      frames.set(id, callback);
+      return id;
+    });
+    const cancelled = cy.stub(win, 'cancelAnimationFrame').callsFake((id: number) => {
+      if (id < 0) {
+        frames.delete(id);
+      } else {
+        originalCancel.call(win, id);
+      }
+    });
+    cleanups.push(() => {
+      cancelled.restore();
+      requested.restore();
+      frames.clear();
+      expect(win.requestAnimationFrame, 'native frame request restored').to.equal(originalRequest);
+      expect(win.cancelAnimationFrame, 'native frame cancellation restored').to.equal(originalCancel);
+    });
+    const advance = () => {
+      expect(frames.size, 'real engine requested a frame').to.be.greaterThan(0);
+      const callbacks = [...frames.values()];
+      frames.clear();
+      timestamp += 1000 / 60;
+      callbacks.forEach(callback => callback(timestamp));
+    };
+    return {
+      advance,
+      settle: () => {
+        expect(requested, 'non-jump motion scheduled by the engine').to.have.been.called;
+        let count = 0;
+        while (frames.size && count++ < 240) {
+          advance();
+        }
+        expect(frames.size, 'real engine becomes idle within 240 frames').to.equal(0);
+      },
+    };
+  });
+
 describe('CarouselSlider unit and source derived regressions', () => {
   const observers: MutationObserver[] = [];
   afterEach(function () {
@@ -650,10 +722,29 @@ describe('CarouselSlider edges and accessibility', () => {
     for (const circular of [false, true]) {
       it(`navigates card focus horizontally in ${dir} with circular ${circular}`, () => {
         mount(<Fixture circular={circular} sliderProps={{ cardFocus: true }} />, dir);
+        // These helpers enqueue commands before the subsequent focus listener/actions.
+        observeLayout();
+        nativeFrame();
+        const focused: { target: EventTarget | null; trusted: boolean }[] = [];
+        track().then(elements => {
+          const node = elements[0];
+          const observeFocus = (event: FocusEvent) => focused.push({ target: event.target, trusted: event.isTrusted });
+          node.addEventListener('focusin', observeFocus);
+          cleanups.push(() => node.removeEventListener('focusin', observeFocus));
+        });
         const forward = dir === 'ltr' ? 'ArrowRight' : 'ArrowLeft';
         const backward = dir === 'ltr' ? 'ArrowLeft' : 'ArrowRight';
-        card('a').focus().realPress(forward);
-        card('b').should('be.focused');
+        card('a').realClick().should('be.focused');
+        nativeFrame();
+        cy.realPress(forward);
+        card('b')
+          .should('be.focused')
+          .then(elements => {
+            expect(
+              focused.some(event => event.target === elements[0] && event.trusted),
+              'observed native card focus',
+            ).to.equal(true);
+          });
         selected(1);
         aligned('b', dir);
         cy.realPress(backward);
@@ -1035,12 +1126,41 @@ describe('CarouselSlider documented contract', () => {
     for (const motion of ['slide', { kind: 'slide', duration: 40 }, 'fade'] as const) {
       const name = typeof motion === 'string' ? motion : 'slide duration 40';
       it(`measures physical paging with ${name} motion in ${dir}`, () => {
-        mount(<Fixture motion={motion} />, dir);
+        const changed = cy.stub();
+        let frames: { advance: () => void; settle: () => void };
+        mount(<Fixture motion={motion} onActiveIndexChange={changed} />, dir);
+        observeLayout();
+        nativeFrame();
         selected(0);
         aligned('a', dir);
+        if (motion === 'fade') {
+          card('a').should('have.css', 'opacity', '1');
+          card('b').should('have.css', 'opacity', '0');
+          controlFrames().then(control => {
+            frames = control;
+          });
+        }
         nav(1).realClick();
         selected(1);
         if (motion === 'fade') {
+          cy.then(() => {
+            expect(changed).to.have.been.calledOnce;
+            const [event, data] = changed.firstCall.args;
+            expect(event.nativeEvent.isTrusted, 'native navigation event').to.equal(true);
+            expect(data).to.include({ type: 'click', index: 1 });
+            // Embla must enqueue its first frame during activation; dependency changes fail loudly.
+            for (let frame = 0; frame < 8; frame++) {
+              frames.advance();
+            }
+          });
+          card('b').should(elements => {
+            const win = elements[0].ownerDocument.defaultView!;
+            const incoming = Number(win.getComputedStyle(elements[0]).opacity);
+            const outgoing = Number(win.getComputedStyle(elements[0].previousElementSibling!).opacity);
+            expect(incoming, 'real intermediate fade').to.be.within(0.01, 0.99);
+            expect(incoming + outgoing, 'complementary real opacity').to.be.closeTo(1, 0.01);
+          });
+          cy.then(() => frames.settle());
           card('b').should(elements => {
             expect(elements[0].ownerDocument.defaultView!.getComputedStyle(elements[0]).opacity).to.equal('1');
           });
@@ -1057,6 +1177,15 @@ describe('CarouselSlider documented contract', () => {
         aligned('b', dir);
         nav(0).realClick();
         selected(0);
+        if (motion === 'fade') {
+          cy.then(() => frames.settle());
+          card('a').should('have.css', 'opacity', '1');
+          card('b').should('have.css', 'opacity', '0');
+          cy.then(() => {
+            expect(changed).to.have.been.calledTwice;
+            expect(changed.lastCall.args[1]).to.include({ type: 'click', index: 0 });
+          });
+        }
         aligned('a', dir);
       });
     }
