@@ -60,6 +60,130 @@ const payload = (alias: string, index: number, value: string, text: string, sele
   });
 
 describe('Listbox - edges and accessibility', () => {
+  it('keeps controlled values and latest handler when selection mode changes in both directions', () => {
+    const before = cy.stub().as('before');
+    const after = cy.stub().as('after');
+    const Fixture = () => {
+      const [multiselect, setMultiselect] = React.useState(false);
+      const [values, setValues] = React.useState(['cat']);
+      const [latest, setLatest] = React.useState(false);
+      return (
+        <>
+          <button
+            id="mode"
+            onClick={() => {
+              setMultiselect(current => !current);
+              setLatest(true);
+            }}
+          >
+            Switch controlled mode
+          </button>
+          <Basic
+            multiselect={multiselect}
+            selectedOptions={values}
+            onOptionSelect={(event, data) => {
+              (latest ? after : before)(event, data);
+              setValues(data.selectedOptions);
+            }}
+          />
+        </>
+      );
+    };
+    mount(<Fixture />);
+    selected('cat');
+    cy.get('#option-dog').realClick();
+    payload('@before', 0, 'dog', 'Dog', ['dog'], 'click');
+    cy.get('#mode').realClick();
+    root().should('have.attr', 'role', 'menu');
+    cy.get('#option-dog').should('have.attr', 'role', 'menuitemcheckbox');
+    selected('dog', true, true);
+    cy.get('#option-fish').realClick();
+    payload('@after', 0, 'fish', 'Fish', ['dog', 'fish'], 'click');
+    selected('dog', true, true);
+    selected('fish', true, true);
+    cy.get('#mode').realClick();
+    root().should('have.attr', 'role', 'listbox');
+    cy.get('#option-dog').should('have.attr', 'role', 'option');
+    root().focus();
+    cy.realPress('Home');
+    active('cat');
+    cy.realPress('Enter');
+    payload('@after', 1, 'cat', 'Cat', ['cat'], 'keydown');
+    selected('cat');
+    selected('dog', false);
+    selected('fish', false);
+    cy.get('@before').should('have.been.calledOnce');
+  });
+
+  [false, true].forEach(initialMultiselect => {
+    it(`updates standalone context semantics through ${
+      initialMultiselect ? 'multiple-single-multiple' : 'single-multiple-single'
+    } mode changes`, () => {
+      const onOptionSelect = cy.stub().as('select');
+      const Fixture = () => {
+        const [multiselect, setMultiselect] = React.useState(initialMultiselect);
+        return (
+          <>
+            <button id="mode" onClick={() => setMultiselect(current => !current)}>
+              Switch selection mode
+            </button>
+            <Basic multiselect={multiselect} defaultSelectedOptions={['cat']} onOptionSelect={onOptionSelect}>
+              <Option id="option-cat" value="cat">
+                Cat
+              </Option>
+              <Option id="option-dog" value="dog" disabled>
+                Dog
+              </Option>
+              <Option id="option-fish" value="fish">
+                Fish
+              </Option>
+            </Basic>
+          </>
+        );
+      };
+      mount(<Fixture />);
+      root().should('have.attr', 'role', initialMultiselect ? 'menu' : 'listbox');
+      selected('cat', true, initialMultiselect);
+      cy.get('#mode').realClick();
+      root().should('have.attr', 'role', initialMultiselect ? 'listbox' : 'menu');
+      cy.get('#option-cat').should('have.attr', 'role', initialMultiselect ? 'option' : 'menuitemcheckbox');
+      selected('cat', true, !initialMultiselect);
+      cy.get('#option-dog').realClick();
+      selected('dog', false, !initialMultiselect);
+      cy.get('@select').should('not.have.been.called');
+      cy.get('#option-fish').realClick();
+      selected('fish', true, !initialMultiselect);
+      selected('cat', !initialMultiselect, !initialMultiselect);
+      payload('@select', 0, 'fish', 'Fish', initialMultiselect ? ['fish'] : ['cat', 'fish'], 'click');
+      cy.get<SinonStub>('@select').then(stub => {
+        const event = stub.firstCall.args[0];
+        expect(event.nativeEvent.type).to.equal('click');
+        expect(event.nativeEvent.target).to.equal(event.target);
+        expect(event.nativeEvent.isTrusted).to.equal(true);
+        expect((event.target as HTMLElement).closest('[id^="option-"]')?.id).to.equal('option-fish');
+      });
+      cy.get('#mode').realClick();
+      root().should('have.attr', 'role', initialMultiselect ? 'menu' : 'listbox');
+      cy.get('#option-fish').should('have.attr', 'role', initialMultiselect ? 'menuitemcheckbox' : 'option');
+      selected('fish', true, initialMultiselect);
+      root().focus();
+      cy.realPress('Home');
+      active('cat');
+      cy.realPress('Space');
+      selected('cat', true, initialMultiselect);
+      selected('fish', initialMultiselect, initialMultiselect);
+      payload('@select', 1, 'cat', 'Cat', initialMultiselect ? ['fish', 'cat'] : ['cat'], 'keydown');
+      cy.get<SinonStub>('@select').then(stub => {
+        const event = stub.secondCall.args[0];
+        expect(event.nativeEvent.type).to.equal('keydown');
+        expect(event.nativeEvent.target).to.equal(event.target);
+        expect(event.nativeEvent.isTrusted).to.equal(true);
+        expect(event.target.id).to.equal('list');
+        expect(event.key).to.equal(' ');
+      });
+    });
+  });
+
   it('resolves external label and description IDs without treating HTML label as div naming', () => {
     mount(
       <>

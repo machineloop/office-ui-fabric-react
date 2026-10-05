@@ -24,13 +24,30 @@ implementation, without importing popup behavior into standalone Listbox.
 
 ## Finite scenario inventory
 
-`Listbox.cy.tsx` contains **82 standard cases**, grouped as follows:
+`Listbox.cy.tsx` contains **85 standard cases** (the original 82 plus three
+additive selection-mode lifecycle cases), grouped as follows:
 
 | Group                  | Cases | Observable contracts                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------------------- | ----: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Documentation          |    21 | Named native root; single and multiple controlled/default selection; exact ordered callback objects and native event types; rich text/value/children precedence; groups and labels; disabled pointer and keyboard interactions; real arrows/Home/End/Space/Enter; Tab/Shift+Tab; standalone typeahead negative control contrasted with real Dropdown matching; Dropdown/Combobox popup ownership and real typing.                                                                                                                                                                                                                                                                                                                |
 | Edges/accessibility    |    27 | Label/description ID relationships; generated option IDs; optional group labels; root ref/native/mouse attributes; root render functions; role/tabindex overrides and filtered internal props; autofocus opt-out and native focus preservation; keyboard focus-visible/blur/refocus; consumer handler ordering and preventDefault semantics; Escape/printable/horizontal keys; disabled selected multiselect; static wrappers and decorative checks; empty values; consumer Griffel and provider style hooks; light/dark backgrounds; LTR/RTL check/text geometry; constrained scrolling; inline/portaled popup refs/ownership; Field and explicit popup names; all three parent sizes without invented option size inheritance. |
 | Unit-derived/lifecycle |    34 | PageUp/PageDown endpoints with 20 options; Alt+Up; selected-key array order and duplicate-value registration; unmatched keys; disabled initial active selection; default-prop and controlled-selection rerenders; keyed DOM reorder; inactive/active removal, selection-preserving readdition and empty/lazy options; changed text/value/ID/disabled registration; sibling isolation and nested-context pointer characterization; latest selection/native callbacks; recomposed clearSelection; ref cleanup/remount; live count/ID/text/value collection queries and cleanup; multiselect Tab; multiselect Dropdown/Combobox toggles and Escape.                                                                                 |
+
+The edges/accessibility group now contains 30 cases rather than the historical
+27 in the inventory table above. Three additive cases change standalone
+`multiselect` in both directions without remounting: one controlled fixture
+and two default-selection fixtures. They assert current root and Option roles,
+`aria-selected` versus `aria-checked`, disabled-option rejection, exact ordered
+next-selection payloads, native pointer/keyboard event identity, and the latest
+controlled callback. These are supported prop/context transitions, not attempts
+to fix the four retained stale-active-ID defects.
+
+The pinned compile-only mutation campaign found a genuine gap: freezing the
+Listbox-owned `state.multiselect` at mount left all original 82 cases green.
+The new cases distinguish the stale Option context from a correctly updated
+root and selection callback. Session evidence is in
+`mutations101-120/campaign/Listbox/Listbox-report.json`; no production or shared
+context/helper changes are included.
 
 Controlled fixtures supply `selectedOptions` without `defaultSelectedOptions`.
 Uncontrolled fixtures use only defaults. Parent defaults pair selected keys with
@@ -113,7 +130,7 @@ navigation and exact callbacks again.
 ## Validation and limits
 
 Use the existing `react-combobox:e2e` Nx target with `**/Listbox.cy.tsx` for the
-82-case standard suite, and explicitly opt in to `**/Listbox.defects.probes.tsx`
+85-case standard suite, and explicitly opt in to `**/Listbox.defects.probes.tsx`
 only for the four expected failures. Use the component-local
 `cypress.probes.config.cjs` and `--spec` with the exact probe path; `--spec`
 alone does not override default discovery. The local config includes only
@@ -122,7 +139,7 @@ The package imports the shared default patterns `**/*.cy.tsx` and `**/*.e2e.tsx`
 neither matches the renamed probe, while `Listbox.cy.tsx` stays automatically
 included. `**/Listbox*.cy.tsx` also excludes the probe. No shared config changes
 are needed, and nominal failures are not skipped or suppressed.
-Report **82 standard passes plus four sensitive defect failures, BUGUNFIXED**,
+Report **85 standard passes plus four sensitive defect failures, BUGUNFIXED**,
 never that all supported functional behavior is correct.
 No Cypress retries, sleeps, exception suppression, snapshots as functional
 coverage, skip/only markers or shared configuration edits are added.
