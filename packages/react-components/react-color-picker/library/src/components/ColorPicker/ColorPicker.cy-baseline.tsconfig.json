@@ -1,0 +1,8 @@
+{
+  "extends": "./ColorPicker.cy.tsconfig.json",
+  "include": [
+    "./ColorPicker.tsx",
+    "./testing/ColorPicker.cy-jsx.stories.ts",
+    "../../../../stories/src/ColorPicker/*.stories.tsx"
+  ]
+}
