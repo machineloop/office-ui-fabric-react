@@ -8,6 +8,7 @@ import {
   PortalMountNodeProvider,
   createDOMRenderer,
   RendererProvider,
+  useFluent as useFluent_unstable,
 } from '@fluentui/react-components';
 import { Provider as DocumentProvider } from '../../../../../../react-shared-contexts/library/src/ProviderContext';
 import { elementContains } from '../../../../../../react-utilities/src/virtualParent/elementContains';
@@ -456,26 +457,60 @@ describe('ONLY126 Portal round 1: documented and unit-derived contracts', () => 
   });
 
   it('R1.18 direction and theme updates propagate on the same generated mount', () => {
-    const Fixture = () => {
-      const [dark, setDark] = React.useState(false);
+    const DirectionScope = ({ isolatedDirection }: { isolatedDirection: 'ltr' | 'rtl' | undefined }) => {
+      const parent = useFluent_unstable();
       return (
-        <FluentProvider theme={dark ? webDarkTheme : webLightTheme} dir={dark ? 'rtl' : 'ltr'}>
-          <button id="change-theme" style={{ marginTop: 220 }} onClick={() => setDark(value => !value)}>
-            Change theme
-          </button>
+        <DocumentProvider value={isolatedDirection === undefined ? parent : { ...parent, dir: isolatedDirection }}>
           <Portal>
             <Content />
           </Portal>
+        </DocumentProvider>
+      );
+    };
+    const Fixture = () => {
+      const [dark, setDark] = React.useState(false);
+      const [direction, setDirection] = React.useState<'ltr' | 'rtl'>('ltr');
+      return (
+        <FluentProvider theme={dark ? webDarkTheme : webLightTheme} dir={dark ? 'rtl' : 'ltr'}>
+          <button
+            id="change-direction"
+            dir={direction}
+            onClick={() => setDirection(value => (value === 'ltr' ? 'rtl' : 'ltr'))}
+          >
+            Change direction only
+          </button>
+          <button id="change-theme" style={{ marginTop: 220 }} onClick={() => setDark(value => !value)}>
+            Change theme
+          </button>
+          {/* Isolate pure flips, then forward the actual FluentProvider context for the original integration check. */}
+          <DirectionScope isolatedDirection={dark ? undefined : direction} />
         </FluentProvider>
       );
     };
     let node: HTMLElement;
+    let className: string;
     mount(<Fixture />);
     portalRoot().then($root => {
       node = $root[0];
+      className = node.className;
       expect(getComputedStyle(node).getPropertyValue('--colorNeutralForeground1').trim()).to.equal(
         webLightTheme.colorNeutralForeground1,
       );
+    });
+    (['rtl', 'ltr'] as const).forEach(direction => {
+      cy.get('#change-direction').realClick();
+      cy.get('#change-direction').should('have.attr', 'dir', direction);
+      cy.get('#change-direction').parent().should('have.attr', 'dir', 'ltr');
+      portalRoot()
+        .should('have.attr', 'dir', direction)
+        .should($root => {
+          expect($root[0], 'direction-only update retains the generated mount').to.equal(node);
+          expect($root[0].className, 'direction-only update retains all mount classes').to.equal(className);
+          expect(getComputedStyle($root[0]).getPropertyValue('--colorNeutralForeground1').trim()).to.equal(
+            webLightTheme.colorNeutralForeground1,
+          );
+        });
+      cy.get('#portal-content').should('have.css', 'direction', direction);
     });
     cy.get('#change-theme').realClick();
     portalRoot()
