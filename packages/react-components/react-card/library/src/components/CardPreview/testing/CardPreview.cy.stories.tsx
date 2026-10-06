@@ -1692,6 +1692,9 @@ if (round >= 3) {
       render(
         <Card id="card" defaultSelected={false} style={{ width: 360 }}>
           <CardPreview id="first-preview">
+            <div>
+              <img id="nested-candidate" src={image()} alt="Nested is not title" />
+            </div>
             <img src={image()} alt="First document" />
           </CardPreview>
           <CardPreview id="second-preview">
@@ -1700,7 +1703,26 @@ if (round >= 3) {
         </Card>,
       );
       loaded();
+      cy.get('#card').should($card => {
+        const card = $card[0];
+        const nested = card.querySelector<HTMLImageElement>('#nested-candidate')!;
+        const first = card.querySelector<HTMLImageElement>('#first-preview > img')!;
+        const second = card.querySelector<HTMLImageElement>('#second-preview > img')!;
+        expect(nested.tagName).to.equal('IMG');
+        expect(nested.parentElement!.tagName).to.equal('DIV');
+        expect(nested.parentElement!.parentElement).to.equal(first.parentElement);
+        expect(first.parentElement!.id).to.equal('first-preview');
+        expect(second.parentElement!.id).to.equal('second-preview');
+        expect(first.parentElement!.parentElement).to.equal(card);
+        expect(second.parentElement!.parentElement).to.equal(card);
+        expect(first.alt).to.equal('First document');
+        expect(second.alt).to.equal('Second document');
+        expect(card.querySelector('.fui-CardPreview img')).to.equal(nested);
+        expect(card.querySelector('.fui-CardPreview > img')).to.equal(first);
+        expect(Array.from(card.querySelectorAll('.fui-CardPreview > img'))).to.deep.equal([first, second]);
+      });
       labelOf('#card > input', 'First document');
+      cy.get('#card > input').should('have.attr', 'aria-label', 'First document');
       cy.get('#second-preview > img').realClick();
       cy.get('#card > input').should('be.checked');
     });
