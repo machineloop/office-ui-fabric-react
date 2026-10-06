@@ -405,184 +405,281 @@ const snapshotCheck = (check: axe.CheckResult) => ({
           .map(([key]) => key)
       : [],
 });
-const audit = (phase: string, selector = '#fixture', baseline?: AuditBaseline) =>
-  cy.get(selector).then($scope =>
-    cy
-      .then(() => axe.run($scope[0]))
-      .then(result => {
-        const document = $scope[0].ownerDocument;
-        const report = {
-          scenario: Cypress.currentTest.title,
-          phase,
-          scope: selector,
-          classification: baseline || 'clean',
-          passes: result.passes.map(({ id }) => id),
-          violations: result.violations.map(({ id, impact, description, help, helpUrl, tags, nodes }) => ({
-            id,
-            impact,
-            description,
-            help,
-            helpUrl,
-            tags,
-            nodes: nodes.map(({ target, html, failureSummary, impact: nodeImpact, any: anyChecks, all, none }) => ({
-              target,
-              html,
-              metadata: nodeMetadata(document.querySelector(String(target[0]))!),
-              actualOuterHTML: document.querySelector(String(target[0]))!.outerHTML,
-              failureSummary,
-              impact: nodeImpact,
-              anyChecks: anyChecks.map(snapshotCheck),
-              all: all.map(snapshotCheck),
-              none: none.map(snapshotCheck),
+const finiteActiveAnimations = (scope: Element) => {
+  const animations = scope.getAnimations({ subtree: true });
+  // Ancestor color transitions can change inherited colors within the audited scope.
+  for (let ancestor = scope.parentElement; ancestor; ancestor = ancestor.parentElement) {
+    animations.push(...ancestor.getAnimations());
+  }
+  return animations.filter(animation => {
+    const timing = animation.effect?.getComputedTiming();
+    return (
+      timing !== undefined &&
+      Number.isFinite(timing.iterations) &&
+      (timing.duration === 'auto' || Number.isFinite(timing.duration)) &&
+      Number.isFinite(timing.endTime) &&
+      (animation.pending || animation.playState === 'running')
+    );
+  });
+};
+type ReadinessControl = {
+  animation: Animation;
+  infinite: Animation;
+  blockedAttempts: number;
+  finished: boolean;
+};
+const auditReady = (selector: string, control?: ReadinessControl) =>
+  cy.get(selector).should($scope => {
+    expect($scope[0].isConnected, 'audit scope remains mounted').to.equal(true);
+    const active = finiteActiveAnimations($scope[0]);
+    if (control) {
+      if (active.includes(control.animation)) {
+        control.blockedAttempts++;
+        if (control.blockedAttempts === 1) {
+          $scope[0].ownerDocument.defaultView!.requestAnimationFrame(() => control.animation.finish());
+        }
+      } else {
+        expect(control.blockedAttempts, 'readiness retried a genuinely blocked native capture').to.be.greaterThan(0);
+        expect(control.animation.playState, 'control finished before capture was allowed').to.equal('finished');
+        control.finished = true;
+      }
+      expect(active, 'infinite native animation does not block readiness').not.to.include(control.infinite);
+    }
+    expect(
+      active.map(animation => ({
+        state: animation.playState,
+        pending: animation.pending,
+        time: animation.currentTime,
+        timing: animation.effect!.getComputedTiming(),
+      })),
+      'audit readiness: finite native animations must finish within defaultCommandTimeout',
+    ).to.deep.equal([]);
+  });
+const audit = (phase: string, selector = '#fixture', baseline?: AuditBaseline) => {
+  let control: ReadinessControl | undefined;
+  let observedBefore: {
+    state: Animation['playState'];
+    pending: boolean;
+    time: Animation['currentTime'];
+    duration: ComputedEffectTiming['duration'];
+  }[] = [];
+  return cy
+    .get(selector)
+    .then($scope => {
+      observedBefore = finiteActiveAnimations($scope[0]).map(animation => ({
+        state: animation.playState,
+        pending: animation.pending,
+        time: animation.currentTime,
+        duration: animation.effect!.getComputedTiming().duration,
+      }));
+      if (Cypress.env('cardFooterAnimationReadinessControl')) {
+        const target = $scope[0];
+        const animation = target.animate([{ opacity: 1 }, { opacity: 1 }], { duration: 100000 });
+        expect(target.getAnimations({ subtree: true })).to.include(animation);
+        const infinite = target.animate([{ opacity: 1 }, { opacity: 1 }], {
+          duration: 100000,
+          iterations: Infinity,
+        });
+        expect(target.getAnimations({ subtree: true })).to.include(infinite);
+        control = { animation, infinite, blockedAttempts: 0, finished: false };
+      }
+      return auditReady(selector, control).then($ready => {
+        if (control) {
+          expect(control.finished, 'native readiness lifecycle control completed').to.equal(true);
+          control.animation.cancel();
+          control.infinite.cancel();
+        }
+        return $ready;
+      });
+    })
+    .then($scope =>
+      cy
+        .then(() => axe.run($scope[0]))
+        .then(result => {
+          const document = $scope[0].ownerDocument;
+          const report = {
+            scenario: Cypress.currentTest.title,
+            phase,
+            scope: selector,
+            classification: baseline || 'clean',
+            readiness: {
+              finiteActiveAnimations: finiteActiveAnimations($scope[0]).length,
+              controls: Boolean(Cypress.env('cardFooterAnimationReadinessControl')),
+              controlProof: control && { blockedAttempts: control.blockedAttempts, finished: control.finished },
+              observedBefore,
+              nativeColors: Array.from($scope[0].querySelectorAll('#card, #more, #link, #reply')).map(element => {
+                const style = document.defaultView!.getComputedStyle(element);
+                return { id: element.id, color: style.color, backgroundColor: style.backgroundColor };
+              }),
+            },
+            passes: result.passes.map(({ id }) => id),
+            violations: result.violations.map(({ id, impact, description, help, helpUrl, tags, nodes }) => ({
+              id,
+              impact,
+              description,
+              help,
+              helpUrl,
+              tags,
+              nodes: nodes.map(({ target, html, failureSummary, impact: nodeImpact, any: anyChecks, all, none }) => ({
+                target,
+                html,
+                metadata: nodeMetadata(document.querySelector(String(target[0]))!),
+                actualOuterHTML: document.querySelector(String(target[0]))!.outerHTML,
+                failureSummary,
+                impact: nodeImpact,
+                anyChecks: anyChecks.map(snapshotCheck),
+                all: all.map(snapshotCheck),
+                none: none.map(snapshotCheck),
+              })),
             })),
-          })),
-          incomplete: result.incomplete.map(({ id, impact, description, help, helpUrl, tags, nodes }) => ({
-            id,
-            impact,
-            description,
-            help,
-            helpUrl,
-            tags,
-            nodes: nodes.map(({ target, html, failureSummary, impact: nodeImpact, any: anyChecks, all, none }) => ({
-              target,
-              html,
-              metadata: nodeMetadata(document.querySelector(String(target[0]))!),
-              actualOuterHTML: document.querySelector(String(target[0]))!.outerHTML,
-              failureSummary,
-              impact: nodeImpact,
-              anyChecks: anyChecks.map(snapshotCheck),
-              all: all.map(snapshotCheck),
-              none: none.map(snapshotCheck),
+            incomplete: result.incomplete.map(({ id, impact, description, help, helpUrl, tags, nodes }) => ({
+              id,
+              impact,
+              description,
+              help,
+              helpUrl,
+              tags,
+              nodes: nodes.map(({ target, html, failureSummary, impact: nodeImpact, any: anyChecks, all, none }) => ({
+                target,
+                html,
+                metadata: nodeMetadata(document.querySelector(String(target[0]))!),
+                actualOuterHTML: document.querySelector(String(target[0]))!.outerHTML,
+                failureSummary,
+                impact: nodeImpact,
+                anyChecks: anyChecks.map(snapshotCheck),
+                all: all.map(snapshotCheck),
+                none: none.map(snapshotCheck),
+              })),
             })),
-          })),
-        };
-        const auditPath =
-          Cypress.env('cardFooterAuditPath') ||
-          `src/components/CardFooter/.temp/audits-${Cypress.env('cardFooterRunId') || Date.now()}.jsonl`;
-        return cy.writeFile(auditPath, `${JSON.stringify(report)}\n`, { flag: 'a', log: false }).then(() => {
-          expect(report.passes.length, 'axe evaluated rules').to.be.greaterThan(0);
-          if (baseline) {
-            assertBaselineEnvelope({
-              classification: baseline,
-              scenario: report.scenario,
-              phase,
-              scope: selector,
-              violationRules: report.violations.map(rule => rule.id),
-              violationNodeCounts: report.violations.map(rule => rule.nodes.length),
-              incompleteRules: report.incomplete.map(rule => rule.id),
-              incompleteNodeCounts: report.incomplete.map(rule => rule.nodes.length),
-            });
-          }
-          if (baseline === 'groupper' || baseline === 'focus-story' || baseline === 'disabled-story') {
-            expect(selector).to.equal('#fixture');
-            if (baseline === 'groupper') {
-              expect(
-                /^R3\.05 (ltr|rtl) (no-tab|tab-exit|tab-only) honors real Tab, Enter, Escape and footer action tab order$/.test(
-                  report.scenario,
-                ) ||
-                  report.scenario ===
-                    'R3.06 current source defaults interactive Card to no-tab, while footer actions remain reachable',
-              ).to.equal(true);
-              const match = report.scenario.match(/^R3\.05 (ltr|rtl) (no-tab|tab-exit|tab-only) /);
-              expect(phase).to.equal(match ? `${match[1]} ${match[2]} keyboard` : 'implicit interactive focus mode');
-            } else {
-              expect(report.scenario).to.equal(
-                baseline === 'focus-story'
-                  ? 'R3.03 stable FocusMode story retains four real footers with named Open and Share actions'
-                  : 'R3.04 stable Disabled story explicitly disables the five disabled-card footer pairs',
-              );
-              expect(phase).to.equal(baseline === 'focus-story' ? 'stable FocusMode' : 'stable Disabled');
-            }
-            expect(report.violations.map(({ id }) => id)).to.deep.equal(
-              baseline === 'disabled-story' ? ['aria-hidden-focus', 'label'] : ['aria-hidden-focus'],
-            );
-            const cards =
-              baseline === 'groupper'
-                ? [document.querySelector('#card')!]
-                : baseline === 'focus-story'
-                ? Array.from(document.querySelectorAll('.fui-Card')).slice(1)
-                : [document.querySelectorAll('.fui-Card')[2]];
-            const sentinels = cards.flatMap(card => [card.previousElementSibling!, card.nextElementSibling!]);
-            expect(result.violations[0].nodes.length).to.equal(baseline === 'focus-story' ? 6 : 2);
-            result.violations[0].nodes.forEach((node, index) => {
-              expect(node.target).to.have.length(1);
-              expect(typeof node.target[0]).to.equal('string');
-              const sentinel = sentinels[index];
-              expect(document.querySelector(String(node.target[0]))).to.equal(sentinel);
-              expect(sentinel.tagName).to.equal('I');
-              expect(sentinel.getAttribute('role')).to.equal('none');
-              expect(sentinel.getAttribute('tabindex')).to.equal('0');
-              expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
-              expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
-                `isFirst=${index % 2 === 0}, isOutside=true, (Groupper, tabbable=true)`,
-              );
-              assertBaselineNode(node, sentinel, 'sentinel');
-              expect(node.failureSummary).to.equal(
-                'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
-              );
-            });
-            if (baseline === 'disabled-story') {
-              const unnamed = [6, 7].map(
-                index =>
-                  document
-                    .querySelectorAll('.fui-Card')
-                    [index].querySelector('.fui-Card__floatingAction .fui-Checkbox__input')!,
-              );
-              expect(result.violations[1].nodes).to.have.length(2);
-              result.violations[1].nodes.forEach((node, index) => {
-                expect(node.target).to.have.length(1);
-                expect(document.querySelector(String(node.target[0]))).to.equal(unnamed[index]);
-                expect(unnamed[index].tagName).to.equal('INPUT');
-                expect(unnamed[index].getAttribute('type')).to.equal('checkbox');
-                expect(unnamed[index].hasAttribute('disabled')).to.equal(index === 1);
-                expect(computeAccessibleName(unnamed[index])).to.equal('');
-                assertBaselineNode(node, unnamed[index], 'unnamed-checkbox');
+          };
+          const auditPath =
+            Cypress.env('cardFooterAuditPath') ||
+            `src/components/CardFooter/.temp/audits-${Cypress.env('cardFooterRunId') || Date.now()}.jsonl`;
+          return cy.writeFile(auditPath, `${JSON.stringify(report)}\n`, { flag: 'a', log: false }).then(() => {
+            expect(report.passes.length, 'axe evaluated rules').to.be.greaterThan(0);
+            if (baseline) {
+              assertBaselineEnvelope({
+                classification: baseline,
+                scenario: report.scenario,
+                phase,
+                scope: selector,
+                violationRules: report.violations.map(rule => rule.id),
+                violationNodeCounts: report.violations.map(rule => rule.nodes.length),
+                incompleteRules: report.incomplete.map(rule => rule.id),
+                incompleteNodeCounts: report.incomplete.map(rule => rule.nodes.length),
               });
             }
-          } else {
-            expect(report.violations, `${phase}: violations`).to.deep.equal([]);
-          }
-          if (baseline === 'forced-colors') {
-            expect(
-              /^R3\.15 (ltr|rtl) (selected|hovered) Card in real forced-colors media records action currentColor and browser contrast baseline$/.test(
-                report.scenario,
-              ),
-            ).to.equal(true);
-            const match = report.scenario.match(/^R3\.15 (ltr|rtl) (selected|hovered) /)!;
-            expect(phase).to.equal(`${match[1]} ${match[2]} forced colors`);
-            expect(document.defaultView!.matchMedia('(forced-colors: active)').matches).to.equal(true);
-            expect(
-              report.incomplete.map(({ id, nodes }) => ({ id, targets: nodes.map(node => node.target) })),
-            ).to.deep.equal([{ id: 'color-contrast', targets: [['#more']] }]);
-            const node = result.incomplete[0].nodes[0];
-            expect(node.any.map(check => check.id)).to.deep.equal(['color-contrast']);
-            expect(node.all).to.deep.equal([]);
-            expect(node.none).to.deep.equal([]);
-            expect(JSON.parse(JSON.stringify(node.any[0].data))).to.deep.equal({
-              fgColor: '#ffffff',
-              bgColor: '#ffffff',
-              contrastRatio: 1,
-              fontSize: '10.5pt (14px)',
-              fontWeight: 'normal',
-              messageKey: 'equalRatio',
-              expectedContrastRatio: '4.5:1',
-            });
-            const button = document.querySelector('#more')!;
-            expect(button.tagName).to.equal('BUTTON');
-            expect(button.classList.contains('fui-Button')).to.equal(true);
-            expect(button.textContent).to.equal('More');
-            assertBaselineNode(node, button, 'forced-colors');
-            expect(node.any[0].impact).to.equal('serious');
-            expect(node.any[0].relatedNodes?.map(related => related.target)).to.deep.equal([['#more']]);
-            const style = document.defaultView!.getComputedStyle(button);
-            expect(style.color).to.equal('rgb(255, 255, 255)');
-            expect(style.backgroundColor).to.equal('rgb(255, 255, 255)');
-          } else {
-            expect(report.incomplete, `${phase}: incomplete`).to.deep.equal([]);
-          }
-        });
-      }),
-  );
+            if (baseline === 'groupper' || baseline === 'focus-story' || baseline === 'disabled-story') {
+              expect(selector).to.equal('#fixture');
+              if (baseline === 'groupper') {
+                expect(
+                  /^R3\.05 (ltr|rtl) (no-tab|tab-exit|tab-only) honors real Tab, Enter, Escape and footer action tab order$/.test(
+                    report.scenario,
+                  ) ||
+                    report.scenario ===
+                      'R3.06 current source defaults interactive Card to no-tab, while footer actions remain reachable',
+                ).to.equal(true);
+                const match = report.scenario.match(/^R3\.05 (ltr|rtl) (no-tab|tab-exit|tab-only) /);
+                expect(phase).to.equal(match ? `${match[1]} ${match[2]} keyboard` : 'implicit interactive focus mode');
+              } else {
+                expect(report.scenario).to.equal(
+                  baseline === 'focus-story'
+                    ? 'R3.03 stable FocusMode story retains four real footers with named Open and Share actions'
+                    : 'R3.04 stable Disabled story explicitly disables the five disabled-card footer pairs',
+                );
+                expect(phase).to.equal(baseline === 'focus-story' ? 'stable FocusMode' : 'stable Disabled');
+              }
+              expect(report.violations.map(({ id }) => id)).to.deep.equal(
+                baseline === 'disabled-story' ? ['aria-hidden-focus', 'label'] : ['aria-hidden-focus'],
+              );
+              const cards =
+                baseline === 'groupper'
+                  ? [document.querySelector('#card')!]
+                  : baseline === 'focus-story'
+                  ? Array.from(document.querySelectorAll('.fui-Card')).slice(1)
+                  : [document.querySelectorAll('.fui-Card')[2]];
+              const sentinels = cards.flatMap(card => [card.previousElementSibling!, card.nextElementSibling!]);
+              expect(result.violations[0].nodes.length).to.equal(baseline === 'focus-story' ? 6 : 2);
+              result.violations[0].nodes.forEach((node, index) => {
+                expect(node.target).to.have.length(1);
+                expect(typeof node.target[0]).to.equal('string');
+                const sentinel = sentinels[index];
+                expect(document.querySelector(String(node.target[0]))).to.equal(sentinel);
+                expect(sentinel.tagName).to.equal('I');
+                expect(sentinel.getAttribute('role')).to.equal('none');
+                expect(sentinel.getAttribute('tabindex')).to.equal('0');
+                expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+                expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+                  `isFirst=${index % 2 === 0}, isOutside=true, (Groupper, tabbable=true)`,
+                );
+                assertBaselineNode(node, sentinel, 'sentinel');
+                expect(node.failureSummary).to.equal(
+                  'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
+                );
+              });
+              if (baseline === 'disabled-story') {
+                const unnamed = [6, 7].map(
+                  index =>
+                    document
+                      .querySelectorAll('.fui-Card')
+                      [index].querySelector('.fui-Card__floatingAction .fui-Checkbox__input')!,
+                );
+                expect(result.violations[1].nodes).to.have.length(2);
+                result.violations[1].nodes.forEach((node, index) => {
+                  expect(node.target).to.have.length(1);
+                  expect(document.querySelector(String(node.target[0]))).to.equal(unnamed[index]);
+                  expect(unnamed[index].tagName).to.equal('INPUT');
+                  expect(unnamed[index].getAttribute('type')).to.equal('checkbox');
+                  expect(unnamed[index].hasAttribute('disabled')).to.equal(index === 1);
+                  expect(computeAccessibleName(unnamed[index])).to.equal('');
+                  assertBaselineNode(node, unnamed[index], 'unnamed-checkbox');
+                });
+              }
+            } else {
+              expect(report.violations, `${phase}: violations`).to.deep.equal([]);
+            }
+            if (baseline === 'forced-colors') {
+              expect(
+                /^R3\.15 (ltr|rtl) (selected|hovered) Card in real forced-colors media records action currentColor and browser contrast baseline$/.test(
+                  report.scenario,
+                ),
+              ).to.equal(true);
+              const match = report.scenario.match(/^R3\.15 (ltr|rtl) (selected|hovered) /)!;
+              expect(phase).to.equal(`${match[1]} ${match[2]} forced colors`);
+              expect(document.defaultView!.matchMedia('(forced-colors: active)').matches).to.equal(true);
+              expect(
+                report.incomplete.map(({ id, nodes }) => ({ id, targets: nodes.map(node => node.target) })),
+              ).to.deep.equal([{ id: 'color-contrast', targets: [['#more']] }]);
+              const node = result.incomplete[0].nodes[0];
+              expect(node.any.map(check => check.id)).to.deep.equal(['color-contrast']);
+              expect(node.all).to.deep.equal([]);
+              expect(node.none).to.deep.equal([]);
+              expect(JSON.parse(JSON.stringify(node.any[0].data))).to.deep.equal({
+                fgColor: '#ffffff',
+                bgColor: '#ffffff',
+                contrastRatio: 1,
+                fontSize: '10.5pt (14px)',
+                fontWeight: 'normal',
+                messageKey: 'equalRatio',
+                expectedContrastRatio: '4.5:1',
+              });
+              const button = document.querySelector('#more')!;
+              expect(button.tagName).to.equal('BUTTON');
+              expect(button.classList.contains('fui-Button')).to.equal(true);
+              expect(button.textContent).to.equal('More');
+              assertBaselineNode(node, button, 'forced-colors');
+              expect(node.any[0].impact).to.equal('serious');
+              expect(node.any[0].relatedNodes?.map(related => related.target)).to.deep.equal([['#more']]);
+              const style = document.defaultView!.getComputedStyle(button);
+              expect(style.color).to.equal('rgb(255, 255, 255)');
+              expect(style.backgroundColor).to.equal('rgb(255, 255, 255)');
+            } else {
+              expect(report.incomplete, `${phase}: incomplete`).to.deep.equal([]);
+            }
+          });
+        }),
+    );
+};
 const actions = (props: CardFooterProps = {}, dir: 'ltr' | 'rtl' = 'ltr') =>
   render(
     <CardFooter
