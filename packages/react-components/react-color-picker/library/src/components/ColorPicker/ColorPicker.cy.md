@@ -26,6 +26,12 @@ After these corrections, direct `.temp/cypress-r4-1791166615398-9392` and ordina
 
 ## Exact integrated Windows commands
 
+### Source-derived color forwarding regression
+
+R2.08 retains its original full/base hook composition, real hue input, synchronization and callback assertions, then exercises a custom native range child through the exported `useColorPickerContextValue_unstable` selector. The real picker hooks, context-value hooks and renderer supply `requestChange`; no direct-provider fixture or mocked producer substitutes for `useColorPickerBase_unstable`. A frozen caller-owned HSVA object and request wrapper are created outside render. One trusted native change forwards the original event and color reference to `onColorChange`, with a new metadata wrapper containing `type: 'change'` and `event`. Both original request fields and every synchronized channel remain unchanged except for the requested selection.
+
+This is an exact-forwarding regression derived from `useColorPicker.ts` (`color: data.color`) and its existing forwarding unit test, **not a documented stable API promise of reference identity**. The public selector and parent callback make the reference observable; a clone preserves structural HSV equality but loses the caller's object identity. The additional oracle first checks callback counts and structurally equal color/metadata, then checks the original retained reference. It strengthens the existing two R2.08 cases without adding or dropping titles: the suite remains **112 cases**, with cumulative **21 / 45 / 60 / 112** counts and unchanged accessibility classifiers.
+
 Run from `C:\Users\jabrassi\OneDrive - Microsoft\Documents\Microsoft Scout\fluentui`:
 
 ```powershell
@@ -133,22 +139,22 @@ Current source/types take precedence over proposed/historical examples. The pick
 
 ## Round 2: context, units, styling and APIs (24 added, 45 cumulative)
 
-| IDs   | Cases | Evidence / source contract                                                                                                                                                              |
-| ----- | ----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| R2.01 |     3 | Local area/hue/alpha `onChange` replaces, rather than duplicates, picker forwarding; controlled values remain frozen.                                                                   |
-| R2.02 |     1 | Nearest nested picker wins color, shape and callback; outer control and callback stay unchanged.                                                                                        |
-| R2.03 |     1 | Empty nested picker shadows outer color/shape; its children use local defaults and uncontrolled updates.                                                                                |
-| R2.04 |     1 | Internal direct provider sends an exact child request and supplies square shape/color. This is unit-derived internal coverage, not a claimed public provider export.                    |
-| R2.05 |     1 | Public selector outside a picker uses undefined color and rounded context default; area remains functional.                                                                             |
-| R2.06 |     5 | Every default/context/explicit shape precedence unit scenario across area, hue and alpha; exact root/rail radii and unaffected circular thumbs.                                         |
-| R2.07 |     1 | Live shape update preserves DOM identity/color; explicit root width/gap override default layout.                                                                                        |
-| R2.08 |     2 | Actual full/base picker state hooks, respective context-value hooks, style hook/static class and renderer drive real synchronized changes. Base context intentionally carries no shape. |
-| R2.09 |     1 | Root ref, native title/class/group attributes, arbitrary children and bubbling key handler survive; ref is null after unmount.                                                          |
-| R2.10 |     1 | Input/rail/thumb refs bind real nodes; native input props survive; slot callback precedes parent callback; FormData serializes the displayed controlled hue.                            |
-| R2.11 |     1 | FluentProvider custom picker style hook is runtime type-guarded; exact root border/title change without breaking color updates.                                                         |
-| R2.12 |     1 | New color/callback closure is used without remount; old callback receives no later requests.                                                                                            |
-| R2.13 |     2 | Light/dark tokens, exact browser thumb/preview RGBA, HSL variable syntax and opaque hue background.                                                                                     |
-| R2.14 |     3 | Red, white and black unit-derived HSV/HSL edge conversions appear as exact area and alpha pseudo-element colors.                                                                        |
+| IDs   | Cases | Evidence / source contract                                                                                                                                                                                                              |
+| ----- | ----: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| R2.01 |     3 | Local area/hue/alpha `onChange` replaces, rather than duplicates, picker forwarding; controlled values remain frozen.                                                                                                                   |
+| R2.02 |     1 | Nearest nested picker wins color, shape and callback; outer control and callback stay unchanged.                                                                                                                                        |
+| R2.03 |     1 | Empty nested picker shadows outer color/shape; its children use local defaults and uncontrolled updates.                                                                                                                                |
+| R2.04 |     1 | Internal direct provider sends an exact child request and supplies square shape/color. This is unit-derived internal coverage, not a claimed public provider export.                                                                    |
+| R2.05 |     1 | Public selector outside a picker uses undefined color and rounded context default; area remains functional.                                                                                                                             |
+| R2.06 |     5 | Every default/context/explicit shape precedence unit scenario across area, hue and alpha; exact root/rail radii and unaffected circular thumbs.                                                                                         |
+| R2.07 |     1 | Live shape update preserves DOM identity/color; explicit root width/gap override default layout.                                                                                                                                        |
+| R2.08 |     2 | Full/base hooks, context, styles and renderer retain real hue synchronization, then a typed custom child verifies source-derived original event/color-reference forwarding and unchanged request fields. Base context carries no shape. |
+| R2.09 |     1 | Root ref, native title/class/group attributes, arbitrary children and bubbling key handler survive; ref is null after unmount.                                                                                                          |
+| R2.10 |     1 | Input/rail/thumb refs bind real nodes; native input props survive; slot callback precedes parent callback; FormData serializes the displayed controlled hue.                                                                            |
+| R2.11 |     1 | FluentProvider custom picker style hook is runtime type-guarded; exact root border/title change without breaking color updates.                                                                                                         |
+| R2.12 |     1 | New color/callback closure is used without remount; old callback receives no later requests.                                                                                                                                            |
+| R2.13 |     2 | Light/dark tokens, exact browser thumb/preview RGBA, HSL variable syntax and opaque hue background.                                                                                                                                     |
+| R2.14 |     3 | Red, white and black unit-derived HSV/HSL edge conversions appear as exact area and alpha pseudo-element colors.                                                                                                                        |
 
 ## Round 3: actual stable documentation (15 added, 60 cumulative)
 

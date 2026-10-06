@@ -12,6 +12,7 @@ import { useColorPickerContextValues, useColorPickerBaseContextValues_unstable }
 import { useColorPickerStyles_unstable, colorPickerClassNames } from '../useColorPickerStyles.styles';
 import { renderColorPicker_unstable } from '../renderColorPicker';
 import { ColorPickerProvider, useColorPickerContextValue_unstable } from '../../../contexts/colorPicker';
+import type { ColorPickerContextValue } from '../../../contexts/colorPicker';
 import { ColorArea } from '../../ColorArea/ColorArea';
 import { ColorSlider } from '../../ColorSlider/ColorSlider';
 import { AlphaSlider } from '../../AlphaSlider/AlphaSlider';
@@ -545,7 +546,40 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
     const shape = useColorPickerContextValue_unstable(ctx => ctx.shape);
     return <output id="context">{JSON.stringify({ color, shape })}</output>;
   };
-  const HeadlessPicker = ({ base, onChange }: { base: boolean; onChange: ColorPickerProps['onColorChange'] }) => {
+  const RequestDriver = ({
+    request,
+    onRequest,
+  }: {
+    request: { color: HsvColor };
+    onRequest: ColorPickerContextValue['requestChange'];
+  }) => {
+    const requestChange = useColorPickerContextValue_unstable(ctx => ctx.requestChange);
+    return (
+      <input
+        id="request-color"
+        type="range"
+        min={0}
+        max={100}
+        defaultValue={50}
+        aria-label="Custom color request"
+        onChange={(event: Parameters<ColorPickerContextValue['requestChange']>[0]) => {
+          onRequest(event, request);
+          requestChange(event, request);
+        }}
+      />
+    );
+  };
+  const HeadlessPicker = ({
+    base,
+    onChange,
+    request,
+    onRequest,
+  }: {
+    base: boolean;
+    onChange: ColorPickerProps['onColorChange'];
+    request: { color: HsvColor };
+    onRequest: ColorPickerContextValue['requestChange'];
+  }) => {
     const [color, setColor] = React.useState(initial);
     const ref = React.useRef<HTMLDivElement>(null);
     const props = {
@@ -556,6 +590,7 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
         <>
           <Controls />
           <Probe />
+          <RequestDriver request={request} onRequest={onRequest} />
         </>
       ),
       onColorChange: (
@@ -727,7 +762,10 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
       } exported picker hooks context styles and renderer drive real synchronized changes`,
       () => {
         const change = cy.stub().as('change');
-        render(<HeadlessPicker base={base} onChange={change} />);
+        const requested = cy.stub().as('requested');
+        const requestColor: HsvColor = Object.freeze({ ...replacement });
+        const request = Object.freeze({ color: requestColor });
+        render(<HeadlessPicker base={base} onChange={change} request={request} onRequest={requested} />);
         cy.get('#picker').should('have.class', colorPickerClassNames.root).and('have.css', 'display', 'flex');
         cy.get('#area').should('have.css', 'border-radius', base ? '4px' : '0px');
         key('#hue', 'ArrowRight');
@@ -736,6 +774,27 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
         cy.get('#context').should(
           'have.text',
           JSON.stringify({ color: { ...initial, h: 211 }, ...(base ? {} : { shape: 'square' }) }),
+        );
+        cy.get('@requested').should('not.have.been.called');
+        key('#request-color', 'ArrowRight');
+        lastChange('@change', replacement, 2, 'change');
+        cy.get<sinon.SinonStub>('@requested').should(stub => {
+          expect(stub.callCount, 'one real custom-child request').to.equal(1);
+          expect(stub.firstCall.args[1]).to.equal(request);
+        });
+        cy.get<sinon.SinonStub>('@change').should(stub => {
+          expect(stub.callCount).to.equal(2);
+          const [event, data] = stub.lastCall.args;
+          expect(event, 'original custom-child event').to.equal(requested.firstCall.args[0]);
+          expect(data, 'picker adds callback metadata without mutating the request').not.to.equal(request);
+          expect(data.color, 'original requested color reference').to.equal(requestColor);
+          expect(request).to.deep.equal({ color: replacement });
+          expect(Object.isFrozen(requestColor)).to.equal(true);
+        });
+        channels(replacement);
+        cy.get('#context').should(
+          'have.text',
+          JSON.stringify({ color: replacement, ...(base ? {} : { shape: 'square' }) }),
         );
       },
     );
