@@ -404,3 +404,18 @@ All other audit sets are empty for violations/incompletes.
   current behavior and R4.04 verifies the supported consumer wrapping override.
 - The external HEAD and InteractionTagSecondary changes are reported rather
   than undone. No claim is made that the entire shared checkout stayed static.
+
+## Isolated mutation diagnostic amendment
+
+The reconstructed `DrawerFooter-children-render` mutant removes the footer's
+children. Its 75 failing scenarios included 69 assertion failures and six
+incidental `TypeError`s when action geometry was read from missing elements:
+R1.10, R1.11, both R1.13 directions, and both R4.04 drawer contexts.
+
+Action rectangle queries now explicitly assert the required primary or secondary
+child exists before measuring it, including the tightly coupled live-provider
+and unwrapped-action geometry checks. All 111 scenarios and existing geometry,
+tolerances, DOM order, state, and accessibility assertions are preserved. No
+exception suppression, production edits, or harness classification changes are
+introduced. Fresh baseline, mutant, and restored-baseline runs under a separately
+sealed test amendment are required before claiming a mutation kill.

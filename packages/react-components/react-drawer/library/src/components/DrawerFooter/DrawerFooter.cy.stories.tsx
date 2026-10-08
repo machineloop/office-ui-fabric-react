@@ -51,6 +51,14 @@ const mountFluent = (element: JSXElement, dir: 'ltr' | 'rtl' = 'ltr', dark = fal
     </FluentProvider>,
   );
 const footer = () => cy.get('#footer');
+function assertFooterAction(action: HTMLElement | null, message: string): asserts action is HTMLElement {
+  expect(action, message).not.to.equal(null);
+}
+const footerActionRect = (root: Element, selector: '#primary' | '#secondary'): DOMRect => {
+  const action = root.querySelector<HTMLElement>(selector);
+  assertFooterAction(action, `footer child ${selector} must exist before measuring geometry`);
+  return action.getBoundingClientRect();
+};
 const pseudo = (opacity: string, selector = '#footer') =>
   cy.get(selector).should($el => {
     const style = $el[0].ownerDocument.defaultView!.getComputedStyle($el[0], '::before');
@@ -804,8 +812,8 @@ describe('ONLY125 DrawerFooter R1 public API and unit-derived contracts', () => 
       .and('have.css', 'z-index', '2');
     footer().then($el => {
       const root = $el[0].getBoundingClientRect();
-      const first = $el[0].querySelector('#primary')!.getBoundingClientRect();
-      const second = $el[0].querySelector('#secondary')!.getBoundingClientRect();
+      const first = footerActionRect($el[0], '#primary');
+      const second = footerActionRect($el[0], '#secondary');
       expect(first.left - root.left).to.equal(24);
       expect(second.left - first.right).to.equal(8);
       expect(first.top).to.equal(second.top);
@@ -822,7 +830,7 @@ describe('ONLY125 DrawerFooter R1 public API and unit-derived contracts', () => 
       .and('have.class', 'fui-DrawerFooter');
     footer().then($el => {
       const root = $el[0].getBoundingClientRect();
-      const right = $el[0].querySelector('#secondary')!.getBoundingClientRect().right;
+      const right = footerActionRect($el[0], '#secondary').right;
       expect(root.right - right).to.equal(10);
     });
   });
@@ -850,8 +858,8 @@ describe('ONLY125 DrawerFooter R1 public API and unit-derived contracts', () => 
         .should('have.css', 'direction', dir)
         .then($el => {
           const root = $el[0].getBoundingClientRect();
-          const a = $el[0].querySelector('#primary')!.getBoundingClientRect();
-          const b = $el[0].querySelector('#secondary')!.getBoundingClientRect();
+          const a = footerActionRect($el[0], '#primary');
+          const b = footerActionRect($el[0], '#secondary');
           expect(dir === 'ltr' ? a.left - root.left : root.right - a.right).to.equal(24);
           expect(dir === 'ltr' ? b.left - a.right : a.left - b.right).to.equal(8);
         });
@@ -1593,7 +1601,7 @@ if (round >= 4) {
           .then($el => {
             expect($el[0]).to.equal(original);
             const rect = $el[0].getBoundingClientRect();
-            expect(rect.right - $el[0].querySelector('#primary')!.getBoundingClientRect().right).to.equal(24);
+            expect(rect.right - footerActionRect($el[0], '#primary').right).to.equal(24);
           });
         pseudo('1');
         footer().should($el =>
@@ -1624,8 +1632,8 @@ if (round >= 4) {
         );
         footer().should($el => {
           const root = $el[0].getBoundingClientRect();
-          const first = $el[0].querySelector('#primary')!.getBoundingClientRect();
-          const second = $el[0].querySelector('#secondary')!.getBoundingClientRect();
+          const first = footerActionRect($el[0], '#primary');
+          const second = footerActionRect($el[0], '#secondary');
           expect(second.top - first.bottom).to.equal(8);
           expect($el[0].scrollWidth).to.equal($el[0].clientWidth);
           expect(second.right).to.be.at.most(root.right - 24);
@@ -1948,8 +1956,8 @@ if (round >= 4) {
         .should('have.css', 'flex-wrap', 'nowrap')
         .then($el => {
           expect($el[0].scrollWidth).to.be.greaterThan($el[0].clientWidth);
-          const a = $el[0].querySelector('#primary')!.getBoundingClientRect();
-          const b = $el[0].querySelector('#secondary')!.getBoundingClientRect();
+          const a = footerActionRect($el[0], '#primary');
+          const b = footerActionRect($el[0], '#secondary');
           expect(a.top).to.equal(b.top);
         });
     });
