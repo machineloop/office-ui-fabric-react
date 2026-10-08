@@ -277,9 +277,9 @@ const registerRoundFour = () => {
         .should('have.css', 'flex-wrap', 'wrap')
         .should($root => {
           const root = $root[0];
-          const reply = root.querySelector('#reply')!.getBoundingClientRect();
-          const share = root.querySelector('#share')!.getBoundingClientRect();
-          const more = root.querySelector('#more')!.getBoundingClientRect();
+          const reply = requiredFooterElement(root, '#reply').getBoundingClientRect();
+          const share = requiredFooterElement(root, '#share').getBoundingClientRect();
+          const more = requiredFooterElement(root, '#more').getBoundingClientRect();
           expect(share.top - reply.bottom).to.be.closeTo(12, 1);
           expect(more.top - share.bottom).to.be.closeTo(12, 1);
           expect(root.scrollWidth).to.be.at.most(190);
@@ -394,6 +394,14 @@ const registerRoundFour = () => {
   });
 };
 const footer = () => cy.get('#footer');
+function assertFooterElement(element: HTMLElement | null, message: string): asserts element is HTMLElement {
+  expect(element, message).not.to.equal(null);
+}
+const requiredFooterElement = (root: ParentNode, selector: string): HTMLElement => {
+  const element = root.querySelector<HTMLElement>(selector);
+  assertFooterElement(element, `footer element ${selector} exists before geometry or style measurement`);
+  return element;
+};
 type AuditBaseline = 'groupper' | 'focus-story' | 'disabled-story' | 'forced-colors';
 const snapshotCheck = (check: axe.CheckResult) => ({
   ...check,
@@ -663,7 +671,7 @@ const audit = (phase: string, selector = '#fixture', baseline?: AuditBaseline) =
                 messageKey: 'equalRatio',
                 expectedContrastRatio: '4.5:1',
               });
-              const button = document.querySelector('#more')!;
+              const button = requiredFooterElement(document, '#more');
               expect(button.tagName).to.equal('BUTTON');
               expect(button.classList.contains('fui-Button')).to.equal(true);
               expect(button.textContent).to.equal('More');
@@ -704,9 +712,9 @@ const geometry = (dir: 'ltr' | 'rtl', width = 400) =>
   footer().should($footer => {
     const root = $footer[0];
     const rect = root.getBoundingClientRect();
-    const reply = root.querySelector('#reply')!.getBoundingClientRect();
-    const share = root.querySelector('#share')!.getBoundingClientRect();
-    const action = root.querySelector('#action')!.getBoundingClientRect();
+    const reply = requiredFooterElement(root, '#reply').getBoundingClientRect();
+    const share = requiredFooterElement(root, '#share').getBoundingClientRect();
+    const action = requiredFooterElement(root, '#action').getBoundingClientRect();
     expect(rect.width, 'footer width').to.be.closeTo(width, 1);
     expect(reply.top, 'children share a row').to.be.closeTo(share.top, 1);
     expect(action.top, 'action is in same row').to.be.closeTo(reply.top, 1);
@@ -1027,6 +1035,7 @@ describe('ONLY127 CardFooter R1 documented anatomy and unit-derived contracts', 
     );
     cy.get('#save')
       .realClick()
+      .should(() => expect(click).to.have.been.calledOnce)
       .then($button => expect(click.firstCall.args[0].target).to.equal($button[0]));
     cy.realPress('Enter');
     cy.get('@rootKey').should('have.been.calledOnce');
@@ -1336,9 +1345,9 @@ if (round >= 2) {
         .and('have.css', 'align-items', 'center')
         .and('have.css', 'padding-left', '8px');
       footer().should($root => {
-        const reply = $root[0].querySelector('#reply')!.getBoundingClientRect();
-        const share = $root[0].querySelector('#share')!.getBoundingClientRect();
-        const action = $root[0].querySelector('#action')!.getBoundingClientRect();
+        const reply = requiredFooterElement($root[0], '#reply').getBoundingClientRect();
+        const share = requiredFooterElement($root[0], '#share').getBoundingClientRect();
+        const action = requiredFooterElement($root[0], '#action').getBoundingClientRect();
         expect(share.left - reply.right).to.be.closeTo(24, 1);
         expect(action.left - share.right).to.be.closeTo(24, 1);
       });
@@ -1491,8 +1500,8 @@ if (round >= 2) {
         .should('have.css', 'flex-direction', 'column')
         .and('have.css', 'gap', '16px')
         .should($root => {
-          const reply = $root[0].querySelector('#reply')!.getBoundingClientRect();
-          const share = $root[0].querySelector('#share')!.getBoundingClientRect();
+          const reply = requiredFooterElement($root[0], '#reply').getBoundingClientRect();
+          const share = requiredFooterElement($root[0], '#share').getBoundingClientRect();
           expect(share.top - reply.bottom).to.be.closeTo(16, 1);
         });
       cy.get('#more').realClick().should('have.focus');
@@ -1518,7 +1527,7 @@ if (round >= 2) {
           .should($root => {
             const root = $root[0];
             const buttons = Array.from(root.querySelectorAll('button')).map(button => button.getBoundingClientRect());
-            const action = root.querySelector('#action')!.getBoundingClientRect();
+            const action = requiredFooterElement(root, '#action').getBoundingClientRect();
             const rect = root.getBoundingClientRect();
             const contentWidth = buttons.reduce((sum, button) => sum + button.width, 0) + 24;
             expect(contentWidth - rect.width).to.be.closeTo(48, 1);
@@ -1807,9 +1816,9 @@ if (round >= 3) {
               .and('have.css', 'flex-grow', orientation === 'horizontal' ? '1' : '0');
             footer().should($root => {
               const rect = $root[0].getBoundingClientRect();
-              const action = $root[0].querySelector('#action')!.getBoundingClientRect();
-              const reply = $root[0].querySelector('#reply')!.getBoundingClientRect();
-              const share = $root[0].querySelector('#share')!.getBoundingClientRect();
+              const action = requiredFooterElement($root[0], '#action').getBoundingClientRect();
+              const reply = requiredFooterElement($root[0], '#reply').getBoundingClientRect();
+              const share = requiredFooterElement($root[0], '#share').getBoundingClientRect();
               expect(dir === 'ltr' ? share.left - reply.right : reply.left - share.right).to.be.closeTo(12, 1);
               expect(dir === 'ltr' ? rect.right - action.right : action.left - rect.left).to.be.closeTo(0, 1);
             });

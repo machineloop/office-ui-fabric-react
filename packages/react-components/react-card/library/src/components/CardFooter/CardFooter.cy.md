@@ -215,3 +215,25 @@ The preservation check confirms 369/369 original file hashes and the same `maste
 - `reports/preservation-before.json` and `preservation-after.json`: 369 original file hashes, outside-scope Git status, branch and HEAD preservation. Includes pre-existing modified/untracked files, Card source/stories and shared Cypress/configuration sentinels.
 
 This is Chrome component functional coverage, not cross-browser or assistive-technology certification, native screen-reader testing, visual snapshot/performance certification or a full monorepo build/Jest run. Forced-colors coverage uses Chrome CDP media emulation, not a physical Windows high-contrast theme. The classified violations and serious incomplete need separate accessibility remediation/manual review; this task makes no production fixes. CardFooter has no built-in responsive wrapping, implicit disabled-child propagation or selection/focus-mode API of its own. Native hidden is tested with an explicit display override rather than assuming it outranks the footer's author-level display:flex.
+
+## Isolated mutation diagnostic amendment
+
+The reconstructed `CardFooter-action-render` mutant removes the optional action
+slot. Its 94 failing scenarios included 68 assertion failures and 26 incidental
+`TypeError`s from missing action geometry, including shared LTR/RTL alignment,
+inline spacing, overflow, Card context layout, wrapping, and provider updates.
+
+Required footer elements are now explicitly asserted nonnull before rectangle
+or style reads, using a typed assertion function and the callable Cypress
+`expect(element, message).not.to.equal(null)` API. All 120 qualified scenarios,
+geometry tolerances, logical margins, state, native props, and strict contrast
+assertions remain intact. The finite-transition audit completion wait from
+742c8d13 is unchanged. No exception suppression or verdict relaxation is used.
+Fresh baseline, mutant, and restored-baseline evidence under a separately sealed
+test amendment is required before claiming a mutation kill.
+
+The root-click diagnostic follow-up reviewed one missing-spy-call `TypeError`
+and four existing assertion failures. R1.11 now asserts the root click spy was
+called once before inspecting its first event, preserving the original button
+subject, target comparison, and subsequent keyboard/callback-order assertions.
+The geometry guards, finite-transition wait, and all 120 scenarios are unchanged.
