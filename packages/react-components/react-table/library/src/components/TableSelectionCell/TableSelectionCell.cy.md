@@ -152,3 +152,20 @@ findings within the functional scope above.
 
 Current validation evidence is identified explicitly in the reproduction
 section above and kept separately from the other thread's historical logs.
+
+## Isolated mutation diagnostic amendment
+
+The reconstructed `TableSelectionCell-checkbox-render` mutant removes the checkbox
+input. Its 33 failing scenarios included 11 test-helper `TypeError`s: five
+checked-state reads and six native/flex alignment measurements dereferenced a
+missing input. The other 22 failures were missing-element assertions.
+
+The isolated fixture now explicitly asserts that each queried selection input
+exists before reading its checked state or geometry, including the equivalent
+RTL measurement. Missing inputs therefore produce named assertion failures,
+not incidental null dereferences. All 45 scenarios, selection-state comparisons,
+layout measurements, and accessibility checks are preserved; no exception
+suppression or harness classification changes are introduced. This test-only
+amendment requires fresh baseline, mutant, and restored-baseline evidence before
+claiming a mutation kill. The earlier validation results above do not validate
+the amended fixture.

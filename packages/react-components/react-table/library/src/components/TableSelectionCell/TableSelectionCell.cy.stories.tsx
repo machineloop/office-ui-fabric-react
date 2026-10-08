@@ -71,14 +71,17 @@ const cell = (
   );
 const rowInputs = () => cy.get('.fui-TableBody .fui-TableSelectionCell input');
 const headerInput = () => cy.get('.fui-TableHeader .fui-TableSelectionCell input');
+function assertSelectionInput(input: HTMLInputElement | null, message: string): asserts input is HTMLInputElement {
+  expect(input, message).not.to.equal(null);
+}
 const assertSelected = (selected: number[]) =>
   cy.get('.fui-TableBody .fui-TableRow').should($rows => {
     expect($rows).to.have.length(4);
     $rows.each((index, row) => {
       expect(row.getAttribute('aria-selected'), `row ${index} selection`).to.equal(String(selected.includes(index)));
-      expect(row.querySelector<HTMLInputElement>('input')!.checked, `row ${index} indicator`).to.equal(
-        selected.includes(index),
-      );
+      const input = row.querySelector<HTMLInputElement>('input');
+      assertSelectionInput(input, `row ${index} indicator exists`);
+      expect(input.checked, `row ${index} indicator`).to.equal(selected.includes(index));
     });
   });
 const audit = () =>
@@ -271,7 +274,9 @@ describe('TableSelectionCell public root, indicator and state contracts', () => 
           .should($cell => {
             const rect = $cell[0].getBoundingClientRect();
             expect(rect.width).to.be.closeTo(44, 0.5);
-            const input = $cell[0].querySelector('input')!.getBoundingClientRect();
+            const indicator = $cell[0].querySelector<HTMLInputElement>('input');
+            assertSelectionInput(indicator, 'selection indicator exists before alignment measurement');
+            const input = indicator.getBoundingClientRect();
             expect(input.left + input.width / 2).to.be.closeTo(rect.left + rect.width / 2, 0.5);
           });
         cy.get('#selection input').should('not.be.checked').and('have.attr', 'type', 'checkbox');
@@ -748,7 +753,9 @@ describe('TableSelectionCell visibility and direction', () => {
     cy.get('#selection input').should('be.checked');
     cy.get('#selection').should($cell => {
       const cellRect = $cell[0].getBoundingClientRect();
-      const inputRect = $cell[0].querySelector('input')!.getBoundingClientRect();
+      const indicator = $cell[0].querySelector<HTMLInputElement>('input');
+      assertSelectionInput(indicator, 'RTL selection indicator exists before alignment measurement');
+      const inputRect = indicator.getBoundingClientRect();
       expect(inputRect.left + inputRect.width / 2).to.be.closeTo(cellRect.left + cellRect.width / 2, 0.5);
     });
     audit();
