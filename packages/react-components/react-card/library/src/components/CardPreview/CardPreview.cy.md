@@ -521,3 +521,56 @@ catches, rule disablements or unknown-result fallbacks. Native focus setup and
 retryable DOM/image/style assertions precede real user interactions. The suite
 extends unit-derived scenarios in a real browser; Jest/full-repository builds are
 not run, and no unrelated component is started.
+
+## Isolated mutation testability amendment
+
+The reconstructed `CardPreview-logo-render` mutant exposed missing-element
+geometry errors and a strict audit mismatch in the verdict-bearing `afterEach`
+hook. Mocha treated that hook failure as a reason to skip later scenarios.
+
+Required image/logo elements and the coupled native-event ref now have typed
+nonnull assertions before geometry, style, or property reads. The local test
+registration wrapper appends the complete strict audit chain to each test body,
+after its queued interactions and before the unchanged media-reset cleanup hook.
+An audit mismatch therefore fails its testcase rather than aborting the suite.
+No successful test can omit the audit chain; an earlier body failure remains a
+failure, not an accessibility pass.
+
+The original live-fixture phase marker, raw/validated evidence writes, exact
+violations/incompletes/contrast profiles, and adversarial classifier probes are
+retained. The audit's internal restoration order and media-reset hook are not
+moved or weakened. All 188 qualified titles and the direct-image fallback guard
+from 548218d4 remain unchanged. Fresh parent-run baseline, mutant, and restored
+evidence under a separately sealed amendment is required; no new Cypress result
+is claimed here.
+
+The forced-colors follow-up verified the original registered root hooks as
+audit then media reset, not the reverse. The original R4.20 audit passed the
+checkbox label rule; the body-tail audit captured an unnamed input while its
+later live-node metadata already had the inferred "Document preview" name.
+This is an audit naming-readiness race, not an allowable new violation.
+
+Only R4.20 now uses the existing retryable `labelOf` helper to require that
+inferred name before the body audit. Forced-colors interactions and audit remain
+ahead of the unchanged media reset, including its failed-case cleanup guarantee.
+No media reset is moved earlier to hide a finding, and no audit profile, rule,
+contrast expectation, or verdict is relaxed.
+
+The logo-render follow-up reviewed one remaining R1.04 text-node `TypeError`
+alongside 119 assertion failures. R1.04 now asserts its first text node exists,
+requires the logo through the proven helper, and verifies that logo is the last
+element before reading its text. Original text, tag, static-class, and order
+checks are retained; the 188 titles, audit isolation, naming readiness, cleanup,
+and 548218d4 fallback guard are unchanged.
+
+Selectable Picture/ActionPicture interactions now share an explicit semantic
+readiness requirement: after image readiness, the existing `labelOf` assertion
+must observe the fixture-declared checkbox name before interaction and audit.
+The six additional sites cover R4.03 (Enter/Space), R4.04, R4.05, R4.06 (both
+selection states), and R5.11 with "Document preview", plus R5.09's custom
+"Stopped preview". These are eight cases, not a generic all-input naming wait.
+
+This waits for the asynchronous preview-to-Card naming effect, not an arbitrary
+duration. A missing or wrong name fails the exact assertion. Nonselectable
+fixtures, intentionally unnamed profiles, header/explicit-name precedence,
+stale-alt behavior, and all existing audit policies remain unchanged.

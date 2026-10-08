@@ -88,18 +88,26 @@ const loaded = (selector = '#fixture img') =>
   });
 const near = (actual: number, expected: number, message: string) =>
   expect(actual, message).to.be.closeTo(expected, 0.6);
+function assertPreviewElement(element: HTMLElement | null, message: string): asserts element is HTMLElement {
+  expect(element, message).not.to.equal(null);
+}
+const requiredPreviewElement = (root: ParentNode, selector: string): HTMLElement => {
+  const element = root.querySelector<HTMLElement>(selector);
+  assertPreviewElement(element, `preview element ${selector} exists before geometry or property inspection`);
+  return element;
+};
 const geometry = (withLogo = true) =>
   preview().should($root => {
     const root = $root[0];
     const win = root.ownerDocument.defaultView!;
     const rect = root.getBoundingClientRect();
     expect(win.getComputedStyle(root).position).to.equal('relative');
-    const img = root.querySelector<HTMLImageElement>(':scope > img')!;
+    const img = requiredPreviewElement(root, ':scope > img');
     near(img.getBoundingClientRect().width, rect.width, 'image fills actual preview width');
     near(img.getBoundingClientRect().height, rect.height, 'image fills actual preview height');
     expect(win.getComputedStyle(img).display).to.equal('block');
     if (withLogo) {
-      const badge = root.querySelector<HTMLElement>('.fui-CardPreview__logo')!;
+      const badge = requiredPreviewElement(root, '.fui-CardPreview__logo');
       const badgeRect = badge.getBoundingClientRect();
       near(badgeRect.width, 32, 'logo width');
       near(badgeRect.height, 32, 'logo height');
@@ -250,8 +258,8 @@ const profileFor = (scenario: string) =>
     ? 'disabled-story-sentinels-and-labels'
     : 'clean';
 
-afterEach(() => {
-  cy.get('#fixture').then($scope =>
+const auditCurrentFixture = () => {
+  return cy.get('#fixture').then($scope =>
     cy
       .then(() => axe.run($scope[0]))
       .then(result => {
@@ -301,7 +309,7 @@ afterEach(() => {
             expect(node.failureSummary).to.equal(
               'Fix all of the following:\n  Element does not have global ARIA attribute',
             );
-            const img = $scope[0].querySelector('#image')!;
+            const img = requiredPreviewElement($scope[0], '#image');
             expect(img.tagName).to.equal('IMG');
             expect(img.getAttribute('alt')).to.equal('');
             expect(img.getAttribute('aria-label')).to.equal('ARIA document');
@@ -438,10 +446,8 @@ afterEach(() => {
                 ? "Fix any of the following:\n  Element's background color could not be determined because it partially overlaps other elements"
                 : 'Fix any of the following:\n  Element content is too short to determine if it is actual text content',
             );
-            expect($scope[0].querySelector('.fui-CardPreview__logo')!.textContent).to.equal(
-              snapshot ? 'Logo slot' : '0',
-            );
-            const badge = $scope[0].querySelector('.fui-CardPreview__logo')!;
+            const badge = requiredPreviewElement($scope[0], '.fui-CardPreview__logo');
+            expect(badge.textContent).to.equal(snapshot ? 'Logo slot' : '0');
             expect(badge.tagName).to.equal('DIV');
             expect(badge.getAttribute('role')).to.equal(null);
             expect(badge.getAttribute('tabindex')).to.equal(null);
@@ -516,7 +522,14 @@ afterEach(() => {
           });
       }),
   );
-});
+};
+
+// Audit failures belong to the testcase, not a hook that aborts the remaining suite.
+const it = (title: string, body: () => void): Mocha.Test =>
+  globalThis.it(title, () => {
+    body();
+    return auditCurrentFixture();
+  });
 
 if (round >= 5) {
   describe('ONLY128 CardPreview R5 adversarial native media and state integration', () => {
@@ -563,7 +576,8 @@ if (round >= 5) {
         entries.push(`${name}:${event.currentTarget.id}:${(event.target as HTMLElement).id}`);
         events.push(event.nativeEvent);
         expect(event.nativeEvent.isTrusted).to.equal(true);
-        expect(event.currentTarget.ownerDocument).to.equal(ref.current!.ownerDocument);
+        assertPreviewElement(ref.current, 'preview ref exists before native event inspection');
+        expect(event.currentTarget.ownerDocument).to.equal(ref.current.ownerDocument);
       };
       render(
         <div id="outer" onClickCapture={record('outer-capture')} onClick={record('outer-bubble')}>
@@ -761,6 +775,7 @@ if (round >= 5) {
         </CardFixture>,
       );
       loaded();
+      labelOf('#card > input', 'Stopped preview');
       cy.get('#image').realClick();
       cy.get('@stoppedRoot').should('not.have.been.called');
       cy.get('@stoppedSelection').should('not.have.been.called');
@@ -808,6 +823,7 @@ if (round >= 5) {
       };
       render(<Fixture />);
       loaded();
+      labelOf('#card > input', 'Document preview');
       preview().then($root => {
         const root = $root[0];
         const media = root.querySelector('#image');
@@ -941,8 +957,12 @@ describe('ONLY128 CardPreview R1 documented anatomy and real image layout', () =
     logo().find('img').should('have.attr', 'alt', 'Microsoft Word logo');
     cy.get('.fui-CardPreview').should($el => {
       const rect = $el[0].getBoundingClientRect();
-      near($el[0].querySelector('img')!.getBoundingClientRect().width, rect.width, 'story image fills preview');
-      const badge = $el[0].querySelector('.fui-CardPreview__logo')!.getBoundingClientRect();
+      near(
+        requiredPreviewElement($el[0], 'img').getBoundingClientRect().width,
+        rect.width,
+        'story image fills preview',
+      );
+      const badge = requiredPreviewElement($el[0], '.fui-CardPreview__logo').getBoundingClientRect();
       near(rect.bottom - badge.bottom, 12, 'story logo bottom');
       near(badge.left - rect.left, 12, 'story logo left');
     });
@@ -1841,7 +1861,10 @@ describe('ONLY128 CardPreview R1 remaining standalone anatomy and fitting', () =
       .should('have.class', cardPreviewClassNames.root)
       .should($el => {
         expect($el[0].tagName).to.equal('DIV');
+        expect($el[0].firstChild, 'preview text node exists').not.to.equal(null);
         expect($el[0].firstChild!.textContent).to.equal('Default CardPreview');
+        const badge = requiredPreviewElement($el[0], '.fui-CardPreview__logo');
+        expect($el[0].lastElementChild, 'logo wrapper remains the last element').to.equal(badge);
         expect($el[0].lastElementChild!.textContent).to.equal('Logo slot');
       });
     logo().should('have.class', cardPreviewClassNames.logo);
@@ -1999,6 +2022,7 @@ if (round >= 4) {
           </CardFixture>,
         );
         loaded();
+        labelOf('#card > input', 'Document preview');
         cy.get('#before').focus();
         cy.realPress('Tab');
         cy.get('#card > input').should('have.focus');
@@ -2022,6 +2046,7 @@ if (round >= 4) {
         </CardFixture>,
       );
       loaded();
+      labelOf('#card > input', 'Document preview');
       cy.get('#badge-action').realClick();
       cy.get('@action').should('have.been.calledOnce');
       cy.get('@selection').should('not.have.been.called');
@@ -2031,6 +2056,7 @@ if (round >= 4) {
       const selection = cy.stub().as('selection');
       render(<CardFixture cardProps={{ selected: false, onSelectionChange: selection }} />);
       loaded();
+      labelOf('#card > input', 'Document preview');
       cy.get('#image').realClick();
       cy.get('#image').realClick();
       cy.get('#card > input').should('not.be.checked');
@@ -2051,6 +2077,7 @@ if (round >= 4) {
           </CardFixture>,
         );
         loaded();
+        labelOf('#card > input', 'Document preview');
         cy.get('#card').should('have.attr', 'aria-disabled', 'true');
         cy.get('#card > input')
           .should('be.disabled')
@@ -2072,11 +2099,11 @@ if (round >= 4) {
       geometry();
       preview().should($root => {
         const root = $root[0];
-        const badge = root.querySelector('.fui-CardPreview__logo')!;
+        const badge = requiredPreviewElement(root, '.fui-CardPreview__logo');
         const rect = badge.getBoundingClientRect();
         const document = root.ownerDocument;
         expect(document.elementFromPoint(rect.left + 16, rect.top + 16)).to.equal(badge);
-        const imageRect = root.querySelector('#image')!.getBoundingClientRect();
+        const imageRect = requiredPreviewElement(root, '#image').getBoundingClientRect();
         expect(
           document.elementFromPoint(imageRect.left + imageRect.width / 2, imageRect.top + imageRect.height / 2),
         ).to.equal(root.querySelector('#image'));
@@ -2309,8 +2336,9 @@ if (round >= 4) {
           const win = $el[0].ownerDocument.defaultView!;
           expect(win.matchMedia('(forced-colors: active)').matches).to.equal(true);
           expect(win.getComputedStyle($el[0]).forcedColorAdjust).to.equal('none');
-          expect(win.getComputedStyle($el[0].querySelector('#preview')!).forcedColorAdjust).to.equal('auto');
+          expect(win.getComputedStyle(requiredPreviewElement($el[0], '#preview')).forcedColorAdjust).to.equal('auto');
         });
+        labelOf('#card > input', 'Document preview');
       });
     }
     it('R4.21 current interactive Card defaults to no-tab and keeps preview logo actions reachable', () => {
