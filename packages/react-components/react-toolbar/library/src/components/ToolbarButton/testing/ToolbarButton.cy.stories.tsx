@@ -262,8 +262,10 @@ const assertKnownFindings = (result: axe.AxeResults, doc: Document, stage: strin
       const data = node.any[0].data as {
         headingOrder: Array<{ ancestry: string[]; level: number }>;
       };
+      expect(data, 'heading-order check data is present').to.be.an('object');
       expect(Object.keys(data)).to.deep.equal(['headingOrder']);
       expect(data.headingOrder).to.have.length(1);
+      expect(data.headingOrder[0], 'heading-order ancestry entry is present').to.be.an('object');
       expect(Object.keys(data.headingOrder[0]).sort()).to.deep.equal(['ancestry', 'level']);
       expect(data.headingOrder[0].level).to.equal(3);
       expect(data.headingOrder[0].ancestry).to.have.length(1);
@@ -469,7 +471,12 @@ const audit = (stage = 'final') =>
       cy.then(classify);
     });
   });
-afterEach(() => audit());
+// Classifier failures belong to the testcase, not a hook that aborts later scenarios.
+const it = (title: string, body: () => void): Mocha.Test =>
+  globalThis.it(title, () => {
+    body();
+    return audit();
+  });
 
 const rgb = (hex: string) =>
   `rgb(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)})`;

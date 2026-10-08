@@ -216,3 +216,23 @@ The ordinary PR workflow uses `nx affected -t e2e --nxBail --parallel 1`, and it
 The fresh cold proof uses the named physical `affected-cold-repo-20261004` artifact mirror, current owned source/metadata and installed dependencies remapped into that mirror. Its helper outputs begin absent; normal `nx sync` and actual `nx affected -t e2e,type-check --files=…` run with synchronization and prerequisite tasks enabled. Other affected projects are excluded only to bound this component review; prerequisite builds are **not** excluded or replaced. The helper in the shared checkout is unchanged. The accepted cold result is **203 distinct raw JUnit cases and 217 executed strict axe audits**, with no failures, errors, skips, pending cases or retries and no private Cypress environment. Exact commands, exclusions, source manifests, raw XML and audit paths are in `affected-followup-20261004/cold-result.json` and its command/task-graph records.
 
 This follow-up changes only CI metadata and this Markdown trace. All five existing regular formatting, fixture/baseline/compiler and typed package ESLint gates were freshly rerun successfully, without a parser/project-service override. The earlier six browser confirmations, 20-unit proof and actual published-runtime emission remain historical source-identical runtime evidence, not freshly rerun claims. The production artifact records **208 output files**, zero fixture literal leaks and six runtime executions; this count was verified from the handoff and emission manifest, not assumed from another component. Their manifests are retained verbatim; the updated handoff binds the fresh affected cold execution and final authored source/input hashes separately. This final documentation clarification is hashed separately from the cold runner's unchanged before/after source manifests.
+
+## Isolated mutation audit testability amendment
+
+The default-appearance mutant exposed a strict severity assertion in the final
+audit hook. That legitimate failure caused Mocha to skip 151 later scenarios.
+The component-local registration wrapper now appends the unchanged final audit
+chain to each test body, so a classifier mismatch fails its testcase instead.
+
+Original registration has one root audit hook and no component-local cleanup
+or media hooks. Body interactions, style/media work, and staged audits retain
+their order; the final audit remains after those commands. Successful cases
+cannot omit the final chain, and earlier body failures remain failures rather
+than accessibility passes.
+
+All 203 titles, severity/contrast/incomplete expectations, known/unknown finding
+checks, raw result writes, classifier evidence, and adversarial probes are
+preserved. Two explicit object assertions guard tightly coupled heading-order
+payload reads before `Object.keys`; no finding or expected severity is changed.
+Fresh parent-run baseline, mutant, and restored evidence under a separately
+sealed amendment is required. No new Cypress result is claimed here.
