@@ -556,6 +556,7 @@ describeRound(1, 'component124 round 1: inherited and context contracts', () => 
         false,
       );
       cell().realClick({ position: 'topLeft' });
+      cy.get('@clicked').should('have.been.calledOnce');
       cell()
         .should('have.attr', 'aria-sort', 'ascending')
         .then($cell => {

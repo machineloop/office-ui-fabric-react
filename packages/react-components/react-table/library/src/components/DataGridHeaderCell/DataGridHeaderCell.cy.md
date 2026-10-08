@@ -377,3 +377,17 @@ review and are **not passes**. Real Chrome checks do not certify universal AT,
 NVDA narration, Firefox/WebKit, touch, zoom, forced colors, or performance.
 Independent and repeated parent adversarial review, explicit-file staging and
 any separate descriptive commit remain the parent's next steps, not this task's.
+
+## Isolated mutation diagnostic amendment
+
+The reconstructed `DataGridHeaderCell-root-callback` mutant suppresses normal
+root click callbacks. Its nine failing scenarios included eight behavioral
+assertion failures and one incidental `TypeError` in R2.03: the test read
+`clicked.firstCall.args` without first asserting that the callback ran.
+
+R2.03 now uses the existing `have.been.calledOnce` spy assertion before reading
+the first call. Its event type, synchronous currentTarget, sort state, and audit
+assertions are unchanged, as are all 91 scenarios. No exception suppression,
+production changes, or harness verdict relaxation is introduced. Fresh baseline,
+mutant, and restored-baseline evidence under the exact test amendment is required
+before claiming a mutation kill; earlier runs do not validate this amended fixture.
