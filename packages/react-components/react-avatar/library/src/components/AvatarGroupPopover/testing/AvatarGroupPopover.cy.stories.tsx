@@ -46,6 +46,15 @@ const evidenceRoot =
   `src/components/AvatarGroupPopover/.temp/audits-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 let auditNumber = 0;
 
+// Check the reset fixture before the case replaces it or opens a modal.
+const it = (title: string, body: () => void): Mocha.Test =>
+  globalThis.it(title, () =>
+    assertResetFixtureOwnership().then(() => {
+      body();
+      return audit();
+    }),
+  );
+
 if (round >= 4) {
   describe('ONLY130 R4 source-derived owner, primitive, naming and boundary contracts', () => {
     it('R4 high contrast VR theme: literal token palette retains labelled modal ownership', () => {
@@ -1298,15 +1307,11 @@ function classifierMutations(result: axe.AxeResults, doc: Document, stage: strin
   }
   return rejectedMutations;
 }
+const assertResetFixtureOwnership = () =>
+  cy.document().should(doc => expect(doc.querySelector('#fixture')?.closest('[aria-hidden="true"]')).to.equal(null));
 beforeEach(() => {
   render(<button id="fixture-reset">Reset fixture</button>);
   cy.get('#fixture-reset').focus();
-  cy.document().should(doc => expect(doc.querySelector('#fixture')?.closest('[aria-hidden="true"]')).to.equal(null));
-});
-afterEach(function () {
-  if (this.currentTest?.state !== 'failed') {
-    audit();
-  }
 });
 
 describe('ONLY130 R1 stable documentation and unit-derived contracts', () => {

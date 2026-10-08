@@ -188,3 +188,22 @@ The following original nine-file and `reports` description is **historical**, re
 Green addition-stage evidence: `round-1-attempt-4` (28 cases) and `round-2-attempt-9` (100 cases). The final strengthened round (`round-3-attempt-10`) has 130 cases, zero failures/skips, 232 axe audits, and a final audit for every case. The final JSON is authoritative for actual rule/node counts; raw inherited incompletes are retained.
 
 The initial manifest hashes 20,356 existing files, including the eight original files in this component. All eight original component files remain hash-identical and the branch remains `master`. A full-checkout preservation comparison observed eight concurrent outside-scope changes in InfoLabel (three files), Overflow (one), TeachingPopoverTitle (two) and CarouselSlider (two). HEAD also moved concurrently from `e47f29f96214174fa139c27d1bca6c1147dde266` to `50fdaae1a303a8d35a2a61c75778a3ac09a9a586` via `test(react-carousel): cover CarouselSlider track refs geometry and lifecycle`; its component-scoped diff is empty. No commit or branch operation was performed by ONLY130. Accordingly, the strict global preservation command reports a mismatch rather than falsely claiming an unchanged shared checkout. `preservation-after.json` preserves old/current hashes, observed commits and outside status differences. Those outside changes were not edited, reverted, staged or committed here.
+
+## Isolated mutation ownership testability amendment
+
+The content-render mutant legitimately failed its row contract, then exposed a
+reset-fixture ownership assertion in `beforeEach` that aborted 154 later cases.
+The reset render and focus stay in the environment hook, in their original order.
+
+The component-local test wrapper first executes the exact ownership assertion
+against that reset fixture and waits for it before invoking the case body.
+It does not reapply the reset expectation to an intentionally open modal fixture.
+The unchanged final audit/classifier chain is appended inside the case; earlier
+body failures remain failures rather than accessibility passes.
+
+All 156 titles, row/content/portal/modal/ref/event contracts, ownership predicates,
+staged audits, result evidence, and strict finding/classifier probes are retained.
+No root attributes are cleared to hide a regression, and no ownership or audit
+allowance is widened. The common verdicts now fail their testcase instead of a
+Mocha hook. Fresh parent-run baseline, mutant, and restored evidence under a
+separately sealed amendment is required; no Cypress result is claimed here.
