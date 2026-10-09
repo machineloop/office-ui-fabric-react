@@ -232,3 +232,36 @@ Final scoped formatting, typechecking and lint all exit 0; unchanged-source base
 This is browser functional/contract coverage, not a measured line/branch-coverage percentage. It runs Chrome 154/Cypress 14.4.1 on installed Windows dependencies. The existing default `node` is v18.20.6, below the repository's declared Node 22/24 engine range; no runtime/dependency replacement is performed. No Firefox/WebKit, real assistive-technology session, touchscreen hardware, live external transparency-image availability, or global repository suite is claimed.
 
 HEX/RGB validation and popup/swatch/reset state are application-story behavior, not new built-in ColorPicker APIs. The suite deliberately preserves current uncontrolled slider fallback, RTL physical-coordinate versus mirrored-visual behavior, and popup Cancel draft retention. Known story accessibility findings remain unresolved because production/stable-story edits are outside scope. No independent review agent or separate review pass is performed.
+
+## Isolated mutation audit and outcome accounting amendment
+
+The children-render mutant exposed a strict Shape rule-profile failure in the
+final audit hook, which aborted later cases and left the original raw-audit
+ledger incomplete. Each scenario now ends with a genuine final capture and the
+unchanged strict validator/probes in its test body. Successful cases additionally
+require exactly one persisted/validated final and their full original checkpoint
+multiplicity before they can pass.
+
+The registration inventory is frozen after collection: 112 cases and the same
+seven planned checkpoint title occurrences in the full round. Audit ledgers are
+appended only after actual AXE acquisition and raw evidence persistence. A failed
+body that never started its final acquisition gets one real diagnostic scan in
+`afterEach`, explicitly raw/unvalidated and bound to its actual failed Mocha
+outcome. A failed or already captured final is not retried or double-counted;
+transport/persistence failures have no fallback or fabricated record.
+
+Final capture stays before the original mouse-up and media reset. Failed cases
+remain failed and are never accessibility passes. Checkpoints not reached in a
+failed case are published separately with their original ordinal and actual
+failure; they are not executed/validated checkpoint captures. Outcome accounting
+requires original plan = real checkpoint captures + explicit failed-case
+unreached entries, with no unexpected/extra captures and no missing checkpoint
+on a successful case. All-passed baselines still require 112 validated finals
+and all seven genuine, strictly validated checkpoints.
+
+Accounting evidence reports actual captures, validations, unreached checkpoints,
+and passed/failed outcomes separately; it never claims seven-checkpoint coverage
+when some checkpoints were unreached. Exact profiles, targets, contrast and
+incomplete rules, raw metadata, 112 titles, and the 1720719d request-color identity
+guard remain intact. Fresh parent-run baseline, mutant, and restored evidence
+under a separately sealed amendment is required; no Cypress result is claimed.

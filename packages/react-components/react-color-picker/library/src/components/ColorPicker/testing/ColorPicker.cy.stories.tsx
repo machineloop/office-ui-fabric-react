@@ -50,6 +50,13 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
   const registeredTitles: string[] = [];
   const auditedTitles: string[] = [];
   const auditedCheckpoints: string[] = [];
+  const executedTitles: string[] = [];
+  const validatedTitles: string[] = [];
+  const validatedCheckpoints: string[] = [];
+  const finalAuditAttempts = new Set<string>();
+  const unfinishedAcquisitions = new Set<string>();
+  const caseOutcomes = new Map<string, Mocha.Test>();
+  const countTitle = (titles: readonly string[], title: string) => titles.filter(value => value === title).length;
   const checkpointTitles = (level: number) =>
     registeredTitles.flatMap(title => {
       const count = title.startsWith('R3.07 ')
@@ -65,9 +72,22 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
     if (round >= level) {
       registered++;
       registeredTitles.push(name);
-      it(name, test);
+      it(name, () => {
+        executedTitles.push(name);
+        test();
+        return audit().then(() => assertSuccessfulCaseAudits(name));
+      });
     }
   }
+  const assertSuccessfulCaseAudits = (title: string) => {
+    const planned = countTitle(plannedCheckpointTitles, title);
+    expect(countTitle(auditedTitles, title), 'one genuine persisted final audit before success').to.equal(1);
+    expect(countTitle(validatedTitles, title), 'final audit strictly validated before success').to.equal(1);
+    expect(countTitle(auditedCheckpoints, title), 'all planned checkpoints captured before success').to.equal(planned);
+    expect(countTitle(validatedCheckpoints, title), 'all planned checkpoints validated before success').to.equal(
+      planned,
+    );
+  };
   const render = (element: JSXElement, dir: 'ltr' | 'rtl' = 'ltr', dark = false) =>
     mount(
       <FluentProvider dir={dir} theme={dark ? webDarkTheme : webLightTheme}>
@@ -191,188 +211,338 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
     });
   });
   after(() => {
-    expect([...auditedTitles].sort(), 'every registered case audited; no filtering/pending').to.deep.equal(
-      [...registeredTitles].sort(),
-    );
-    expect([...auditedCheckpoints].sort(), 'exact checkpoint identities').to.deep.equal(checkpointTitles(round).sort());
+    const unreachedCheckpoints = plannedCheckpointTitles.flatMap((title, index) => {
+      const ordinal = countTitle(plannedCheckpointTitles.slice(0, index + 1), title);
+      const outcome = caseOutcomes.get(title);
+      return ordinal > countTitle(auditedCheckpoints, title) && outcome?.state === 'failed'
+        ? [
+            {
+              scenario: title,
+              ordinal,
+              reason: 'unreached-due-to-failed-case',
+              caseState: outcome.state,
+              failure: outcome.err?.message,
+            },
+          ]
+        : [];
+    });
+    const outcomes = registeredTitles.map(title => ({
+      scenario: title,
+      state: caseOutcomes.get(title)?.state,
+      failure: caseOutcomes.get(title)?.err?.message,
+      finalRawCaptures: countTitle(auditedTitles, title),
+      finalValidations: countTitle(validatedTitles, title),
+      plannedCheckpoints: countTitle(plannedCheckpointTitles, title),
+      realCheckpointCaptures: countTitle(auditedCheckpoints, title),
+      checkpointValidations: countTitle(validatedCheckpoints, title),
+      accessibilityPass:
+        caseOutcomes.get(title)?.state === 'passed' &&
+        countTitle(auditedTitles, title) === 1 &&
+        countTitle(validatedTitles, title) === 1 &&
+        countTitle(auditedCheckpoints, title) === countTitle(plannedCheckpointTitles, title) &&
+        countTitle(validatedCheckpoints, title) === countTitle(plannedCheckpointTitles, title),
+    }));
+    return evidence({
+      kind: 'audit-accounting',
+      registered: registeredTitles,
+      executed: executedTitles,
+      finalRawCaptures: auditedTitles,
+      finalValidations: validatedTitles,
+      plannedCheckpoints: plannedCheckpointTitles,
+      realCheckpointCaptures: auditedCheckpoints,
+      checkpointValidations: validatedCheckpoints,
+      unreachedCheckpoints,
+      unpersistedAcquisitionCases: [...unfinishedAcquisitions],
+      outcomes,
+      counts: {
+        registeredCases: registeredTitles.length,
+        executedCases: executedTitles.length,
+        finalRawCaptures: auditedTitles.length,
+        finalValidations: validatedTitles.length,
+        plannedCheckpoints: plannedCheckpointTitles.length,
+        realCheckpointCaptures: auditedCheckpoints.length,
+        checkpointValidations: validatedCheckpoints.length,
+        unreachedDueToFailedCases: unreachedCheckpoints.length,
+        passedCases: outcomes.filter(outcome => outcome.state === 'passed').length,
+        failedCases: outcomes.filter(outcome => outcome.state === 'failed').length,
+      },
+    }).then(() => {
+      expect([...executedTitles].sort(), 'all registered cases executed; no filtering/pending').to.deep.equal(
+        [...registeredTitles].sort(),
+      );
+      expect([...caseOutcomes.keys()].sort(), 'every executed case has its actual Mocha outcome').to.deep.equal(
+        [...registeredTitles].sort(),
+      );
+      expect([...auditedTitles].sort(), 'every registered case audited; no filtering/pending').to.deep.equal(
+        [...registeredTitles].sort(),
+      );
+      expect([...unfinishedAcquisitions], 'every started audit acquisition was persisted').to.deep.equal([]);
+      expect(
+        [...auditedCheckpoints, ...unreachedCheckpoints.map(entry => entry.scenario)].sort(),
+        'original checkpoint plan equals real captures plus explicit failed-case unreached entries',
+      ).to.deep.equal([...plannedCheckpointTitles].sort());
+      for (const title of registeredTitles) {
+        const outcome = caseOutcomes.get(title);
+        expect(outcome?.state, 'only actual passed/failed case outcomes are accounted').to.be.oneOf([
+          'passed',
+          'failed',
+        ]);
+        expect(countTitle(auditedCheckpoints, title), 'no unexpected or extra checkpoint captures').to.be.at.most(
+          countTitle(plannedCheckpointTitles, title),
+        );
+        expect(countTitle(validatedTitles, title), 'validation requires a real final capture').to.be.at.most(
+          countTitle(auditedTitles, title),
+        );
+        expect(countTitle(validatedCheckpoints, title), 'checkpoint validation requires a real capture').to.be.at.most(
+          countTitle(auditedCheckpoints, title),
+        );
+        if (outcome?.state === 'passed') {
+          assertSuccessfulCaseAudits(title);
+          expect(unreachedCheckpoints.filter(entry => entry.scenario === title)).to.have.length(0);
+        }
+      }
+      for (const entry of unreachedCheckpoints) {
+        expect(caseOutcomes.get(entry.scenario)?.state, 'unreached checkpoints belong only to failed cases').to.equal(
+          'failed',
+        );
+      }
+      if (outcomes.every(outcome => outcome.state === 'passed')) {
+        expect([...auditedCheckpoints].sort(), 'exact checkpoint identities').to.deep.equal(
+          [...plannedCheckpointTitles].sort(),
+        );
+        expect([...validatedCheckpoints].sort(), 'all baseline checkpoints strictly validated').to.deep.equal(
+          [...plannedCheckpointTitles].sort(),
+        );
+      }
+    });
   });
-  const audit = (kind: 'axe' | 'axe-checkpoint' = 'axe') => {
-    cy.get('#fixture').then($fixture =>
-      cy
-        .then(() =>
-          axe.run([$fixture[0], ...Array.from($fixture[0].ownerDocument.querySelectorAll('.fui-PopoverSurface'))], {
-            elementRef: true,
-          }),
-        )
-        .then(result => {
-          const report = {
-            kind,
-            scenario: Cypress.currentTest.title,
-            classification:
-              classification === 'popup' || classification === 'swatch'
-                ? `${classification}-${
-                    result.violations.some(({ id }) => id === 'aria-hidden-focus')
-                      ? 'sentinels-focusable'
-                      : 'sentinels-focus-redirected'
-                  }`
-                : classification,
-            incompleteClassification: result.incomplete.length
-              ? classification === 'popup'
-                ? 'exact-tabster-focusable-modal-open-review'
-                : 'unknown'
-              : 'none',
-            passes: result.passes.map(({ id }) => id),
-            violations: result.violations.map(({ id, nodes }) => ({
-              id,
-              nodes: nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
-            })),
-            incomplete: result.incomplete.map(({ id, nodes }) => ({
-              id,
-              nodes: nodes.map(({ target, html, any: anyChecks, all, none }) => ({
-                target,
-                html,
-                anyChecks,
-                all,
-                none,
+  const audit = (kind: 'axe' | 'axe-checkpoint' = 'axe', disposition: 'body' | 'failed-body-diagnostic' = 'body') => {
+    const auditScenario = Cypress.currentTest.title;
+    if (
+      disposition === 'failed-body-diagnostic' &&
+      (kind !== 'axe' || caseOutcomes.get(auditScenario)?.state !== 'failed')
+    ) {
+      throw new Error('Unvalidated diagnostic capture requires an actual failed case and final-audit kind');
+    }
+    return cy.then(() => {
+      unfinishedAcquisitions.add(auditScenario);
+      if (kind === 'axe') {
+        finalAuditAttempts.add(auditScenario);
+      }
+      return cy.get('#fixture').then($fixture =>
+        cy
+          .then(() =>
+            axe.run([$fixture[0], ...Array.from($fixture[0].ownerDocument.querySelectorAll('.fui-PopoverSurface'))], {
+              elementRef: true,
+            }),
+          )
+          .then(result => {
+            const report = {
+              kind,
+              scenario: Cypress.currentTest.title,
+              classification:
+                classification === 'popup' || classification === 'swatch'
+                  ? `${classification}-${
+                      result.violations.some(({ id }) => id === 'aria-hidden-focus')
+                        ? 'sentinels-focusable'
+                        : 'sentinels-focus-redirected'
+                    }`
+                  : classification,
+              incompleteClassification: result.incomplete.length
+                ? classification === 'popup'
+                  ? 'exact-tabster-focusable-modal-open-review'
+                  : 'unknown'
+                : 'none',
+              passes: result.passes.map(({ id }) => id),
+              violations: result.violations.map(({ id, nodes }) => ({
+                id,
+                nodes: nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
               })),
-            })),
-          };
-          evidence(report).then(() => {
-            (kind === 'axe' ? auditedTitles : auditedCheckpoints).push(Cypress.currentTest.title);
-            expect(report.passes.length, 'evaluated axe rules').to.be.greaterThan(0);
-            const document = $fixture[0].ownerDocument;
-            if (classification === 'clean') {
-              expect($fixture[0].closest('[aria-hidden="true"]'), 'audited fixture is not hidden').to.equal(null);
-              if ($fixture[0].querySelector('input[type="range"]')) {
-                expect(report.passes, 'range labeling was actually evaluated').to.include('label');
-              }
-            }
-            const expectedRuleProfiles: Record<AuditClassification, readonly (readonly string[])[]> = {
-              clean: [[]],
-              shape: [['label']],
-              channels: [['label']],
-              popup: [['aria-dialog-name'], ['aria-dialog-name', 'aria-hidden-focus']],
-              swatch: [[], ['aria-hidden-focus']],
+              incomplete: result.incomplete.map(({ id, nodes }) => ({
+                id,
+                nodes: nodes.map(({ target, html, any: anyChecks, all, none }) => ({
+                  target,
+                  html,
+                  anyChecks,
+                  all,
+                  none,
+                })),
+              })),
             };
-            const assertRuleProfile = (ids: readonly string[]) =>
-              expect(expectedRuleProfiles[classification], 'exact classified rules').to.deep.include([...ids].sort());
-            const violationIds = result.violations.map(({ id }) => id);
-            assertRuleProfile(violationIds);
-            expect(() => assertRuleProfile([...violationIds, 'unregistered-widget-rule'])).to.throw();
-            if (violationIds.length) {
-              expect(() => assertRuleProfile([...violationIds, violationIds[0]])).to.throw();
-            }
-            if (classification === 'popup') {
-              expect(() => assertRuleProfile(['aria-hidden-focus'])).to.throw();
-            }
-            if (classification === 'shape' || classification === 'channels') {
-              expect(Cypress.currentTest.title.startsWith(classification === 'shape' ? 'R3.06 ' : 'R3.12 ')).to.equal(
-                true,
-              );
-              const inputs =
-                classification === 'shape'
-                  ? $fixture[0].querySelectorAll('.fui-ColorPicker')[1].querySelectorAll<HTMLInputElement>('input')
-                  : $fixture[0].querySelectorAll<HTMLInputElement>('.fui-ColorSlider__input');
-              expect(inputs.length).to.equal(classification === 'shape' ? 4 : 3);
-              expect(result.violations[0].nodes.length).to.equal(inputs.length);
-              result.violations[0].nodes.forEach((node, index) => {
-                expect(node.target.length).to.equal(1);
-                expect(document.querySelector(String(node.target[0]))).to.equal(inputs[index]);
-                expect(inputs[index].type).to.equal('range');
-                expect(computeAccessibleName(inputs[index])).to.equal('');
-                expect(node.failureSummary).to.equal(
-                  'Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element\'s default semantics were not overridden with role="none" or role="presentation"',
-                );
-              });
-            }
-            if (classification === 'popup') {
-              expect(
-                Cypress.currentTest.title.startsWith('R3.07 ') ||
-                  Cypress.currentTest.title.startsWith('R3.08 ') ||
-                  Cypress.currentTest.title.startsWith('R3.09 ') ||
-                  Cypress.currentTest.title.startsWith('R4.16 '),
-              ).to.equal(true);
-              const surface = document.querySelector('.fui-PopoverSurface')!;
-              expect(surface.getAttribute('role')).to.equal('dialog');
-              expect(surface.getAttribute('aria-modal')).to.equal('true');
-              expect(computeAccessibleName(surface)).to.equal('');
-              const dialogFinding = result.violations.find(({ id }) => id === 'aria-dialog-name')!;
-              expect(dialogFinding.nodes).to.have.length(1);
-              expect(dialogFinding.nodes[0].element).to.equal(surface);
-              expect(dialogFinding.nodes[0].failureSummary).to.equal(
-                'Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute',
-              );
-            }
-            if (classification === 'popup' || classification === 'swatch') {
-              if (classification === 'swatch') {
-                expect(Cypress.currentTest.title.startsWith('R3.10 ')).to.equal(true);
+            return evidence({
+              ...report,
+              captureDisposition: disposition,
+              verification: 'raw-capture-not-a-validation',
+              caseFailure:
+                disposition === 'failed-body-diagnostic'
+                  ? {
+                      scenario: report.scenario,
+                      state: caseOutcomes.get(report.scenario)?.state,
+                      message: caseOutcomes.get(report.scenario)?.err?.message,
+                    }
+                  : undefined,
+            }).then(() => {
+              unfinishedAcquisitions.delete(report.scenario);
+              (kind === 'axe' ? auditedTitles : auditedCheckpoints).push(report.scenario);
+              if (disposition === 'failed-body-diagnostic') {
+                return;
               }
-              const container = document.querySelector(
-                classification === 'popup' ? '.fui-PopoverSurface' : '.fui-SwatchPicker',
-              )!;
-              const sentinels = container.querySelectorAll('i[data-tabster-dummy]');
-              expect(sentinels).to.have.length(2);
-              const nodes = result.violations.find(({ id }) => id === 'aria-hidden-focus')?.nodes || [];
-              expect(nodes).to.have.length(report.classification.endsWith('sentinels-focusable') ? 2 : 0);
-              sentinels.forEach((sentinel, index) => {
-                expect(sentinel.tagName).to.equal('I');
-                expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinel.getAttribute('role')).to.equal('none');
-                expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
-                  `isFirst=${index === 0}, isOutside=false, (${
-                    classification === 'popup' ? 'Modalizer' : 'Mover'
-                  }, tabbable=true)`,
+              if (kind === 'axe') {
+                expect(countTitle(auditedTitles, report.scenario), 'unique genuine final capture').to.equal(1);
+              } else {
+                expect(
+                  countTitle(auditedCheckpoints, report.scenario),
+                  'only planned checkpoint captures',
+                ).to.be.at.most(countTitle(plannedCheckpointTitles, report.scenario));
+              }
+              expect(report.passes.length, 'evaluated axe rules').to.be.greaterThan(0);
+              const document = $fixture[0].ownerDocument;
+              if (classification === 'clean') {
+                expect($fixture[0].closest('[aria-hidden="true"]'), 'audited fixture is not hidden').to.equal(null);
+                if ($fixture[0].querySelector('input[type="range"]')) {
+                  expect(report.passes, 'range labeling was actually evaluated').to.include('label');
+                }
+              }
+              const expectedRuleProfiles: Record<AuditClassification, readonly (readonly string[])[]> = {
+                clean: [[]],
+                shape: [['label']],
+                channels: [['label']],
+                popup: [['aria-dialog-name'], ['aria-dialog-name', 'aria-hidden-focus']],
+                swatch: [[], ['aria-hidden-focus']],
+              };
+              const assertRuleProfile = (ids: readonly string[]) =>
+                expect(expectedRuleProfiles[classification], 'exact classified rules').to.deep.include([...ids].sort());
+              const violationIds = result.violations.map(({ id }) => id);
+              assertRuleProfile(violationIds);
+              expect(() => assertRuleProfile([...violationIds, 'unregistered-widget-rule'])).to.throw();
+              if (violationIds.length) {
+                expect(() => assertRuleProfile([...violationIds, violationIds[0]])).to.throw();
+              }
+              if (classification === 'popup') {
+                expect(() => assertRuleProfile(['aria-hidden-focus'])).to.throw();
+              }
+              if (classification === 'shape' || classification === 'channels') {
+                expect(Cypress.currentTest.title.startsWith(classification === 'shape' ? 'R3.06 ' : 'R3.12 ')).to.equal(
+                  true,
                 );
-              });
-              nodes.forEach((node, index) => {
-                expect(node.target.length).to.equal(1);
-                expect(node.element).to.equal(sentinels[index]);
-                expect(sentinels[index].getAttribute('tabindex')).to.equal('0');
-                expect(sentinels[index].getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinels[index].getAttribute('role')).to.equal('none');
-                expect(sentinels[index].getAttribute('data-tabster-dummy')).to.equal(
-                  `isFirst=${index === 0}, isOutside=false, (${
-                    classification === 'popup' ? 'Modalizer' : 'Mover'
-                  }, tabbable=true)`,
+                const inputs =
+                  classification === 'shape'
+                    ? $fixture[0].querySelectorAll('.fui-ColorPicker')[1].querySelectorAll<HTMLInputElement>('input')
+                    : $fixture[0].querySelectorAll<HTMLInputElement>('.fui-ColorSlider__input');
+                expect(inputs.length).to.equal(classification === 'shape' ? 4 : 3);
+                expect(result.violations[0].nodes.length).to.equal(inputs.length);
+                result.violations[0].nodes.forEach((node, index) => {
+                  expect(node.target.length).to.equal(1);
+                  expect(document.querySelector(String(node.target[0]))).to.equal(inputs[index]);
+                  expect(inputs[index].type).to.equal('range');
+                  expect(computeAccessibleName(inputs[index])).to.equal('');
+                  expect(node.failureSummary).to.equal(
+                    'Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element\'s default semantics were not overridden with role="none" or role="presentation"',
+                  );
+                });
+              }
+              if (classification === 'popup') {
+                expect(
+                  Cypress.currentTest.title.startsWith('R3.07 ') ||
+                    Cypress.currentTest.title.startsWith('R3.08 ') ||
+                    Cypress.currentTest.title.startsWith('R3.09 ') ||
+                    Cypress.currentTest.title.startsWith('R4.16 '),
+                ).to.equal(true);
+                const surface = document.querySelector('.fui-PopoverSurface')!;
+                expect(surface.getAttribute('role')).to.equal('dialog');
+                expect(surface.getAttribute('aria-modal')).to.equal('true');
+                expect(computeAccessibleName(surface)).to.equal('');
+                const dialogFinding = result.violations.find(({ id }) => id === 'aria-dialog-name')!;
+                expect(dialogFinding.nodes).to.have.length(1);
+                expect(dialogFinding.nodes[0].element).to.equal(surface);
+                expect(dialogFinding.nodes[0].failureSummary).to.equal(
+                  'Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute',
                 );
-                expect(node.failureSummary).to.equal(
-                  'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
-                );
-              });
-            }
-            if (classification === 'popup' && result.incomplete.length) {
-              expect(
-                result.incomplete.map(({ id }) => id),
-                'only known modal-focus incomplete',
-              ).to.deep.equal(['aria-hidden-focus']);
-              const sentinels = document.querySelectorAll('.fui-PopoverSurface i[data-tabster-dummy]');
-              expect(result.incomplete[0].nodes).to.have.length(2);
-              result.incomplete[0].nodes.forEach((node, index) => {
-                expect(node.target).to.have.length(1);
-                expect(node.element).to.equal(sentinels[index]);
-                expect(node.any).to.deep.equal([]);
-                expect(node.none).to.deep.equal([]);
-                expect(node.all).to.have.length(1);
-                const check = node.all[0];
-                expect(check.id).to.equal('focusable-modal-open');
-                expect(check.impact).to.equal('serious');
-                expect(check.data).to.equal(null);
-                expect(check.message).to.equal('Check that focusable elements are not tabbable in the current state');
-                expect(check.relatedNodes).to.have.length(1);
-                expect(check.relatedNodes![0].target).to.deep.equal(node.target);
-                expect(check.relatedNodes![0].element).to.equal(sentinels[index]);
-                expect(sentinels[index].getAttribute('tabindex')).to.equal('0');
-                expect(getComputedStyle(sentinels[index]).contentVisibility).to.equal('hidden');
-              });
-            } else {
-              expect(report.incomplete, 'unclassified incompletes').to.deep.equal([]);
-            }
-          });
-        }),
-    );
+              }
+              if (classification === 'popup' || classification === 'swatch') {
+                if (classification === 'swatch') {
+                  expect(Cypress.currentTest.title.startsWith('R3.10 ')).to.equal(true);
+                }
+                const container = document.querySelector(
+                  classification === 'popup' ? '.fui-PopoverSurface' : '.fui-SwatchPicker',
+                )!;
+                const sentinels = container.querySelectorAll('i[data-tabster-dummy]');
+                expect(sentinels).to.have.length(2);
+                const nodes = result.violations.find(({ id }) => id === 'aria-hidden-focus')?.nodes || [];
+                expect(nodes).to.have.length(report.classification.endsWith('sentinels-focusable') ? 2 : 0);
+                sentinels.forEach((sentinel, index) => {
+                  expect(sentinel.tagName).to.equal('I');
+                  expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+                  expect(sentinel.getAttribute('role')).to.equal('none');
+                  expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+                    `isFirst=${index === 0}, isOutside=false, (${
+                      classification === 'popup' ? 'Modalizer' : 'Mover'
+                    }, tabbable=true)`,
+                  );
+                });
+                nodes.forEach((node, index) => {
+                  expect(node.target.length).to.equal(1);
+                  expect(node.element).to.equal(sentinels[index]);
+                  expect(sentinels[index].getAttribute('tabindex')).to.equal('0');
+                  expect(sentinels[index].getAttribute('aria-hidden')).to.equal('true');
+                  expect(sentinels[index].getAttribute('role')).to.equal('none');
+                  expect(sentinels[index].getAttribute('data-tabster-dummy')).to.equal(
+                    `isFirst=${index === 0}, isOutside=false, (${
+                      classification === 'popup' ? 'Modalizer' : 'Mover'
+                    }, tabbable=true)`,
+                  );
+                  expect(node.failureSummary).to.equal(
+                    'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
+                  );
+                });
+              }
+              if (classification === 'popup' && result.incomplete.length) {
+                expect(
+                  result.incomplete.map(({ id }) => id),
+                  'only known modal-focus incomplete',
+                ).to.deep.equal(['aria-hidden-focus']);
+                const sentinels = document.querySelectorAll('.fui-PopoverSurface i[data-tabster-dummy]');
+                expect(result.incomplete[0].nodes).to.have.length(2);
+                result.incomplete[0].nodes.forEach((node, index) => {
+                  expect(node.target).to.have.length(1);
+                  expect(node.element).to.equal(sentinels[index]);
+                  expect(node.any).to.deep.equal([]);
+                  expect(node.none).to.deep.equal([]);
+                  expect(node.all).to.have.length(1);
+                  const check = node.all[0];
+                  expect(check.id).to.equal('focusable-modal-open');
+                  expect(check.impact).to.equal('serious');
+                  expect(check.data).to.equal(null);
+                  expect(check.message).to.equal('Check that focusable elements are not tabbable in the current state');
+                  expect(check.relatedNodes).to.have.length(1);
+                  expect(check.relatedNodes![0].target).to.deep.equal(node.target);
+                  expect(check.relatedNodes![0].element).to.equal(sentinels[index]);
+                  expect(sentinels[index].getAttribute('tabindex')).to.equal('0');
+                  expect(getComputedStyle(sentinels[index]).contentVisibility).to.equal('hidden');
+                });
+              } else {
+                expect(report.incomplete, 'unclassified incompletes').to.deep.equal([]);
+              }
+              (kind === 'axe' ? validatedTitles : validatedCheckpoints).push(report.scenario);
+            });
+          }),
+      );
+    });
   };
-  afterEach(() => {
-    audit();
+  afterEach(function () {
+    const test = this.currentTest;
+    if (!test) {
+      throw new Error('ColorPicker audit cleanup requires its actual Mocha testcase');
+    }
+    caseOutcomes.set(test.title, test);
+    if (
+      test.state === 'failed' &&
+      countTitle(auditedTitles, test.title) === 0 &&
+      !finalAuditAttempts.has(test.title) &&
+      !unfinishedAcquisitions.has(test.title)
+    ) {
+      audit('axe', 'failed-body-diagnostic');
+    }
     cy.get('#fixture').realMouseUp();
     cy.then(() =>
       Cypress.automation('remote:debugger:protocol', {
@@ -1614,4 +1784,6 @@ describe('row133 ColorPicker browser coverage', { retries: 0, viewportWidth: 110
     popupDraft().should('have.value', '99');
     closePopup();
   });
+  const plannedCheckpointTitles = Object.freeze(checkpointTitles(round));
+  Object.freeze(registeredTitles);
 });
