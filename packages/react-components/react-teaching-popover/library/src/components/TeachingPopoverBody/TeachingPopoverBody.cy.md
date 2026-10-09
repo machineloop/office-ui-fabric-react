@@ -130,6 +130,21 @@ the ordinary canonical Cypress entry.
 
 ## Accessibility receipt policy
 
+The media-render trial exposed missing ref callbacks and nullable media geometry,
+then a closed-fixture ownership verdict in `afterEach` aborted the last twelve
+cases. Required callbacks and typed media/content elements are now asserted
+before coupled payload/geometry reads, retaining original detach/null/state and
+12px spacing expectations.
+
+The complete unchanged ownership/readiness/audit chain now runs at the tail of
+each matching scenario body. Original viewport, hover, cache setup, case-local
+media reset and all cleanup/restoration keep their effective order. The old
+`afterEach` contained only a successful-case audit and explicitly skipped
+already-failed bodies; that boundary is preserved, without a new failed-case
+collector, fabricated final capture or checkpoint backfill. All passing cases
+still require the same strict audit. Sentinel captured/live style, positional,
+related-node and classifier guards remain unchanged.
+
 Every new case audits a real nonempty visible owned stage and any live teaching
 portals with **full unfiltered default axe-core**. Results require nonempty
 passes, retry zero and an exposed nonempty audited root. No rules are disabled,

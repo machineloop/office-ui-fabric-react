@@ -46,10 +46,20 @@ type Profile = 'stable-basic' | 'stable-carousel' | 'stable-carousel-text';
 const surface = () => cy.get('.fui-TeachingPopoverSurface');
 const body = () => cy.get('#body');
 const media = () => cy.get('.fui-TeachingPopoverBody__media');
+function assertRequiredElement(
+  element: HTMLElement | null | undefined,
+  message: string,
+): asserts element is HTMLElement {
+  expect(element, message).not.to.equal(null);
+  expect(element, message).not.to.equal(undefined);
+}
 function scenario(level: number, title: string, test: () => void) {
   if (level <= round) {
     titles.push(title);
-    it(title, test);
+    it(title, () => {
+      test();
+      audit();
+    });
   }
 }
 function stage(children: React.ReactNode, dark = false, rtl = false) {
@@ -344,11 +354,6 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
       }),
     );
   });
-  afterEach(function () {
-    if (this.currentTest?.state !== 'failed') {
-      audit();
-    }
-  });
 
   scenario(1, 'default snapshot contract is a single native div with content and no media or role', () => {
     render();
@@ -458,7 +463,9 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
         Content
       </TeachingPopoverBody>,
     );
+    cy.wrap(root).should('have.been.called');
     body().then($node => expect(root.lastCall.args[0]).to.equal($node[0]));
+    cy.wrap(slotRef).should('have.been.called');
     media().then($node => expect(slotRef.lastCall.args[0]).to.equal($node[0]));
   });
   scenario(1, 'object refs attach to root and media without introducing a wrapper', () => {
@@ -560,6 +567,7 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
     cy.get('#state-child').realClick();
     cy.get('#toggle-media').realClick();
     media().should('not.exist');
+    cy.wrap(slotRef).should('have.been.called');
     cy.then(() => {
       expect(slotRef.lastCall.args[0]).to.equal(null);
       expect(root.callCount).to.equal(1);
@@ -567,7 +575,12 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
     cy.get('#state-child').should('have.text', 'Count 1');
     cy.get('#toggle-media').realClick();
     media().should('have.text', 'Media 0');
-    cy.then(() => expect(slotRef.lastCall.args[0].tagName).to.equal('SPAN'));
+    cy.wrap(slotRef).should('have.been.called');
+    cy.then(() => {
+      const restoredMedia = slotRef.lastCall.args[0];
+      assertRequiredElement(restoredMedia, 'required restored media ref');
+      expect(restoredMedia.tagName).to.equal('SPAN');
+    });
   });
   scenario(1, 'unmount detaches root media descendant refs and removes real DOM nodes', () => {
     const root = cy.stub();
@@ -581,6 +594,9 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
     cy.get('#unmount-body').realClick();
     body().should('not.exist');
     media().should('not.exist');
+    cy.wrap(root).should('have.been.called');
+    cy.wrap(slotRef).should('have.been.called');
+    cy.wrap(childRef).should('have.been.called');
     cy.then(() => {
       expect(root.lastCall.args[0]).to.equal(null);
       expect(slotRef.lastCall.args[0]).to.equal(null);
@@ -656,8 +672,12 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
       </TeachingPopoverBody>,
     );
     body().should($node => {
-      const slotBounds = $node[0].querySelector('span')!.getBoundingClientRect();
-      const textBounds = $node[0].querySelector('#content')!.getBoundingClientRect();
+      const mediaElement = $node[0].querySelector<HTMLElement>('span');
+      const contentElement = $node[0].querySelector<HTMLElement>('#content');
+      assertRequiredElement(mediaElement, 'required media for content spacing');
+      assertRequiredElement(contentElement, 'required content for content spacing');
+      const slotBounds = mediaElement.getBoundingClientRect();
+      const textBounds = contentElement.getBoundingClientRect();
       expect(textBounds.top - slotBounds.bottom).to.be.closeTo(12, 0.1);
       expect($node[0].getBoundingClientRect().bottom - textBounds.bottom).to.be.closeTo(12, 0.1);
     });
@@ -1056,11 +1076,13 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
     body()
       .children()
       .then($nodes => expect(Array.from($nodes, node => node.tagName)).to.deep.equal(['SPAN', 'H2', 'P']));
-    body().should($node =>
-      expect($node[0].querySelector('h2')!.getBoundingClientRect().top).to.be.greaterThan(
-        $node[0].querySelector('span')!.getBoundingClientRect().bottom,
-      ),
-    );
+    body().should($node => {
+      const heading = $node[0].querySelector<HTMLElement>('h2');
+      const mediaElement = $node[0].querySelector<HTMLElement>('span');
+      assertRequiredElement(heading, 'required heading for RTL order');
+      assertRequiredElement(mediaElement, 'required media for RTL order');
+      expect(heading.getBoundingClientRect().top).to.be.greaterThan(mediaElement.getBoundingClientRect().bottom);
+    });
   });
   scenario(3, 'forced colors uses real Chrome native media features while preserving Body layout and names', () => {
     cy.then(() =>
@@ -1079,8 +1101,12 @@ describe('row138 TeachingPopoverBody', { retries: 0 }, () => {
       expect($node[0].ownerDocument.defaultView!.matchMedia('(forced-colors: active)').matches).to.equal(true);
       expect(getComputedStyle($node[0]).forcedColorAdjust).to.equal('auto');
       expect(getComputedStyle($node[0]).display).to.equal('flex');
-      expect($node[0].querySelector('span')!.getBoundingClientRect().height).to.be.closeTo(117, 0.1);
-      expect(computeAccessibleName($node[0].querySelector('button')!)).to.equal('Native action');
+      const mediaElement = $node[0].querySelector<HTMLElement>('span');
+      const action = $node[0].querySelector<HTMLElement>('button');
+      assertRequiredElement(mediaElement, 'required media for forced colors');
+      assertRequiredElement(action, 'required action for forced colors');
+      expect(mediaElement.getBoundingClientRect().height).to.be.closeTo(117, 0.1);
+      expect(computeAccessibleName(action)).to.equal('Native action');
     });
     cy.get('#forced-action').realClick().should('have.focus');
     audit('forced-colors');
