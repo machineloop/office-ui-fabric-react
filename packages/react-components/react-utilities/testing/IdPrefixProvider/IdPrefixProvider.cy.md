@@ -53,6 +53,19 @@ fixtures are not mounted or imported into the browser suite.
 The separate `testing\tsconfig.units.json` also type-checks all four targeted
 unit sources with Jest types, without leaking Cypress globals into the units.
 
+The original 73-case `react-colon-escape` survivor was inactive for the original
+React 19 inputs: default native IDs and the tested React root namespaces had no
+colons to remove. That historical receipt remains a survivor, not a relabeled
+kill; the mutation is not globally equivalent. The existing colon scenario now
+also uses the tracked `externalRoot` helper with the public React
+`identifierPrefix: 'native:root:'` option. An unmocked `React.useId` observer
+proves that the native namespace contains colons before the production hook's
+result is checked. The generated suffix must retain the escaped namespace but
+no colons, while caller `scope:local:` prefixes remain literal and live label,
+description and control IDREFs resolve exactly once. The original mount and
+assertions remain intact, with no new case, fixed native counter, opaque suffix
+format assumption, React hook replacement or audit/cleanup change.
+
 ## Cumulative rounds
 
 | Round       | Cases | Added coverage                                                                                                                                                                            |

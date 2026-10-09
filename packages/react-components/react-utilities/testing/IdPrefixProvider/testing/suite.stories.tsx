@@ -840,6 +840,31 @@ describe(label, { retries: 0 }, () => {
       expect(id.startsWith('scope:local:')).to.equal(true);
       expect(id.slice('scope:local:'.length)).not.to.contain(':');
     });
+    const NativeId = () => {
+      const id = React.useId();
+      return <p data-native-id={id}>Native React ID</p>;
+    };
+    cy.get('#row135-stage').then($stage => {
+      externalRoot(
+        $stage[0],
+        <IdPrefixProvider value="scope:">
+          <NativeId />
+          <Probe name="Native namespace" prefix="local:" />
+        </IdPrefixProvider>,
+        'native:root:',
+      );
+    });
+    cy.get('[data-native-id]').should($native => {
+      expect($native.attr('data-native-id'), 'unmocked native colon-bearing root namespace').to.contain('native:root:');
+    });
+    probe('Native namespace').should($probe => {
+      const id = $probe.attr('data-generated');
+      expect(id?.startsWith('scope:local:'), 'literal caller namespaces').to.equal(true);
+      const suffix = id?.slice('scope:local:'.length);
+      expect(suffix, 'escaped native root namespace').to.contain('nativeroot');
+      expect(suffix, 'no colons in the generated portion').not.to.contain(':');
+      assertReferences($probe[0]);
+    });
   });
 
   scenario(3, 'IDREF validator rejects a detached duplicate-ID negative control', () => {
