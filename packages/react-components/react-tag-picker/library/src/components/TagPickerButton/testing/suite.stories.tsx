@@ -24,13 +24,6 @@ let ordinal = 0;
 let events: RecordedEvent[] = [];
 let realEvents: Array<{ command: string; args: unknown }> = [];
 let restoreListeners: (() => void) | undefined;
-function scenario(level: number, title: string, body: () => void, moverTags = 0) {
-  if (level <= round) {
-    titles.push(title);
-    profiles[title] = moverTags;
-    it(title, body);
-  }
-}
 function stage(children: React.ReactNode, dark = false, rtl = false) {
   return mount(
     <FluentProvider theme={dark ? webDarkTheme : webLightTheme} dir={rtl ? 'rtl' : 'ltr'}>
@@ -47,6 +40,9 @@ function harness(props: HarnessProps = {}, dark = false, rtl = false) {
 const trigger = () => cy.get('#row136-stage [data-trigger]');
 const popup = () => cy.get('[data-popup]');
 const option = (value: string) => popup().find(`[data-option="${value}"]`);
+function assertIdReference(value: string | undefined, attribute: string): asserts value is string {
+  expect(value, `required ${attribute} IDREF`).to.be.a('string').and.not.equal('');
+}
 function active(value: string) {
   trigger().should($button => {
     const id = $button.attr('aria-activedescendant');
@@ -96,12 +92,28 @@ function assertMoverShape(shape: ReturnType<typeof findingShape>, tags: number) 
 }
 
 describe('row136 TagPickerButton', { retries: 0 }, () => {
+  let finalAuditStarted = false;
+  function scenario(level: number, title: string, body: () => void, moverTags = 0) {
+    if (level <= round) {
+      titles.push(title);
+      profiles[title] = moverTags;
+      it(title, () => {
+        body();
+        cy.then(() => {
+          restoreListeners?.();
+          restoreListeners = undefined;
+        });
+        audit(title);
+      });
+    }
+  }
   before(() => {
     expect(React.version).to.equal('19.2.0');
     expect(new Set(titles).size).to.equal(titles.length);
     cy.writeFile(`${evidence}/manifest.json`, { round, titles, profiles, retries: 0 });
   });
   beforeEach(() => {
+    finalAuditStarted = false;
     events = [];
     realEvents = [];
     cy.then(() =>
@@ -122,119 +134,134 @@ describe('row136 TagPickerButton', { retries: 0 }, () => {
       throw error;
     });
   });
+  function audit(title: string, failedCaseDiagnostic = false) {
+    const subject = cy.get('#row136-stage');
+    if (!failedCaseDiagnostic) {
+      subject
+        .should('be.visible')
+        .and('not.be.empty')
+        .should($stage => {
+          const tags = profiles[title!];
+          if (tags) {
+            const groups = Array.from($stage[0].querySelectorAll<HTMLElement>('.fui-TagPickerGroup')).filter(group =>
+              group.querySelector('.fui-Tag'),
+            );
+            expect(groups, 'one independently expected selected-tag mover').to.have.length(1);
+            const group = groups[0];
+            expect(group.children, 'selected tags and both mover sentinels are committed').to.have.length(tags + 2);
+            expect(group.querySelectorAll('.fui-Tag')).to.have.length(tags);
+            expect(group.firstElementChild?.getAttribute('data-tabster-dummy')).to.equal(
+              'isFirst=true, isOutside=false, (Mover, tabbable=true)',
+            );
+            expect(group.lastElementChild?.getAttribute('data-tabster-dummy')).to.equal(
+              'isFirst=false, isOutside=false, (Mover, tabbable=true)',
+            );
+          }
+        });
+    }
+    return subject.then($stage => {
+      const document = $stage[0].ownerDocument;
+      const context = [
+        $stage[0],
+        ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TagPickerList')).filter(
+          node => !$stage[0].contains(node),
+        ),
+      ];
+      finalAuditStarted = true;
+      return axe.run(context).then(fullResults => {
+        cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
+          kind: 'axe',
+          scenario: title,
+          round,
+          retries: Cypress.currentRetry,
+          fullResults,
+          realEvents,
+          events,
+          knownMoverTags: profiles[title!],
+          knownEmptyList: title === emptyListTitle,
+          failedCaseDiagnostic,
+          auditedRoots: context.map(node => ({
+            tag: node.tagName,
+            id: node.id,
+            role: node.getAttribute('role'),
+            popup: node.classList.contains('fui-TagPickerList'),
+          })),
+        }).then(() => {
+          if (failedCaseDiagnostic) {
+            return;
+          }
+          expect(fullResults.passes.length, 'default axe executed rules').to.be.greaterThan(0);
+          const tags = profiles[title!];
+          if (tags) {
+            expect(
+              fullResults.violations.map(rule => rule.id),
+              'exact source-known Tabster finding',
+            ).to.deep.equal(['aria-hidden-focus']);
+            const nodes = fullResults.violations[0].nodes;
+            assertMoverShape(findingShape(fullResults.violations), tags);
+            expect(nodes).to.have.length(2);
+            expect(nodes.map(node => node.target)).to.deep.equal([['i:nth-child(1)'], [`i:nth-child(${tags + 2})`]]);
+            for (const node of nodes) {
+              expect(node.any).to.deep.equal([]);
+              expect(node.none).to.deep.equal([]);
+              expect(node.all).to.have.length(1);
+              expect(node.all[0]).to.include({ id: 'focusable-not-tabbable', data: null, impact: 'serious' });
+              const related = node.all[0].relatedNodes;
+              if (!related) {
+                throw new Error('Known mover finding must identify its related node');
+              }
+              expect(related).to.have.length(1);
+              expect(related[0].target).to.deep.equal(node.target);
+              expect(related[0].html).to.equal(node.html);
+              const target = document.querySelector<HTMLElement>(String(node.target[0]));
+              expect(target?.getAttribute('data-tabster-dummy')).to.match(
+                /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/,
+              );
+              expect(target?.getAttribute('aria-hidden')).to.equal('true');
+              expect(target?.getAttribute('tabindex')).to.equal('0');
+              expect(target?.parentElement?.getAttribute('aria-label')).to.equal(
+                title === 'stable consuming Button story runs unchanged and adds selected employee tags'
+                  ? 'Selected Employees'
+                  : 'Selected fruit',
+              );
+            }
+          } else {
+            expect(fullResults.violations, 'unexpected default axe violations').to.deep.equal([]);
+          }
+          if (title === emptyListTitle) {
+            expect(findingShape(fullResults.incomplete)).to.deep.equal([
+              {
+                id: 'aria-required-children',
+                nodes: [
+                  {
+                    target: [`#${document.querySelector<HTMLElement>('[data-popup]')!.id}`],
+                    anyChecks: [{ id: 'aria-required-children', data: ['group', 'option'], impact: 'critical' }],
+                    none: [],
+                    all: [],
+                  },
+                ],
+              },
+            ]);
+            expect(document.querySelector('[data-popup]')?.childElementCount).to.equal(0);
+          } else {
+            expect(fullResults.incomplete, 'unexpected default axe incompletes').to.deep.equal([]);
+          }
+          expect(Cypress.currentRetry).to.equal(0);
+        });
+      });
+    });
+  }
   afterEach(function () {
-    const title = this.currentTest?.title;
+    const test = this.currentTest;
     cy.then(() => {
       restoreListeners?.();
       restoreListeners = undefined;
     });
-    cy.get('#row136-stage')
-      .should('be.visible')
-      .and('not.be.empty')
-      .should($stage => {
-        const tags = profiles[title!];
-        if (tags) {
-          const groups = Array.from($stage[0].querySelectorAll<HTMLElement>('.fui-TagPickerGroup')).filter(group =>
-            group.querySelector('.fui-Tag'),
-          );
-          expect(groups, 'one independently expected selected-tag mover').to.have.length(1);
-          const group = groups[0];
-          expect(group.children, 'selected tags and both mover sentinels are committed').to.have.length(tags + 2);
-          expect(group.querySelectorAll('.fui-Tag')).to.have.length(tags);
-          expect(group.firstElementChild?.getAttribute('data-tabster-dummy')).to.equal(
-            'isFirst=true, isOutside=false, (Mover, tabbable=true)',
-          );
-          expect(group.lastElementChild?.getAttribute('data-tabster-dummy')).to.equal(
-            'isFirst=false, isOutside=false, (Mover, tabbable=true)',
-          );
-        }
-      })
-      .then($stage => {
-        const document = $stage[0].ownerDocument;
-        const context = [
-          $stage[0],
-          ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TagPickerList')).filter(
-            node => !$stage[0].contains(node),
-          ),
-        ];
-        return axe.run(context).then(fullResults => {
-          cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
-            kind: 'axe',
-            scenario: title,
-            round,
-            retries: Cypress.currentRetry,
-            fullResults,
-            realEvents,
-            events,
-            knownMoverTags: profiles[title!],
-            knownEmptyList: title === emptyListTitle,
-            auditedRoots: context.map(node => ({
-              tag: node.tagName,
-              id: node.id,
-              role: node.getAttribute('role'),
-              popup: node.classList.contains('fui-TagPickerList'),
-            })),
-          }).then(() => {
-            expect(fullResults.passes.length, 'default axe executed rules').to.be.greaterThan(0);
-            const tags = profiles[title!];
-            if (tags) {
-              expect(
-                fullResults.violations.map(rule => rule.id),
-                'exact source-known Tabster finding',
-              ).to.deep.equal(['aria-hidden-focus']);
-              const nodes = fullResults.violations[0].nodes;
-              assertMoverShape(findingShape(fullResults.violations), tags);
-              expect(nodes).to.have.length(2);
-              expect(nodes.map(node => node.target)).to.deep.equal([['i:nth-child(1)'], [`i:nth-child(${tags + 2})`]]);
-              for (const node of nodes) {
-                expect(node.any).to.deep.equal([]);
-                expect(node.none).to.deep.equal([]);
-                expect(node.all).to.have.length(1);
-                expect(node.all[0]).to.include({ id: 'focusable-not-tabbable', data: null, impact: 'serious' });
-                const related = node.all[0].relatedNodes;
-                if (!related) {
-                  throw new Error('Known mover finding must identify its related node');
-                }
-                expect(related).to.have.length(1);
-                expect(related[0].target).to.deep.equal(node.target);
-                expect(related[0].html).to.equal(node.html);
-                const target = document.querySelector<HTMLElement>(String(node.target[0]));
-                expect(target?.getAttribute('data-tabster-dummy')).to.match(
-                  /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/,
-                );
-                expect(target?.getAttribute('aria-hidden')).to.equal('true');
-                expect(target?.getAttribute('tabindex')).to.equal('0');
-                expect(target?.parentElement?.getAttribute('aria-label')).to.equal(
-                  title === 'stable consuming Button story runs unchanged and adds selected employee tags'
-                    ? 'Selected Employees'
-                    : 'Selected fruit',
-                );
-              }
-            } else {
-              expect(fullResults.violations, 'unexpected default axe violations').to.deep.equal([]);
-            }
-            if (title === emptyListTitle) {
-              expect(findingShape(fullResults.incomplete)).to.deep.equal([
-                {
-                  id: 'aria-required-children',
-                  nodes: [
-                    {
-                      target: [`#${document.querySelector<HTMLElement>('[data-popup]')!.id}`],
-                      anyChecks: [{ id: 'aria-required-children', data: ['group', 'option'], impact: 'critical' }],
-                      none: [],
-                      all: [],
-                    },
-                  ],
-                },
-              ]);
-              expect(document.querySelector('[data-popup]')?.childElementCount).to.equal(0);
-            } else {
-              expect(fullResults.incomplete, 'unexpected default axe incompletes').to.deep.equal([]);
-            }
-            expect(Cypress.currentRetry).to.equal(0);
-          });
-        });
-      });
+    cy.then(() => {
+      if (test?.state === 'failed' && !finalAuditStarted) {
+        return audit(test.title, true);
+      }
+    });
   });
 
   scenario(1, 'standalone is a named native button with closed combobox semantics', () => {
@@ -988,9 +1015,14 @@ describe('row136 TagPickerButton', { retries: 0 }, () => {
     );
     open();
     trigger().then($button => {
+      expect($button, 'one provider-scoped trigger').to.have.length(1);
       const document = $button[0].ownerDocument;
-      const controls = $button.attr('aria-controls')!;
-      const descendant = $button.attr('aria-activedescendant')!;
+      const controls = $button.attr('aria-controls');
+      const descendant = $button.attr('aria-activedescendant');
+      assertIdReference(controls, 'aria-controls');
+      assertIdReference(descendant, 'aria-activedescendant');
+      expect(controls.split(/\s+/), 'exactly one aria-controls IDREF').to.have.length(1);
+      expect(descendant.split(/\s+/), 'exactly one aria-activedescendant IDREF').to.have.length(1);
       expect(controls.startsWith('row136-picker-listbox')).to.equal(true);
       expect(descendant.startsWith('row136-fluent-option')).to.equal(true);
       expect(document.querySelectorAll(`[id="${controls}"]`)).to.have.length(1);

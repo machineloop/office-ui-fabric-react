@@ -92,6 +92,29 @@ seal; it is not the hash of the entire pretty-printed JSON receipt.
 
 Every registered case has a final full default `axe.run` over the nonempty real fixture plus its actual portals, with nonempty passes and strict violation/incomplete profiles. Raw results are written with builtin `cy.writeFile`; no custom Node tasks are required. Native command and original-event receipts are retained. The unchanged stable story is imported, not relabeled or patched.
 
+Final fixture readiness and the complete strict audit verdict now run in each
+scenario body, after the original listener restoration and before any subsequent
+case. This keeps an ownership or axe regression attached to its testcase rather
+than aborting the suite from `afterEach`. All 96 titles, selected-tag readiness,
+exact mover/empty-list profiles, adversarial probes and intermediate critical
+finding checks remain unchanged.
+
+Operational `afterEach` still restores listeners. If an actual Mocha-failed case
+never started its final scan, it collects and persists one genuine full-scope
+raw diagnostic, marked `failedCaseDiagnostic: true`, without asserting a passing
+accessibility verdict or waiting for the failed case's planned selected-tag
+shape. Successful cases always perform the original strict body audit. An
+already-started scan is never repeated, including after acquisition, persistence
+or verdict failure. Diagnostics are not validated audits or accessibility passes;
+transport and write failures still surface, with no catches, fabricated ledger
+entries or policy allowances.
+
+The isolated ownership trial then executed all 96 cases without skips, with 36
+assertion failures and one missing-IDREF `startsWith` TypeError in the prefix
+provider case. That case now requires one trigger and nonempty string,
+single-token controls/active-descendant IDREFs before prefix and DOM reads.
+Its original namespace, unique-target and containment checks remain unchanged.
+
 `.evidence/<mode>-r<round>-<label>-<timestamp>-<pid>/` holds exact commands, raw logs/JUnit and recursive owned/production before/after SHA-256 manifests. `.evidence/audits-*/` holds authored registration manifest, every complete default axe result and the two intermediate critical findings. Failed runs remain archived. Final JUnit names, suite/root counters, unique authored titles and one audit per case must agree, with zero errors/skips/pending/retries. The seal selects only final receipts bound to the current recursive source manifest and hashes receipt files.
 
 The entry baseline includes original component bytes, units/snapshot, tag-picker/combobox/ARIA/utilities sources, shared helpers/configuration/manifests and existing tracked dirty files; initial untracked state is recorded by status. Every verification additionally hashes outside untracked files before and after. Preservation reports separate original-owned changes from concurrent outside byte, HEAD or status changes; none is reverted or staged. Review and a separate component commit belong to the parent.
