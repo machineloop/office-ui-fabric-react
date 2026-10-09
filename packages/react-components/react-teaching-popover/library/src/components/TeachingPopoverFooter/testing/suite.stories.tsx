@@ -79,13 +79,18 @@ const evidence = `src/components/TeachingPopoverFooter/.evidence/audits-${Date.n
 )}`;
 const titles: string[] = [];
 let ordinal = 0;
+let finalAuditStarted = false;
+let auditAcquisitionUnfinished = false;
 let events: Trace[] = [];
 let originals: Array<FooterEvent | OwnerEvent> = [];
 let nativeCommands: Array<{ command: string; args: unknown }> = [];
 function scenario(level: number, title: string, body: () => void) {
   if (level <= round) {
     titles.push(title);
-    it(title, body);
+    it(title, () => {
+      body();
+      audit();
+    });
   }
 }
 function stage(children: React.ReactNode, dark = false, rtl = false) {
@@ -224,42 +229,45 @@ function guardFindingMutations(shape: ReturnType<typeof findingShape>, expected:
     expect(() => expect(mutation).to.deep.equal(expected)).to.throw();
   }
 }
-function audit(phase = 'final', profile: false | 'stable-basic' = false) {
-  return cy
-    .get('#row139-stage')
-    .should('be.visible')
-    .and('not.be.empty')
-    .should($stage => {
-      const roots = [
-        $stage[0],
-        ...Array.from($stage[0].ownerDocument.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')),
-      ];
-      for (const root of roots) {
-        expect(
-          root.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running'),
-        ).to.have.length(0);
-      }
-      expect(Boolean($stage[0].closest('[aria-hidden="true"]'))).to.equal(Boolean(profile));
-      if (!profile) {
-        expect(
-          Array.from($stage[0].querySelectorAll('button, a, input')).filter(node =>
-            node.closest('[aria-hidden="true"]'),
-          ),
-        ).to.have.length(0);
-      } else {
-        expect($stage[0].ownerDocument.querySelectorAll('.fui-PopoverSurface > [data-tabster-dummy]')).to.have.length(
-          2,
-        );
-      }
-    })
-    .then($stage => {
-      const document = $stage[0].ownerDocument;
-      const roots = [
-        $stage[0],
-        ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
-          node => !$stage[0].contains(node),
-        ),
-      ];
+function audit(phase = 'final', profile: false | 'stable-basic' = false, failedCaseDiagnostic = false) {
+  const subject = cy.get('#row139-stage');
+  if (!failedCaseDiagnostic) {
+    subject
+      .should('be.visible')
+      .and('not.be.empty')
+      .should($stage => {
+        const roots = [
+          $stage[0],
+          ...Array.from($stage[0].ownerDocument.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')),
+        ];
+        for (const root of roots) {
+          expect(
+            root.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running'),
+          ).to.have.length(0);
+        }
+        expect(Boolean($stage[0].closest('[aria-hidden="true"]'))).to.equal(Boolean(profile));
+        if (!profile) {
+          expect(
+            Array.from($stage[0].querySelectorAll('button, a, input')).filter(node =>
+              node.closest('[aria-hidden="true"]'),
+            ),
+          ).to.have.length(0);
+        } else {
+          expect($stage[0].ownerDocument.querySelectorAll('.fui-PopoverSurface > [data-tabster-dummy]')).to.have.length(
+            2,
+          );
+        }
+      });
+  }
+  return subject.then($stage => {
+    const document = $stage[0].ownerDocument;
+    const roots = [
+      $stage[0],
+      ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
+        node => !$stage[0].contains(node),
+      ),
+    ];
+    if (!failedCaseDiagnostic) {
       for (const root of roots) {
         expect(root.getBoundingClientRect().width).to.be.greaterThan(0);
         expect(root.textContent?.trim()).not.to.equal('');
@@ -267,74 +275,84 @@ function audit(phase = 'final', profile: false | 'stable-basic' = false) {
           root.getAnimations({ subtree: true }).filter(animation => animation.playState === 'running'),
         ).to.have.length(0);
       }
-      return axe.run(roots).then(fullResults => {
-        cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
-          scenario: Cypress.currentTest.title,
-          phase,
-          profile,
-          round,
-          retries: Cypress.currentRetry,
-          fullResults,
-          events,
-          nativeCommands,
-          auditedRoots: roots.map(node => ({ tag: node.tagName, id: node.id, role: node.getAttribute('role') })),
-        }).then(() => {
-          expect(fullResults.passes.length).to.be.greaterThan(0);
-          expect(findingShape(fullResults.violations), 'all unexpected violations rejected').to.deep.equal(
-            profile ? stableViolations() : [],
-          );
-          expect(findingShape(fullResults.incomplete), 'all unexpected incompletes rejected').to.deep.equal(
-            profile ? stableIncompletes() : [],
-          );
-          if (profile) {
-            expect(Cypress.currentTest.title).to.match(/^unchanged stable (Default|AppearanceBrand) /);
-            expect(phase).to.equal('stable-open');
-            const dialog = document.querySelector('.fui-TeachingPopoverSurface')!;
-            expect(dialog.getAttribute('role')).to.equal('dialog');
-            expect(dialog.hasAttribute('aria-label')).to.equal(false);
-            expect(dialog.hasAttribute('aria-labelledby')).to.equal(false);
-            expect(dialog.hasAttribute('title')).to.equal(false);
-            expect(computeAccessibleName(dialog)).to.equal('');
-            expect(fullResults.violations[0].nodes[0].html).to.equal(`${dialog.outerHTML.split('>')[0]}>`);
-            for (const node of fullResults.incomplete[0].nodes) {
-              const sentinel = document.querySelector(String(node.target[0]));
-              expect(sentinel?.tagName).to.equal('I');
-              expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
-              expect(sentinel?.getAttribute('tabindex')).to.equal('0');
-              expect(sentinel?.getAttribute('role')).to.equal('none');
-              expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
-                /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
-              );
-              expect(sentinel?.childElementCount).to.equal(0);
-              expect(sentinel?.textContent).to.equal('');
-              expect(sentinel?.outerHTML).to.equal(node.html);
-              expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
-              expect(node.all[0].relatedNodes).to.have.length(1);
-              expect(node.all[0].relatedNodes![0]).to.deep.equal({ target: node.target, html: node.html });
-            }
-            const shape = findingShape(fullResults.incomplete);
-            const expected = stableIncompletes();
-            const rejected = [
-              'unknown-rule',
-              'duplicate-rule',
-              'duplicate-node',
-              'unknown-check',
-              'wrong-target',
-              'wrong-impact',
-            ];
-            guardFindingMutations(shape, expected);
-            guardFindingMutations(findingShape(fullResults.violations), stableViolations());
-            cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
-              scenario: Cypress.currentTest.title,
-              rejected,
-              expected,
-              guardedProfiles: ['violations', 'incomplete'],
-            });
+    }
+    auditAcquisitionUnfinished = true;
+    if (phase === 'final') {
+      finalAuditStarted = true;
+    }
+    return axe.run(roots).then(fullResults => {
+      cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
+        scenario: Cypress.currentTest.title,
+        phase,
+        profile,
+        round,
+        retries: Cypress.currentRetry,
+        fullResults,
+        failedCaseDiagnostic,
+        events,
+        nativeCommands,
+        auditedRoots: roots.map(node => ({ tag: node.tagName, id: node.id, role: node.getAttribute('role') })),
+      }).then(() => {
+        auditAcquisitionUnfinished = false;
+        if (failedCaseDiagnostic) {
+          return;
+        }
+        expect(fullResults.passes.length).to.be.greaterThan(0);
+        expect(findingShape(fullResults.violations), 'all unexpected violations rejected').to.deep.equal(
+          profile ? stableViolations() : [],
+        );
+        expect(findingShape(fullResults.incomplete), 'all unexpected incompletes rejected').to.deep.equal(
+          profile ? stableIncompletes() : [],
+        );
+        if (profile) {
+          expect(Cypress.currentTest.title).to.match(/^unchanged stable (Default|AppearanceBrand) /);
+          expect(phase).to.equal('stable-open');
+          const dialog = document.querySelector('.fui-TeachingPopoverSurface')!;
+          expect(dialog.getAttribute('role')).to.equal('dialog');
+          expect(dialog.hasAttribute('aria-label')).to.equal(false);
+          expect(dialog.hasAttribute('aria-labelledby')).to.equal(false);
+          expect(dialog.hasAttribute('title')).to.equal(false);
+          expect(computeAccessibleName(dialog)).to.equal('');
+          expect(fullResults.violations[0].nodes[0].html).to.equal(`${dialog.outerHTML.split('>')[0]}>`);
+          for (const node of fullResults.incomplete[0].nodes) {
+            const sentinel = document.querySelector(String(node.target[0]));
+            expect(sentinel?.tagName).to.equal('I');
+            expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
+            expect(sentinel?.getAttribute('tabindex')).to.equal('0');
+            expect(sentinel?.getAttribute('role')).to.equal('none');
+            expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
+              /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
+            );
+            expect(sentinel?.childElementCount).to.equal(0);
+            expect(sentinel?.textContent).to.equal('');
+            expect(sentinel?.outerHTML).to.equal(node.html);
+            expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
+            expect(node.all[0].relatedNodes).to.have.length(1);
+            expect(node.all[0].relatedNodes![0]).to.deep.equal({ target: node.target, html: node.html });
           }
-          expect(Cypress.currentRetry).to.equal(0);
-        });
+          const shape = findingShape(fullResults.incomplete);
+          const expected = stableIncompletes();
+          const rejected = [
+            'unknown-rule',
+            'duplicate-rule',
+            'duplicate-node',
+            'unknown-check',
+            'wrong-target',
+            'wrong-impact',
+          ];
+          guardFindingMutations(shape, expected);
+          guardFindingMutations(findingShape(fullResults.violations), stableViolations());
+          cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
+            scenario: Cypress.currentTest.title,
+            rejected,
+            expected,
+            guardedProfiles: ['violations', 'incomplete'],
+          });
+        }
+        expect(Cypress.currentRetry).to.equal(0);
       });
     });
+  });
 }
 
 describe('row139 TeachingPopoverFooter', { retries: 0 }, () => {
@@ -345,6 +363,8 @@ describe('row139 TeachingPopoverFooter', { retries: 0 }, () => {
     cy.writeFile(`${evidence}/manifest.json`, { round, titles, expectedCount: [25, 63, 84][round - 1], retries: 0 });
   });
   beforeEach(() => {
+    finalAuditStarted = false;
+    auditAcquisitionUnfinished = false;
     cy.viewport(1100, 800);
     cy.get('body').realHover({ position: 'topLeft' });
     events = [];
@@ -363,7 +383,14 @@ describe('row139 TeachingPopoverFooter', { retries: 0 }, () => {
       }
     });
   });
-  afterEach(() => audit());
+  afterEach(function () {
+    const test = this.currentTest;
+    cy.then(() => {
+      if (test?.state === 'failed' && !finalAuditStarted && !auditAcquisitionUnfinished) {
+        return audit('final', false, true);
+      }
+    });
+  });
 
   scenario(1, 'source defaults are native buttons in primary then secondary order with localized labels', () => {
     footer();
@@ -1228,6 +1255,17 @@ describe('row139 TeachingPopoverFooter', { retries: 0 }, () => {
     () => {
       const first: Trace[] = [];
       const second: Trace[] = [];
+      let firstPortal: HTMLElement;
+      let rootBody: HTMLElement;
+      let trailingRoot: HTMLElement;
+      const rootMarker = 'isFirst=false, isOutside=false, (Root, tabbable=false)';
+      const rootSelector = `:scope > i[data-tabster-dummy="${rootMarker}"]`;
+      function assertOwnedPortal(host: HTMLElement | null): asserts host is HTMLElement {
+        expect(host, 'first surface has a generated portal host').not.to.equal(null);
+      }
+      function assertRootBoundary(node: HTMLElement | null): asserts node is HTMLElement {
+        expect(node, 'existing body-owned trailing Root sentinel').not.to.equal(null);
+      }
       stage(
         <>
           <Harness onRecord={event => first.push(event)} />
@@ -1235,11 +1273,44 @@ describe('row139 TeachingPopoverFooter', { retries: 0 }, () => {
         </>,
       );
       open();
+      cy.get<HTMLElement>('#surface').then($first => {
+        expect($first, 'one first-owner surface').to.have.length(1);
+        const firstSurface = $first[0];
+        const host = firstSurface.closest<HTMLElement>('[data-portal-node="true"]');
+        assertOwnedPortal(host);
+        expect(host.tagName, 'generated first portal host').to.equal('DIV');
+        expect(host, 'portal host is distinct from its first surface').not.to.equal(firstSurface);
+        expect(host.isConnected, 'first portal is live while its surface is open').to.equal(true);
+        expect(host.contains(firstSurface), 'captured host owns the first surface').to.equal(true);
+        firstPortal = host;
+        rootBody = firstSurface.ownerDocument.body;
+        const boundary = rootBody.querySelector<HTMLElement>(rootSelector);
+        assertRootBoundary(boundary);
+        expect(boundary.tagName, 'native Root sentinel').to.equal('I');
+        expect(boundary.parentElement, 'Root sentinel belongs directly to the captured body').to.equal(rootBody);
+        expect(boundary.isConnected, 'captured Root sentinel is connected').to.equal(true);
+        expect(boundary.getAttribute('data-tabster-dummy'), 'captured trailing Root marker').to.equal(rootMarker);
+        trailingRoot = boundary;
+      });
       cy.get('#secondary').realClick();
       closed();
+      cy.wrap(null).should(() =>
+        expect(firstPortal.isConnected, 'first owned portal is disposed before opening the second owner').to.equal(
+          false,
+        ),
+      );
       focus('#second-trigger');
       cy.get('#second-trigger').realClick().should('have.attr', 'aria-expanded', 'true');
       settled();
+      cy.wrap(null).should(() => {
+        expect(rootBody.querySelector(rootSelector), 'same existing trailing Root sentinel').to.equal(trailingRoot);
+        expect(trailingRoot.isConnected, 'trailing Root sentinel remains connected').to.equal(true);
+        expect(trailingRoot.parentElement, 'trailing Root sentinel retains its body owner').to.equal(rootBody);
+        expect(trailingRoot.getAttribute('data-tabster-dummy'), 'unchanged trailing Root marker').to.equal(rootMarker);
+        expect(rootBody.lastElementChild, 'Tabster trailing Root boundary settled after the second portal').to.equal(
+          trailingRoot,
+        );
+      });
       audit('second-owner-open');
       cy.get('#second-secondary').realClick();
       surface().should('not.exist');

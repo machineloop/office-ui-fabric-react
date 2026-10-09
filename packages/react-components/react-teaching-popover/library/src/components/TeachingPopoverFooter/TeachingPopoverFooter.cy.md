@@ -109,6 +109,42 @@ actual document focus after capture, and public focus observation precede audit
 or dismissal. The standalone fixture initializes the real focus observer through
 the public focus-finder hook, not a stub.
 
+The independent-owner baseline rejected a `heading-order` incomplete because
+its ancestry changed during AXE, not because its heading text, level, labels or
+contrast changed. Real-browser run
+`2026-10-09T11-43-02-455Z-footer-heading-forensic-33368` identifies the actor in
+`browser-writes/fc22504f-heading-forensics-94.json`: sequences 50-53 record the
+same trailing body Root dummy removed/re-added after the second portal during
+scan 2. At monotonic 37734.2 ms the heading path was body child 4; mutation
+delivery at 37750.3/37750.4 ms records it under child 3, and the result snapshot
+at 37755.7 ms retains AXE's cached child-4 path and the incomplete. These are
+delivery/snapshot times, not inferred mutation occurrence times.
+
+Stable WeakMap identities prove a same-node reorder, not replacement. The first
+owned host was already disconnected and is not this actor. Bound Tabster 8.8.0
+`DummyInputManager._ensurePosition` appends its inside-root last dummy when that
+node is not the root's last element child. The exact initiating callback stack
+was not captured. Probe timing overhead remains unquantified; the observed
+structural transition and the intended boundary contract are independently
+grounded. Diagnostic source and all raw traces remain preserved, but observer
+and probe code are absent from this semantic candidate.
+
+That existing case now captures the first surface's own generated portal host
+while open, asserts the live host/surface association, and requires that exact
+host to be disconnected after `closed()` before opening owner two. The property
+assertion is bounded by Cypress's configured command timeout. This independently
+valid lifecycle prerequisite adds no sleep, global host count, DOM mutation,
+heading/role change or audit allowance; all 84 titles and original owner/callback
+and audit contracts remain intact.
+
+The same case also captures the existing body-owned trailing Root sentinel with
+its exact Root marker and native association. After the second portal mounts
+and existing `settled()` completes, a bounded retryable assertion requires that
+same connected node, unchanged marker and body owner to occupy
+`document.body.lastElementChild` before `second-owner-open`. Missing, replaced,
+wrong-owner/marker or not-last nodes fail; no node is moved and no engine reset,
+fixed wait, body-child count, positional ordinal or opaque identity is hardcoded.
+
 Forced-color assertions compare the actual Button against an authored decorative
 system-color swatch, not OS-dependent RGB constants. It is intentionally non-text
 and aria-hidden from creation; there is no mutation of production DOM to get a
@@ -117,6 +153,23 @@ Theme/appearance contexts and consumer override styles are explicit fixture
 choices, not undocumented Footer APIs.
 
 ## Accessibility evidence and inherited limits
+
+Complete final ownership/readiness, geometry, animation and audit verdicts now
+run at each matching case body's tail, preserving the original setup/media
+reset and case-local cleanup order. The V1 exact retired-host readiness and all
+original headings, root counts, callback assertions and classifier probes remain
+unchanged. A producer verdict fails its testcase rather than aborting subsequent
+cases through `afterEach`.
+
+The original unconditional hook also captured finals for already-failed bodies
+(24 such captures in the preserved dismissal-mutant receipt). Operational
+`afterEach` retains genuine raw coverage only for an actual failed case whose
+final scan never started and whose acquisition/write is not unfinished.
+`failedCaseDiagnostic: true` marks that capture unvalidated, not an accessibility
+pass or proof of the expected closed/modal state. No started final or unfinished
+operation is retried; transport/write errors remain explicit. Successful bodies
+still require every original strict verdict, and checkpoints are never fabricated
+or backfilled.
 
 Every case runs unfiltered `axe.run` with a positive nonempty visible stage and
 all actual owned portal roots. Passes must be nonempty. Unexpected violations
