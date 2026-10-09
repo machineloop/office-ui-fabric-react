@@ -60,6 +60,9 @@ const channels = (s: number, v: number, h = 324) => {
     expect(style.getPropertyValue('--fui-Area--main-color')).to.equal(`hsl(${h}, 100%, 50%)`);
   });
 };
+function assertRangeInput(input: HTMLInputElement | null, message: string): asserts input is HTMLInputElement {
+  expect(input, message).not.to.equal(null);
+}
 const thumbGeometry = (s: number, v: number, dir: 'ltr' | 'rtl') =>
   area().should($area => {
     const root = $area[0];
@@ -95,14 +98,18 @@ const gradient = (hueColor: string, dir: 'ltr' | 'rtl' = 'ltr') =>
       const thumb = root.querySelector<HTMLElement>('.fui-ColorArea__thumb')!;
       const rect = root.getBoundingClientRect();
       const thumbRect = thumb.getBoundingClientRect();
+      const inputX = root.querySelector<HTMLInputElement>('.fui-ColorArea__inputX');
+      const inputY = root.querySelector<HTMLInputElement>('.fui-ColorArea__inputY');
+      assertRangeInput(inputX, 'saturation range exists before gradient value capture');
+      assertRangeInput(inputY, 'brightness range exists before gradient value capture');
       return cy.writeFile(`${evidenceRoot}/gradient-${++gradientIndex}.json`, {
         scenario: Cypress.currentTest.title,
         retries: Cypress.currentRetry,
         direction: style.direction,
         backgroundImage: style.backgroundImage,
         backgroundColor: style.backgroundColor,
-        saturation: root.querySelector<HTMLInputElement>('.fui-ColorArea__inputX')!.value,
-        value: root.querySelector<HTMLInputElement>('.fui-ColorArea__inputY')!.value,
+        saturation: inputX.value,
+        value: inputY.value,
         thumbColor: win.getComputedStyle(thumb).backgroundColor,
         thumbFractionX: (thumbRect.left + thumbRect.width / 2 - rect.left - root.clientLeft) / root.clientWidth,
         thumbFractionY: (thumbRect.top + thumbRect.height / 2 - rect.top - root.clientTop) / root.clientHeight,
@@ -194,8 +201,8 @@ const HookArea = ({ base }: { base: boolean }) => {
 };
 
 describe('ONLY132 ColorArea browser coverage', () => {
-  afterEach(() => {
-    cy.get('#fixture').then($scope =>
+  const auditCurrentFixture = () => {
+    return cy.get('#fixture').then($scope =>
       cy
         .then(() =>
           axe.run([$scope[0], ...Array.from($scope[0].ownerDocument.querySelectorAll('.fui-PopoverSurface'))], {
@@ -322,7 +329,14 @@ describe('ONLY132 ColorArea browser coverage', () => {
           });
         }),
     );
-  });
+  };
+
+  // Preserve this suite's audit scope while keeping verdict failures in test bodies.
+  const it = (title: string, body: () => void): Mocha.Test =>
+    globalThis.it(title, () => {
+      body();
+      return auditCurrentFixture();
+    });
 
   const registerRoundTwo = () => {
     if (round >= 2) {

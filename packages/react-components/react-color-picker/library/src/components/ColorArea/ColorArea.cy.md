@@ -235,3 +235,28 @@ The preservation check intentionally remains nonzero: **765/768 original hashes 
 The first `round-4-attempt-rtl-gradient-review.log` is retained as failed investigation evidence, not a passing run: assuming the review's non-mirrored gradient caused six failures. Its JUnit diagnostics show the actual RTL `to left` gradient and the serialized trailing `none` layer for the solid-color background. The corrected assertions require the exact observed layer stack, stops, colors and direction; they do not skip, accept either direction or loosen axe baselines.
 
 `format-checks-rtl-gradient-review-2.log`, both `typecheck-*-rtl-gradient-review-2.log` and both `lint-*-rtl-gradient-review-2.log` pass with zero diagnostics. The original 10 ColorArea source/baseline files still match their original snapshot hashes. The separate review snapshot/preservation reports leave the original preservation evidence intact. Review preservation is explicitly **nonzero: 765/769 hashes match** because four concurrent DataGrid files changed (`DataGrid.cy-baseline.tsconfig.json`, `DataGrid.cy.tsconfig.json`, `DataGrid.cy.tsx`, `DataGrid.test.tsx`) and its untracked `DataGrid.cy.md` appeared. HEAD remains `44a49cfb8e0e2ca4771a1a660e87a653664456ee` on master. No writes outside ColorArea, production changes, commits or agents were performed by this review fix; concurrent work was not reverted.
+
+## Isolated mutation audit testability amendment
+
+The brightness-slot mutant legitimately failed the exact four-input Shape
+contract in the final audit hook, which caused Mocha to skip 42 later cases.
+The complete strict audit chain now runs at the end of each previously audited
+test body, so the missing control fails its testcase rather than a hook.
+
+Original hook scope is the 96-case `ONLY132` fixture suite. Its forced-colors
+reset stays in `beforeEach`; body media work and final audit ordering are
+unchanged. The seven canonical baseline cases are a separate sibling suite and
+retain their original checks and unaudited scope. Total inventory remains 103.
+
+Exact Shape four-input/Channels three-input counts, native range values/names,
+finding targets, raw evidence writes, and all known/unknown violation/incomplete
+assertions are retained without optional-control fallbacks or count relaxation.
+Earlier body failures remain failures, and successful fixture cases cannot omit
+their final audit chain. Fresh parent-run baseline, mutant, and restored evidence
+under a separately sealed amendment is required; no Cypress result is claimed here.
+
+The common gradient-capture follow-up reviewed four missing-brightness
+`TypeError`s alongside 86 assertion failures. Both required X/Y range elements
+now have typed nonnull assertions before their values are captured. Original
+channel/value comparisons, gradient/style checks, thumb fraction math, geometry,
+strict audits, 103 titles, and the seven canonical baseline cases are unchanged.
