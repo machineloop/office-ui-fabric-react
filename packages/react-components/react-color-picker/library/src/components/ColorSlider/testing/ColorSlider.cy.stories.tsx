@@ -136,11 +136,18 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
       expect(event.target.type).to.equal('range');
       expect(event.nativeEvent.isTrusted, 'real browser input').to.equal(true);
     });
+  function assertElement(element: HTMLElement | null, message: string): asserts element is HTMLElement {
+    expect(element, message).not.to.equal(null);
+  }
   const geometry = (value: number, channel: ColorChannel, vertical = false, dir: 'ltr' | 'rtl' = 'ltr') =>
     input().should($input => {
-      const root = $input[0].parentElement!;
-      const rail = root.querySelector<HTMLElement>('.fui-ColorSlider__rail')!;
-      const thumb = root.querySelector<HTMLElement>('.fui-ColorSlider__thumb')!;
+      expect($input, 'required slider input for geometry').to.have.length(1);
+      const root = $input[0].parentElement;
+      assertElement(root, 'required slider root for geometry');
+      const rail = root.querySelector<HTMLElement>('.fui-ColorSlider__rail');
+      const thumb = root.querySelector<HTMLElement>('.fui-ColorSlider__thumb');
+      assertElement(rail, 'required slider rail for geometry');
+      assertElement(thumb, 'required slider thumb for geometry');
       const r = rail.getBoundingClientRect();
       const t = thumb.getBoundingClientRect();
       const percent = value / maximum(channel);
@@ -856,7 +863,8 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
     render(<ColorSlider ref={ref} id="slider" aria-label="Hue" />);
     input().then($input => {
       expect(ref.current).to.equal($input[0]);
-      ref.current!.focus();
+      assertElement(ref.current, 'required forwarded slider input');
+      ref.current.focus();
     });
     input().should('have.focus');
   });
@@ -868,6 +876,7 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
     action: 'click' | 'down' | 'move' | 'up' = 'click',
   ) =>
     input().then($input => {
+      expect($input, 'required slider input for pointer geometry').to.have.length(1);
       const rect = $input[0].getBoundingClientRect();
       const position = vertical ? (dir === 'rtl' ? fraction : 1 - fraction) : dir === 'rtl' ? 1 - fraction : fraction;
       const x = vertical ? rect.width / 2 : 8 + (rect.width - 16) * position;
@@ -1070,7 +1079,11 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
       .parent()
       .find('.fui-ColorSlider__rail')
       .should($rail => {
-        const root = $rail[0].parentElement!;
+        expect($rail, 'required slider rail for gradient styles').to.have.length(1);
+        const root = $rail[0].parentElement;
+        assertElement(root, 'required slider root for gradient styles');
+        const thumb = root.querySelector<HTMLElement>('.fui-ColorSlider__thumb');
+        assertElement(thumb, 'required slider thumb for gradient styles');
         const style = getComputedStyle($rail[0]);
         const direction = vertical ? '180deg' : dir === 'ltr' ? '-90deg' : '90deg';
         expect(root.style.getPropertyValue(colorSliderCSSVars.sliderDirectionVar)).to.equal(direction);
@@ -1085,10 +1098,11 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
         );
         expect(style.pointerEvents).to.equal('none');
         expect(style.forcedColorAdjust).to.equal('none');
-        expect(getComputedStyle(root.querySelector('.fui-ColorSlider__thumb')!).pointerEvents).to.equal('none');
+        expect(getComputedStyle(thumb).pointerEvents).to.equal('none');
       })
       .then($rail => {
         if (vertical && channel !== 'hue') {
+          expect($rail, 'required slider rail for gradient evidence').to.have.length(1);
           evidence({
             kind: 'functional-baseline',
             scenario: Cypress.currentTest.title,
@@ -1103,6 +1117,7 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
       .parent()
       .find('.fui-ColorSlider__rail')
       .then($rail => {
+        expect($rail, 'required slider rail for pixel geometry').to.have.length(1);
         const rail = $rail[0];
         const rect = rail.getBoundingClientRect();
         const coordinates = getCypressElementCoordinates($rail, 'topLeft', false);
@@ -1788,8 +1803,11 @@ describe('row134 ColorSlider browser coverage', { retries: 0, viewportWidth: 110
       expect(slotRef.current).to.equal($input[0]);
       expect(forwarded.current).to.equal(null);
       expect(root.current).to.equal($input[0].parentElement);
-      expect(rail.current).to.equal(root.current!.querySelector('.fui-ColorSlider__rail'));
-      expect(thumb.current).to.equal(root.current!.querySelector('.fui-ColorSlider__thumb'));
+      assertElement(root.current, 'required slider root ref');
+      assertElement(rail.current, 'required slider rail ref');
+      assertElement(thumb.current, 'required slider thumb ref');
+      expect(rail.current).to.equal(root.current.querySelector('.fui-ColorSlider__rail'));
+      expect(thumb.current).to.equal(root.current.querySelector('.fui-ColorSlider__thumb'));
     });
   });
   scenario(4, 'R4.14 root CSS overrides progress and direction without overriding native channel value', () => {

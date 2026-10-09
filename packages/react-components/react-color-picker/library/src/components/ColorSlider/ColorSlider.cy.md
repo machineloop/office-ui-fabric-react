@@ -124,6 +124,18 @@ This is honest baseline coverage, not a claim that stable stories are axe-clean:
 
 None of these production/story limitations is repaired or hidden here.
 
+## Mutation helper diagnostics
+
+The rail-render trial executed all 180 cases with zero skips: 30 assertion
+failures and 103 null-rail geometry TypeErrors, all at the common geometry
+helper. Required root, rail, thumb, input collections and refs are now asserted
+before coupled geometry, style, evidence or focus reads. The typed nonnull
+assertion uses callable Cypress `expect`, without static `expect.fail`.
+All original geometry math and tolerances, gradients, channel checks, audit
+classifiers, cleanup hooks and 180 scenario titles remain unchanged. These
+guards diagnose missing required slots as assertion failures; they do not
+provide optional fallbacks or alter production rendering.
+
 ## Commands and receipts
 
 From the repository root, use the existing Node 18 for direct Chrome and units:
