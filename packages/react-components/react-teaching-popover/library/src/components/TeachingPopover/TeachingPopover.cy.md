@@ -109,6 +109,29 @@ with `aria-hidden`, `tabindex=0`, and the specific Modalizer or Mover marker.
 Unknown rules/checks, duplicates, changed targets or impacts are rejected by
 integrated negative guards. All 79 final audits are clean.
 
+Final modal ownership, exposed-control readiness and the complete strict audit
+verdict now run at each campaign body's tail rather than in `afterEach`. The
+original effective order remains setup/media reset, scenario interactions and
+restoration, then final readiness, full-scope acquisition, raw persistence and
+strict verdict. There was no campaign listener-restoration or media-cleanup
+`afterEach` to move. The twelve original baseline cases remain outside this
+79-case audit scope.
+
+An already-failed campaign case whose final scan never started may receive one
+genuine raw final diagnostic in operational `afterEach`, marked
+`failedCaseDiagnostic: true`. It is unvalidated, not an accessibility pass, and
+does not assert that the failed fixture reached its planned closed/modal state.
+Started final scans and unfinished acquisition/write operations are never
+retried. Checkpoints are never fabricated or backfilled. The original live-modal
+predicate, closed-control checks, exact sentinel profiles, iframe engine choice,
+classifier probes and raw writes remain strict on successful cases; no hidden,
+inert or root attributes are cleared to make a regression pass.
+
+The callback mutation then executed all 91 cases without skips, producing 80
+assertion failures and one null-spy payload TypeError in the plain native Enter
+case. That case now requires exactly one callback before reading its original
+trusted native event payload; duplicate or missing calls remain assertion failures.
+
 Other asserted source behaviors are deliberately not repaired:
 
 - Teaching defaults are applied after `usePopover`; implicit `trapFocus` does not

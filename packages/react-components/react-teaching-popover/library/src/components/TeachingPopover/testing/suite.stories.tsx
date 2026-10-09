@@ -43,13 +43,18 @@ const autoFocusOptOut = {
   unstable_disableAutoFocus: true,
 };
 let ordinal = 0;
+let finalAuditStarted = false;
+let auditAcquisitionUnfinished = false;
 let events: RecordEvent[] = [];
 let originals: OpenEvent[] = [];
 let nativeCommands: Array<{ command: string; args: unknown }> = [];
 function scenario(level: number, title: string, body: () => void) {
   if (level <= round) {
     titles.push(title);
-    it(title, body);
+    it(title, () => {
+      body();
+      audit();
+    });
   }
 }
 function stage(children: React.ReactNode, dark = false, rtl = false) {
@@ -167,137 +172,152 @@ function unnamedDialogShape() {
     },
   ];
 }
-function audit(phase = 'final', modal: boolean | 'stable-basic' | 'stable-carousel' | 'stable-carousel-text' = false) {
-  return cy
-    .get('#row137-stage')
-    .should('be.visible')
-    .and('not.be.empty')
-    .should($stage =>
-      expect(Boolean($stage[0].closest('[aria-hidden="true"]')), 'only live modal hides fixture').to.equal(
-        Boolean(modal),
-      ),
-    )
-    .should($stage => {
-      if (!modal) {
-        expect(
-          Array.from($stage[0].querySelectorAll('button, a, input, select, textarea')).filter(node =>
-            node.closest('[aria-hidden="true"]'),
-          ),
-          'Tabster has restored all closed fixture controls',
-        ).to.have.length(0);
-      }
-      if (modal === 'stable-carousel') {
-        const document = $stage[0].ownerDocument;
-        expect(
-          document.querySelectorAll('.fui-TeachingPopoverCarouselNav > [data-tabster-dummy]'),
-          'actual three-tab mover readiness',
-        ).to.have.length(2);
-        expect(document.querySelectorAll('.fui-TeachingPopoverCarouselNav > [role="tab"]')).to.have.length(3);
-      }
-    })
-    .then($stage => {
-      const document = $stage[0].ownerDocument;
-      const roots = [
-        $stage[0],
-        ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
-          node => !$stage[0].contains(node),
+function audit(
+  phase = 'final',
+  modal: boolean | 'stable-basic' | 'stable-carousel' | 'stable-carousel-text' = false,
+  failedCaseDiagnostic = false,
+) {
+  const subject = cy.get('#row137-stage');
+  if (!failedCaseDiagnostic) {
+    subject
+      .should('be.visible')
+      .and('not.be.empty')
+      .should($stage =>
+        expect(Boolean($stage[0].closest('[aria-hidden="true"]')), 'only live modal hides fixture').to.equal(
+          Boolean(modal),
         ),
-      ];
-      let auditor = axe;
-      if (document.querySelector('iframe')) {
-        const targetWindow = document.defaultView as AuditWindow;
-        if (!targetWindow.axe) {
-          throw new Error('Full iframe audit requires the raw browser axe engine');
+      )
+      .should($stage => {
+        if (!modal) {
+          expect(
+            Array.from($stage[0].querySelectorAll('button, a, input, select, textarea')).filter(node =>
+              node.closest('[aria-hidden="true"]'),
+            ),
+            'Tabster has restored all closed fixture controls',
+          ).to.have.length(0);
         }
-        auditor = targetWindow.axe;
+        if (modal === 'stable-carousel') {
+          const document = $stage[0].ownerDocument;
+          expect(
+            document.querySelectorAll('.fui-TeachingPopoverCarouselNav > [data-tabster-dummy]'),
+            'actual three-tab mover readiness',
+          ).to.have.length(2);
+          expect(document.querySelectorAll('.fui-TeachingPopoverCarouselNav > [role="tab"]')).to.have.length(3);
+        }
+      });
+  }
+  return subject.then($stage => {
+    const document = $stage[0].ownerDocument;
+    const roots = [
+      $stage[0],
+      ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
+        node => !$stage[0].contains(node),
+      ),
+    ];
+    let auditor = axe;
+    if (document.querySelector('iframe')) {
+      const targetWindow = document.defaultView as AuditWindow;
+      if (!targetWindow.axe) {
+        throw new Error('Full iframe audit requires the raw browser axe engine');
       }
-      return auditor.run(roots).then(fullResults => {
-        cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
-          scenario: Cypress.currentTest.title,
-          modal,
-          phase,
-          round,
-          retries: Cypress.currentRetry,
-          fullResults,
-          events,
-          nativeCommands,
-          auditedRoots: roots.map(node => ({ tag: node.tagName, id: node.id, role: node.getAttribute('role') })),
-        }).then(() => {
-          expect(fullResults.passes.length, 'full default axe rules executed').to.be.greaterThan(0);
-          const stable = modal === 'stable-basic' || modal === 'stable-carousel' || modal === 'stable-carousel-text';
-          expect(findingShape(fullResults.violations), 'unknown violations rejected').to.deep.equal(
-            stable ? unnamedDialogShape() : [],
-          );
-          if (modal) {
-            if (stable) {
-              expect(Cypress.currentTest.title).to.match(
-                modal === 'stable-basic'
-                  ? /^stable (Default|AppearanceBrand) mounts unchanged /
-                  : /^stable (Carousel|CarouselAppearanceBrand|CarouselText) visits exactly three unchanged pages /,
-              );
-              expect(phase).to.equal('stable-open');
-              expect(computeAccessibleName(document.querySelector('.fui-TeachingPopoverSurface')!)).to.equal('');
-            } else {
-              expect(Cypress.currentTest.title).to.equal(
-                'trusted pointer opens once and Escape restores the observed trigger',
-              );
-              expect(phase).to.equal('open-modal');
-            }
-            const shape = findingShape(fullResults.incomplete);
-            expect(shape).to.deep.equal(modalShape(modal));
-            for (const node of fullResults.incomplete[0].nodes) {
-              const sentinel = document.querySelector<HTMLElement>(String(node.target[0]));
-              expect(sentinel?.tagName).to.equal('I');
-              expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
-              expect(sentinel?.getAttribute('tabindex')).to.equal('0');
-              expect(sentinel?.getAttribute('role')).to.equal('none');
-              expect(sentinel?.childElementCount).to.equal(0);
-              expect(sentinel?.textContent).to.equal('');
-              expect(sentinel?.outerHTML).to.equal(node.html);
-              expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
-                String(node.target[0]).startsWith('.fui-TeachingPopoverCarouselNav')
-                  ? /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/
-                  : /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
-              );
-              expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
-              expect(node.all[0].relatedNodes).to.have.length(1);
-              expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
-              expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
-            }
-            const unknown = [...shape, { ...shape[0], id: 'unknown-rule' }];
-            expect(() => expect(unknown).to.deep.equal(modalShape(modal))).to.throw();
-            expect(() => expect([...shape, shape[0]]).to.deep.equal(modalShape(modal))).to.throw();
-            expect(() =>
-              expect([{ ...shape[0], nodes: [...shape[0].nodes, shape[0].nodes[0]] }]).to.deep.equal(modalShape(modal)),
-            ).to.throw();
-            const changedCheck = Cypress._.cloneDeep(shape);
-            changedCheck[0].nodes[0].all[0].id = 'unknown-check';
-            expect(() => expect(changedCheck).to.deep.equal(modalShape(modal))).to.throw();
-            const changedTarget = Cypress._.cloneDeep(shape);
-            changedTarget[0].nodes[0].target = ['#unknown-target'];
-            expect(() => expect(changedTarget).to.deep.equal(modalShape(modal))).to.throw();
-            const changedImpact = Cypress._.cloneDeep(shape);
-            changedImpact[0].impact = 'critical';
-            expect(() => expect(changedImpact).to.deep.equal(modalShape(modal))).to.throw();
-            cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
-              scenario: Cypress.currentTest.title,
-              rejected: [
-                'unknown-rule',
-                'duplicate-rule',
-                'duplicate-node',
-                'unknown-check',
-                'wrong-target',
-                'wrong-impact',
-              ],
-              expected: modalShape(modal),
-            });
+      auditor = targetWindow.axe;
+    }
+    auditAcquisitionUnfinished = true;
+    if (phase === 'final') {
+      finalAuditStarted = true;
+    }
+    return auditor.run(roots).then(fullResults => {
+      cy.writeFile(`${evidence}/audit-${++ordinal}.json`, {
+        scenario: Cypress.currentTest.title,
+        modal,
+        phase,
+        round,
+        retries: Cypress.currentRetry,
+        fullResults,
+        failedCaseDiagnostic,
+        events,
+        nativeCommands,
+        auditedRoots: roots.map(node => ({ tag: node.tagName, id: node.id, role: node.getAttribute('role') })),
+      }).then(() => {
+        auditAcquisitionUnfinished = false;
+        if (failedCaseDiagnostic) {
+          return;
+        }
+        expect(fullResults.passes.length, 'full default axe rules executed').to.be.greaterThan(0);
+        const stable = modal === 'stable-basic' || modal === 'stable-carousel' || modal === 'stable-carousel-text';
+        expect(findingShape(fullResults.violations), 'unknown violations rejected').to.deep.equal(
+          stable ? unnamedDialogShape() : [],
+        );
+        if (modal) {
+          if (stable) {
+            expect(Cypress.currentTest.title).to.match(
+              modal === 'stable-basic'
+                ? /^stable (Default|AppearanceBrand) mounts unchanged /
+                : /^stable (Carousel|CarouselAppearanceBrand|CarouselText) visits exactly three unchanged pages /,
+            );
+            expect(phase).to.equal('stable-open');
+            expect(computeAccessibleName(document.querySelector('.fui-TeachingPopoverSurface')!)).to.equal('');
           } else {
-            expect(fullResults.incomplete, 'unknown incompletes rejected').to.deep.equal([]);
+            expect(Cypress.currentTest.title).to.equal(
+              'trusted pointer opens once and Escape restores the observed trigger',
+            );
+            expect(phase).to.equal('open-modal');
           }
-          expect(Cypress.currentRetry).to.equal(0);
-        });
+          const shape = findingShape(fullResults.incomplete);
+          expect(shape).to.deep.equal(modalShape(modal));
+          for (const node of fullResults.incomplete[0].nodes) {
+            const sentinel = document.querySelector<HTMLElement>(String(node.target[0]));
+            expect(sentinel?.tagName).to.equal('I');
+            expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
+            expect(sentinel?.getAttribute('tabindex')).to.equal('0');
+            expect(sentinel?.getAttribute('role')).to.equal('none');
+            expect(sentinel?.childElementCount).to.equal(0);
+            expect(sentinel?.textContent).to.equal('');
+            expect(sentinel?.outerHTML).to.equal(node.html);
+            expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
+              String(node.target[0]).startsWith('.fui-TeachingPopoverCarouselNav')
+                ? /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/
+                : /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
+            );
+            expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
+            expect(node.all[0].relatedNodes).to.have.length(1);
+            expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
+            expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
+          }
+          const unknown = [...shape, { ...shape[0], id: 'unknown-rule' }];
+          expect(() => expect(unknown).to.deep.equal(modalShape(modal))).to.throw();
+          expect(() => expect([...shape, shape[0]]).to.deep.equal(modalShape(modal))).to.throw();
+          expect(() =>
+            expect([{ ...shape[0], nodes: [...shape[0].nodes, shape[0].nodes[0]] }]).to.deep.equal(modalShape(modal)),
+          ).to.throw();
+          const changedCheck = Cypress._.cloneDeep(shape);
+          changedCheck[0].nodes[0].all[0].id = 'unknown-check';
+          expect(() => expect(changedCheck).to.deep.equal(modalShape(modal))).to.throw();
+          const changedTarget = Cypress._.cloneDeep(shape);
+          changedTarget[0].nodes[0].target = ['#unknown-target'];
+          expect(() => expect(changedTarget).to.deep.equal(modalShape(modal))).to.throw();
+          const changedImpact = Cypress._.cloneDeep(shape);
+          changedImpact[0].impact = 'critical';
+          expect(() => expect(changedImpact).to.deep.equal(modalShape(modal))).to.throw();
+          cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
+            scenario: Cypress.currentTest.title,
+            rejected: [
+              'unknown-rule',
+              'duplicate-rule',
+              'duplicate-node',
+              'unknown-check',
+              'wrong-target',
+              'wrong-impact',
+            ],
+            expected: modalShape(modal),
+          });
+        } else {
+          expect(fullResults.incomplete, 'unknown incompletes rejected').to.deep.equal([]);
+        }
+        expect(Cypress.currentRetry).to.equal(0);
       });
     });
+  });
 }
 
 describe('row137 TeachingPopover', { retries: 0 }, () => {
@@ -308,6 +328,8 @@ describe('row137 TeachingPopover', { retries: 0 }, () => {
     cy.writeFile(`${evidence}/manifest.json`, { round, titles, expectedCount: [17, 54, 79][round - 1], retries: 0 });
   });
   beforeEach(() => {
+    finalAuditStarted = false;
+    auditAcquisitionUnfinished = false;
     cy.viewport(1100, 800);
     cy.then(() =>
       Cypress.automation('remote:debugger:protocol', {
@@ -332,8 +354,13 @@ describe('row137 TeachingPopover', { retries: 0 }, () => {
       }
     });
   });
-  afterEach(() => {
-    audit();
+  afterEach(function () {
+    const test = this.currentTest;
+    cy.then(() => {
+      if (test?.state === 'failed' && !finalAuditStarted && !auditAcquisitionUnfinished) {
+        return audit('final', false, true);
+      }
+    });
   });
 
   scenario(1, 'closed defaults are a native trigger and a non-DOM owner without fabricated callbacks', () => {
@@ -1217,6 +1244,7 @@ describe('row137 TeachingPopover', { retries: 0 }, () => {
     observedFocus();
     cy.realPress('Enter');
     settled();
+    cy.wrap(changed).should('have.been.calledOnce');
     cy.then(() => expect((changed.firstCall.args[0] as React.MouseEvent).nativeEvent.isTrusted).to.equal(true));
     close();
   });
