@@ -53,6 +53,8 @@ const evidence = `src/components/TeachingPopoverSurface/.evidence/audits-${Date.
 const titles: string[] = [];
 let registering = true;
 let ordinal = 0;
+let finalAuditStarted = false;
+let auditAcquisitionUnfinished = false;
 let records: EventRecord[] = [];
 let originals: OpenEvent[] = [];
 let nativeCommands: Array<{ command: string; args: unknown }> = [];
@@ -65,7 +67,10 @@ function scenario(level: number, title: string, body: () => void) {
   }
   if (level <= round) {
     titles.push(title);
-    it(title, body);
+    it(title, () => {
+      body();
+      audit();
+    });
   }
 }
 function stage(children: React.ReactNode, dark = false, rtl = false) {
@@ -238,6 +243,131 @@ function expected(profile: Profile) {
   };
 }
 const modalTargets = ['#surface > i:nth-child(1)', '#surface > i:nth-child(4)'];
+function modalPlacementReady() {
+  return surface().then($surface => {
+    expect($surface, 'one active native modal Surface').to.have.length(1);
+    const surfaceRoot = $surface[0];
+    expect(surfaceRoot.id, 'active modal retains the original caller Surface ID').to.equal('surface');
+    const ownerDocument = surfaceRoot.ownerDocument;
+    function requiredSentinel(value: HTMLElement | null): asserts value is HTMLElement {
+      expect(value, 'required native Modalizer sentinel').not.to.equal(null);
+    }
+    const placements = modalTargets.map((staticSelector, index) => {
+      const nativeSelector = `#${surfaceRoot.id} > i:nth-child(${index === 0 ? 1 : 4})`;
+      const nativeNodes = ownerDocument.querySelectorAll<HTMLElement>(nativeSelector);
+      const staticNodes = ownerDocument.querySelectorAll<HTMLElement>(staticSelector);
+      expect(nativeNodes, 'native modal selector is globally unique').to.have.length(1);
+      expect(staticNodes, 'static modal selector is globally unique').to.have.length(1);
+      const sentinel = nativeNodes.item(0);
+      requiredSentinel(sentinel);
+      expect(sentinel, 'native and static selectors capture the same sentinel').to.equal(staticNodes.item(0));
+      return { sentinel, nativeSelector, staticSelector, index };
+    });
+    function retainedPair() {
+      const currentRoots = ownerDocument.querySelectorAll('#surface');
+      expect(currentRoots, 'captured modal Surface remains unique').to.have.length(1);
+      expect(currentRoots.item(0), 'the original modal Surface remains active').to.equal(surfaceRoot);
+      expect(surfaceRoot.isConnected, 'captured modal Surface remains connected').to.equal(true);
+      for (const { sentinel, nativeSelector, staticSelector, index } of placements) {
+        const nativeNodes = ownerDocument.querySelectorAll(nativeSelector);
+        const staticNodes = ownerDocument.querySelectorAll(staticSelector);
+        expect(nativeNodes, 'retained native modal selector remains unique').to.have.length(1);
+        expect(staticNodes, 'retained static modal selector remains unique').to.have.length(1);
+        expect(nativeNodes.item(0), 'native selector retains the original sentinel').to.equal(sentinel);
+        expect(staticNodes.item(0), 'static selector retains the original sentinel').to.equal(sentinel);
+        expect(sentinel.isConnected, 'captured native sentinel remains connected').to.equal(true);
+        expect(sentinel.ownerDocument).to.equal(ownerDocument);
+        expect(sentinel.parentElement).to.equal(surfaceRoot);
+        expect(sentinel.tagName).to.equal('I');
+        expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+          `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
+        );
+        expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+        expect(sentinel.getAttribute('tabindex')).to.equal('0');
+        expect(sentinel.getAttribute('role')).to.equal('none');
+        expect(sentinel.childNodes).to.have.length(0);
+        expect(sentinel.style.position).to.equal('fixed');
+      }
+    }
+    retainedPair();
+    return cy.wrap(placements).should(() => {
+      retainedPair();
+      for (const { sentinel } of placements) {
+        expect(sentinel.style.top, 'no-scroll modal dummy vertical placement is initialized').to.equal('0px');
+        expect(sentinel.style.left, 'no-scroll modal dummy horizontal placement is initialized').to.equal('0px');
+      }
+    });
+  });
+}
+function iframeRootPlacementReady() {
+  return cy.get<HTMLIFrameElement>('#inside-frame').then($frame => {
+    expect($frame, 'one original native iframe').to.have.length(1);
+    const frame = $frame[0];
+    function requiredValue<T>(value: T | null, message: string): asserts value is T {
+      expect(value, message).not.to.equal(null);
+    }
+    const currentDocument = frame.contentDocument;
+    const currentWindow = frame.contentWindow;
+    requiredValue(currentDocument, 'original iframe child document exists');
+    requiredValue(currentWindow, 'original iframe child window exists');
+    const childDocument = currentDocument;
+    const childWindow = currentWindow;
+    const bodyRoot = childDocument.body;
+    requiredValue(bodyRoot, 'original child body Root exists');
+    const placements = expected('frame').violations[0].nodes.map((node, index) => {
+      const nativeSelector = String(node.target[1]);
+      const staticSelector = index === 0 ? 'body > i:first-child' : 'body > i:last-child';
+      const nativeNodes = childDocument.querySelectorAll<HTMLElement>(nativeSelector);
+      const staticNodes = childDocument.querySelectorAll<HTMLElement>(staticSelector);
+      expect(nativeNodes, 'child native Root selector is unique').to.have.length(1);
+      expect(staticNodes, 'direct-body static Root selector is unique').to.have.length(1);
+      const sentinel = nativeNodes.item(0);
+      requiredValue(sentinel, 'required native child Root sentinel');
+      expect(sentinel, 'native and static child selectors identify the same sentinel').to.equal(staticNodes.item(0));
+      return { sentinel, nativeSelector, staticSelector, index };
+    });
+    function retainedPair() {
+      expect(frame.isConnected, 'original iframe remains connected').to.equal(true);
+      expect(frame.contentDocument, 'original child document is retained').to.equal(childDocument);
+      expect(frame.contentWindow, 'original child window is retained').to.equal(childWindow);
+      expect(childDocument.defaultView).to.equal(childWindow);
+      expect(childDocument.body, 'original body Root is retained').to.equal(bodyRoot);
+      expect(bodyRoot.isConnected, 'original child Root remains connected').to.equal(true);
+      expect(bodyRoot.ownerDocument).to.equal(childDocument);
+      expect(bodyRoot.parentElement).to.equal(childDocument.documentElement);
+      expect(bodyRoot.tagName).to.equal('BODY');
+      expect(bodyRoot.getAttribute('data-tabster'), 'plain child autoRoot registration').to.equal('{"root":{}}');
+      for (const { sentinel, nativeSelector, staticSelector, index } of placements) {
+        const nativeNodes = childDocument.querySelectorAll(nativeSelector);
+        const staticNodes = childDocument.querySelectorAll(staticSelector);
+        expect(nativeNodes, 'retained child native Root selector remains unique').to.have.length(1);
+        expect(staticNodes, 'retained direct-body Root selector remains unique').to.have.length(1);
+        expect(nativeNodes.item(0), 'child native selector retains the original sentinel').to.equal(sentinel);
+        expect(staticNodes.item(0), 'child static selector retains the original sentinel').to.equal(sentinel);
+        expect(sentinel.isConnected, 'original child sentinel remains connected').to.equal(true);
+        expect(sentinel.ownerDocument).to.equal(childDocument);
+        expect(sentinel.parentElement).to.equal(bodyRoot);
+        expect(sentinel.tagName).to.equal('I');
+        expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+          `isFirst=${index === 0}, isOutside=false, (Root, tabbable=true)`,
+        );
+        expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+        expect(sentinel.getAttribute('tabindex')).to.equal('0');
+        expect(sentinel.getAttribute('role')).to.equal('none');
+        expect(sentinel.childNodes).to.have.length(0);
+        expect(sentinel.style.position).to.equal('fixed');
+      }
+    }
+    retainedPair();
+    return cy.wrap(placements).should(() => {
+      retainedPair();
+      for (const { sentinel } of placements) {
+        expect(sentinel.style.top, 'plain child body Root vertical placement is initialized').to.equal('0px');
+        expect(sentinel.style.left, 'plain child body Root horizontal placement is initialized').to.equal('0px');
+      }
+    });
+  });
+}
 function semanticModalShape(
   document: Document,
   actualShape: { violations: ReturnType<typeof shape>; incomplete: ReturnType<typeof shape> },
@@ -313,250 +443,262 @@ function semanticModalShape(
   expect(semanticShape).to.deep.equal(expected(profile));
   return { semanticShape, selectorProofs };
 }
-function audit(phase = 'final', profile: Profile = finalProfile) {
-  return cy
-    .get('#row140-stage')
-    .should('be.visible')
-    .and('not.be.empty')
-    .should($stage => {
-      if (profile !== 'modal' && !profile.startsWith('stable-')) {
-        expect($stage[0].closest('[aria-hidden="true"]'), 'actual closed-stage restoration').to.equal(null);
-        expect(
-          Array.from($stage[0].querySelectorAll('button, a, input, select, textarea')).filter(node =>
-            node.closest('[aria-hidden="true"]'),
-          ),
-          'all closed-stage controls are independently exposed',
-        ).to.have.length(0);
-      }
-    })
-    .then($stage => {
-      const document = $stage[0].ownerDocument;
-      const roots = [
-        $stage[0],
-        ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
-          node => !$stage[0].contains(node),
-        ),
-      ];
+function audit(phase = 'final', profile: Profile = finalProfile, failedCaseDiagnostic = false) {
+  const subject = cy.get('#row140-stage');
+  if (!failedCaseDiagnostic) {
+    subject
+      .should('be.visible')
+      .and('not.be.empty')
+      .should($stage => {
+        if (profile !== 'modal' && !profile.startsWith('stable-')) {
+          expect($stage[0].closest('[aria-hidden="true"]'), 'actual closed-stage restoration').to.equal(null);
+          expect(
+            Array.from($stage[0].querySelectorAll('button, a, input, select, textarea')).filter(node =>
+              node.closest('[aria-hidden="true"]'),
+            ),
+            'all closed-stage controls are independently exposed',
+          ).to.have.length(0);
+        }
+      });
+  }
+  return subject.then($stage => {
+    const document = $stage[0].ownerDocument;
+    const roots = [
+      $stage[0],
+      ...Array.from(document.querySelectorAll<HTMLElement>('.fui-TeachingPopoverSurface')).filter(
+        node => !$stage[0].contains(node),
+      ),
+    ];
+    if (!failedCaseDiagnostic) {
       expect(
         roots.some(node => !node.closest('[aria-hidden="true"]')),
         'a real exposed audit root',
       ).to.equal(true);
-      const auditor = document.querySelector('iframe') ? (document.defaultView as AuditWindow).axe : axe;
-      if (!auditor) {
-        throw new Error('Actual iframe audits require the raw independent browser axe engine');
-      }
-      return auditor.run(roots).then(fullResults => {
-        const actualShape = { violations: shape(fullResults.violations), incomplete: shape(fullResults.incomplete) };
-        const expectedShape = expected(profile);
-        const auditFile = `${evidence}/audit-${++ordinal}.json`;
-        const rawRecord = {
-          scenario: Cypress.currentTest.title,
-          phase,
-          profile,
-          round,
-          retries: Cypress.currentRetry,
-          fullResults,
+    }
+    const auditor = document.querySelector('iframe') ? (document.defaultView as AuditWindow).axe : axe;
+    if (!auditor) {
+      throw new Error('Actual iframe audits require the raw independent browser axe engine');
+    }
+    auditAcquisitionUnfinished = true;
+    if (phase === 'final') {
+      finalAuditStarted = true;
+    }
+    return auditor.run(roots).then(fullResults => {
+      const actualShape = { violations: shape(fullResults.violations), incomplete: shape(fullResults.incomplete) };
+      const expectedShape = expected(profile);
+      const auditFile = `${evidence}/audit-${++ordinal}.json`;
+      const rawRecord = {
+        scenario: Cypress.currentTest.title,
+        phase,
+        profile,
+        round,
+        retries: Cypress.currentRetry,
+        fullResults,
+        actualShape,
+        expectedShape,
+        classified: false,
+        failedCaseDiagnostic,
+        events: records,
+        nativeCommands,
+        auditedRoots: roots.map(node => ({
+          tag: node.tagName,
+          id: node.id,
+          role: node.getAttribute('role'),
+          exposed: !node.closest('[aria-hidden="true"]'),
+        })),
+      };
+      cy.writeFile(auditFile, rawRecord).then(() => {
+        auditAcquisitionUnfinished = false;
+        if (failedCaseDiagnostic) {
+          return;
+        }
+        const { semanticShape, selectorProofs } = semanticModalShape(
+          document,
           actualShape,
-          expectedShape,
-          classified: false,
-          events: records,
-          nativeCommands,
-          auditedRoots: roots.map(node => ({
-            tag: node.tagName,
-            id: node.id,
-            role: node.getAttribute('role'),
-            exposed: !node.closest('[aria-hidden="true"]'),
-          })),
-        };
-        cy.writeFile(auditFile, rawRecord).then(() => {
-          const { semanticShape, selectorProofs } = semanticModalShape(
-            document,
-            actualShape,
-            profile,
-            Cypress.currentTest.title,
-            phase,
-          );
-          cy.writeFile(auditFile, {
-            ...rawRecord,
-            semanticShape,
-            selectorProofs,
-            modalSelectorDocument: profile === 'modal' ? document.documentElement.outerHTML : null,
-            classified: Cypress._.isEqual(semanticShape, expectedShape),
-          });
-          expect(fullResults.passes.length).to.be.greaterThan(0);
-          if (document.querySelector('iframe')) {
-            expect(
-              fullResults.passes.some(rule => rule.nodes.some(node => node.target.length > 1)),
-              'raw engine traversed actual frame descendants, not just the iframe element',
-            ).to.equal(true);
-          }
-          if (document.querySelector('#shadow-host')?.shadowRoot?.querySelector('.fui-TeachingPopoverSurface')) {
-            expect(
-              fullResults.passes.some(rule =>
-                rule.nodes.some(node => JSON.stringify(node.target).includes('shadow-host')),
-              ),
-              'full rules traversed actual shadow descendants',
-            ).to.equal(true);
-          }
-          expect(semanticShape).to.deep.equal(expectedShape);
-          expect(Cypress.currentRetry).to.equal(0);
-          if (profile !== 'clean') {
-            if (profile === 'image') {
-              expect(Cypress.currentTest.title).to.equal(
-                'unnamed native image retains its exact critical alternative-text finding and classifier guards',
-              );
-              expect(document.querySelector('#unnamed-image')?.hasAttribute('alt')).to.equal(false);
-            } else if (profile === 'frame') {
-              expect(Cypress.currentTest.title).to.equal(
-                'supported iframe document portal uses native root refs real CDP child input and raw full frame audits',
-              );
-              expect(phase).to.be.oneOf(['iframe-surface-open', 'final']);
-              const frame = document.querySelector<HTMLIFrameElement>('#inside-frame');
-              if (!frame?.contentDocument) {
-                throw new Error('Expected actual frame document');
-              }
-              for (const node of fullResults.violations[0].nodes) {
-                const sentinel = frame.contentDocument.querySelector<HTMLElement>(String(node.target[1]));
-                expect(sentinel?.tagName).to.equal('I');
-                expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinel?.getAttribute('tabindex')).to.equal('0');
-                expect(sentinel?.getAttribute('role')).to.equal('none');
-                expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
-                  /^isFirst=(true|false), isOutside=false, \(Root, tabbable=true\)$/,
-                );
-                expect(sentinel?.childElementCount).to.equal(0);
-                expect(sentinel?.textContent).to.equal('');
-                expect(sentinel?.outerHTML).to.equal(node.html);
-                expect(node.all[0].relatedNodes).to.have.length(1);
-                expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
-                expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
-              }
-            } else if (profile === 'unnamed') {
-              expect(Cypress.currentTest.title).to.equal(
-                'explicit unnamed standalone dialog retains the exact known serious naming violation',
-              );
-              expect(computeAccessibleName(document.querySelector('#surface')!)).to.equal('');
-            } else {
-              if (profile === 'modal') {
-                expect(Cypress.currentTest.title).to.be.oneOf([
-                  'default modal exposes the actual open sentinel checkpoint and restores observed focus after close',
-                  'controlled modal refusal retains actual open dialog checkpoint before external closure',
-                ]);
-                expect(phase).to.be.oneOf(['open-modal', 'controlled-refused-modal']);
-              } else {
-                expect(Cypress.currentTest.title).to.match(
-                  /^stable (Default|AppearanceBrand|Carousel|CarouselBrand|CarouselText) /,
-                );
-                expect(phase).to.equal('stable-open');
-                expect(computeAccessibleName(document.querySelector('.fui-TeachingPopoverSurface')!)).to.equal('');
-              }
-              for (const node of fullResults.incomplete[0].nodes) {
-                const sentinel = document.querySelector<HTMLElement>(String(node.target[0]));
-                expect(sentinel?.tagName).to.equal('I');
-                expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinel?.getAttribute('tabindex')).to.equal('0');
-                expect(sentinel?.getAttribute('role')).to.equal('none');
-                expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
-                  String(node.target[0]).startsWith('.fui-TeachingPopoverCarouselNav')
-                    ? /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/
-                    : /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
-                );
-                expect(sentinel?.childElementCount).to.equal(0);
-                expect(sentinel?.textContent).to.equal('');
-                expect(sentinel?.outerHTML).to.equal(node.html);
-                expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
-                expect(node.all[0].relatedNodes).to.have.length(1);
-                expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
-                expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
-              }
-            }
-            const guards = [
-              'unknown-rule',
-              'duplicate-rule',
-              'duplicate-node',
-              'unknown-check',
-              'wrong-target',
-              'wrong-impact',
-            ];
-            for (const guard of guards) {
-              const bad = Cypress._.cloneDeep(actualShape);
-              const negative = profile === 'unnamed' || profile === 'image' || profile === 'frame';
-              const rules = negative ? bad.violations : bad.incomplete;
-              if (guard === 'unknown-rule') {
-                rules[0].id = 'unknown';
-              }
-              if (guard === 'duplicate-rule') {
-                rules.push(rules[0]);
-              }
-              if (guard === 'duplicate-node') {
-                rules[0].nodes.push(rules[0].nodes[0]);
-              }
-              if (guard === 'unknown-check') {
-                (negative && profile !== 'frame' ? rules[0].nodes[0].anyChecks : rules[0].nodes[0].all)[0].id =
-                  'unknown';
-              }
-              if (guard === 'wrong-target') {
-                rules[0].nodes[0].target = ['#wrong'];
-              }
-              if (guard === 'wrong-impact') {
-                rules[0].impact = negative && profile === 'image' ? 'serious' : 'critical';
-              }
-              expect(() => semanticModalShape(document, bad, profile, Cypress.currentTest.title, phase)).to.throw();
-            }
-            const selectorGuards: string[] = [];
-            if (profile === 'modal') {
-              const fixture = document.implementation.createHTMLDocument('Modal selector guards');
-              fixture.body.append(document.querySelector('#surface')!.cloneNode(true));
-              const aliasShape = Cypress._.cloneDeep(actualShape);
-              aliasShape.incomplete[0].nodes.forEach((node, index) => {
-                node.target = [`i:nth-child(${index === 0 ? 1 : 4})`];
-              });
-              semanticModalShape(fixture, aliasShape, profile, Cypress.currentTest.title, phase);
-              for (const guard of [
-                'unknown-selector',
-                'wrong-element',
-                'duplicate-selector',
-                'absent-selector',
-                'wrong-context',
-                'wrong-marker',
-              ]) {
-                const badDocument = document.implementation.createHTMLDocument('Negative modal selector guard');
-                badDocument.body.append(fixture.querySelector('#surface')!.cloneNode(true));
-                const bad = Cypress._.cloneDeep(aliasShape);
-                if (guard === 'unknown-selector') {
-                  bad.incomplete[0].nodes[1].target = ['#surface i:last-child'];
-                } else if (guard === 'wrong-element') {
-                  bad.incomplete[0].nodes[1].target = ['i:nth-child(1)'];
-                } else if (guard === 'duplicate-selector') {
-                  const duplicate = badDocument.createElement('div');
-                  duplicate.append(badDocument.querySelector(modalTargets[0])!.cloneNode(true));
-                  badDocument.body.append(duplicate);
-                } else if (guard === 'absent-selector') {
-                  badDocument.querySelector(modalTargets[1])!.remove();
-                } else if (guard === 'wrong-marker') {
-                  badDocument.querySelector(modalTargets[1])!.setAttribute('data-tabster-dummy', 'unknown');
-                }
-                expect(() =>
-                  semanticModalShape(
-                    badDocument,
-                    bad,
-                    profile,
-                    Cypress.currentTest.title,
-                    guard === 'wrong-context' ? 'final' : phase,
-                  ),
-                ).to.throw();
-                selectorGuards.push(guard);
-              }
-            }
-            cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
-              scenario: Cypress.currentTest.title,
-              rejected: guards,
-              selectorRejected: selectorGuards,
-            });
-          }
+          profile,
+          Cypress.currentTest.title,
+          phase,
+        );
+        cy.writeFile(auditFile, {
+          ...rawRecord,
+          semanticShape,
+          selectorProofs,
+          modalSelectorDocument: profile === 'modal' ? document.documentElement.outerHTML : null,
+          classified: Cypress._.isEqual(semanticShape, expectedShape),
         });
+        expect(fullResults.passes.length).to.be.greaterThan(0);
+        if (document.querySelector('iframe')) {
+          expect(
+            fullResults.passes.some(rule => rule.nodes.some(node => node.target.length > 1)),
+            'raw engine traversed actual frame descendants, not just the iframe element',
+          ).to.equal(true);
+        }
+        if (document.querySelector('#shadow-host')?.shadowRoot?.querySelector('.fui-TeachingPopoverSurface')) {
+          expect(
+            fullResults.passes.some(rule =>
+              rule.nodes.some(node => JSON.stringify(node.target).includes('shadow-host')),
+            ),
+            'full rules traversed actual shadow descendants',
+          ).to.equal(true);
+        }
+        expect(semanticShape).to.deep.equal(expectedShape);
+        expect(Cypress.currentRetry).to.equal(0);
+        if (profile !== 'clean') {
+          if (profile === 'image') {
+            expect(Cypress.currentTest.title).to.equal(
+              'unnamed native image retains its exact critical alternative-text finding and classifier guards',
+            );
+            expect(document.querySelector('#unnamed-image')?.hasAttribute('alt')).to.equal(false);
+          } else if (profile === 'frame') {
+            expect(Cypress.currentTest.title).to.equal(
+              'supported iframe document portal uses native root refs real CDP child input and raw full frame audits',
+            );
+            expect(phase).to.be.oneOf(['iframe-surface-open', 'final']);
+            const frame = document.querySelector<HTMLIFrameElement>('#inside-frame');
+            if (!frame?.contentDocument) {
+              throw new Error('Expected actual frame document');
+            }
+            for (const node of fullResults.violations[0].nodes) {
+              const sentinel = frame.contentDocument.querySelector<HTMLElement>(String(node.target[1]));
+              expect(sentinel?.tagName).to.equal('I');
+              expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
+              expect(sentinel?.getAttribute('tabindex')).to.equal('0');
+              expect(sentinel?.getAttribute('role')).to.equal('none');
+              expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
+                /^isFirst=(true|false), isOutside=false, \(Root, tabbable=true\)$/,
+              );
+              expect(sentinel?.childElementCount).to.equal(0);
+              expect(sentinel?.textContent).to.equal('');
+              expect(sentinel?.outerHTML).to.equal(node.html);
+              expect(node.all[0].relatedNodes).to.have.length(1);
+              expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
+              expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
+            }
+          } else if (profile === 'unnamed') {
+            expect(Cypress.currentTest.title).to.equal(
+              'explicit unnamed standalone dialog retains the exact known serious naming violation',
+            );
+            expect(computeAccessibleName(document.querySelector('#surface')!)).to.equal('');
+          } else {
+            if (profile === 'modal') {
+              expect(Cypress.currentTest.title).to.be.oneOf([
+                'default modal exposes the actual open sentinel checkpoint and restores observed focus after close',
+                'controlled modal refusal retains actual open dialog checkpoint before external closure',
+              ]);
+              expect(phase).to.be.oneOf(['open-modal', 'controlled-refused-modal']);
+            } else {
+              expect(Cypress.currentTest.title).to.match(
+                /^stable (Default|AppearanceBrand|Carousel|CarouselBrand|CarouselText) /,
+              );
+              expect(phase).to.equal('stable-open');
+              expect(computeAccessibleName(document.querySelector('.fui-TeachingPopoverSurface')!)).to.equal('');
+            }
+            for (const node of fullResults.incomplete[0].nodes) {
+              const sentinel = document.querySelector<HTMLElement>(String(node.target[0]));
+              expect(sentinel?.tagName).to.equal('I');
+              expect(sentinel?.getAttribute('aria-hidden')).to.equal('true');
+              expect(sentinel?.getAttribute('tabindex')).to.equal('0');
+              expect(sentinel?.getAttribute('role')).to.equal('none');
+              expect(sentinel?.getAttribute('data-tabster-dummy')).to.match(
+                String(node.target[0]).startsWith('.fui-TeachingPopoverCarouselNav')
+                  ? /^isFirst=(true|false), isOutside=false, \(Mover, tabbable=true\)$/
+                  : /^isFirst=(true|false), isOutside=false, \(Modalizer, tabbable=true\)$/,
+              );
+              expect(sentinel?.childElementCount).to.equal(0);
+              expect(sentinel?.textContent).to.equal('');
+              expect(sentinel?.outerHTML).to.equal(node.html);
+              expect(sentinel?.closest('.fui-TeachingPopoverSurface')).not.to.equal(null);
+              expect(node.all[0].relatedNodes).to.have.length(1);
+              expect(node.all[0].relatedNodes![0].target).to.deep.equal(node.target);
+              expect(node.all[0].relatedNodes![0].html).to.equal(node.html);
+            }
+          }
+          const guards = [
+            'unknown-rule',
+            'duplicate-rule',
+            'duplicate-node',
+            'unknown-check',
+            'wrong-target',
+            'wrong-impact',
+          ];
+          for (const guard of guards) {
+            const bad = Cypress._.cloneDeep(actualShape);
+            const negative = profile === 'unnamed' || profile === 'image' || profile === 'frame';
+            const rules = negative ? bad.violations : bad.incomplete;
+            if (guard === 'unknown-rule') {
+              rules[0].id = 'unknown';
+            }
+            if (guard === 'duplicate-rule') {
+              rules.push(rules[0]);
+            }
+            if (guard === 'duplicate-node') {
+              rules[0].nodes.push(rules[0].nodes[0]);
+            }
+            if (guard === 'unknown-check') {
+              (negative && profile !== 'frame' ? rules[0].nodes[0].anyChecks : rules[0].nodes[0].all)[0].id = 'unknown';
+            }
+            if (guard === 'wrong-target') {
+              rules[0].nodes[0].target = ['#wrong'];
+            }
+            if (guard === 'wrong-impact') {
+              rules[0].impact = negative && profile === 'image' ? 'serious' : 'critical';
+            }
+            expect(() => semanticModalShape(document, bad, profile, Cypress.currentTest.title, phase)).to.throw();
+          }
+          const selectorGuards: string[] = [];
+          if (profile === 'modal') {
+            const fixture = document.implementation.createHTMLDocument('Modal selector guards');
+            fixture.body.append(document.querySelector('#surface')!.cloneNode(true));
+            const aliasShape = Cypress._.cloneDeep(actualShape);
+            aliasShape.incomplete[0].nodes.forEach((node, index) => {
+              node.target = [`i:nth-child(${index === 0 ? 1 : 4})`];
+            });
+            semanticModalShape(fixture, aliasShape, profile, Cypress.currentTest.title, phase);
+            for (const guard of [
+              'unknown-selector',
+              'wrong-element',
+              'duplicate-selector',
+              'absent-selector',
+              'wrong-context',
+              'wrong-marker',
+            ]) {
+              const badDocument = document.implementation.createHTMLDocument('Negative modal selector guard');
+              badDocument.body.append(fixture.querySelector('#surface')!.cloneNode(true));
+              const bad = Cypress._.cloneDeep(aliasShape);
+              if (guard === 'unknown-selector') {
+                bad.incomplete[0].nodes[1].target = ['#surface i:last-child'];
+              } else if (guard === 'wrong-element') {
+                bad.incomplete[0].nodes[1].target = ['i:nth-child(1)'];
+              } else if (guard === 'duplicate-selector') {
+                const duplicate = badDocument.createElement('div');
+                duplicate.append(badDocument.querySelector(modalTargets[0])!.cloneNode(true));
+                badDocument.body.append(duplicate);
+              } else if (guard === 'absent-selector') {
+                badDocument.querySelector(modalTargets[1])!.remove();
+              } else if (guard === 'wrong-marker') {
+                badDocument.querySelector(modalTargets[1])!.setAttribute('data-tabster-dummy', 'unknown');
+              }
+              expect(() =>
+                semanticModalShape(
+                  badDocument,
+                  bad,
+                  profile,
+                  Cypress.currentTest.title,
+                  guard === 'wrong-context' ? 'final' : phase,
+                ),
+              ).to.throw();
+              selectorGuards.push(guard);
+            }
+          }
+          cy.writeFile(`${evidence}/classifier-guards-${ordinal}.json`, {
+            scenario: Cypress.currentTest.title,
+            rejected: guards,
+            selectorRejected: selectorGuards,
+          });
+        }
       });
     });
+  });
 }
 
 describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
@@ -567,6 +709,8 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
     cy.writeFile(`${evidence}/manifest.json`, { round, titles, expectedCount: titles.length, retries: 0 });
   });
   beforeEach(() => {
+    finalAuditStarted = false;
+    auditAcquisitionUnfinished = false;
     cy.viewport(1100, 800);
     cy.then(() =>
       Cypress.automation('remote:debugger:protocol', {
@@ -592,8 +736,13 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
       }
     });
   });
-  afterEach(() => {
-    audit();
+  afterEach(function () {
+    const test = this.currentTest;
+    cy.then(() => {
+      if (test?.state === 'failed' && !finalAuditStarted && !auditAcquisitionUnfinished) {
+        return audit('final', finalProfile, true);
+      }
+    });
   });
 
   scenario(1, 'contextless default is a portalled native div group without modal tabindex or arrow', () => {
@@ -1407,6 +1556,7 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
       harness();
       open();
       surface().find('[data-tabster-dummy]').should('have.length', 2);
+      modalPlacementReady();
       audit('open-modal', 'modal');
       close();
       cy.get('#row140-stage').should($node => expect($node[0].closest('[aria-hidden="true"]')).to.equal(null));
@@ -1419,6 +1569,7 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
     cy.realPress('Escape');
     settled();
     cy.then(() => expect(records[0]).to.include({ open: false, type: 'keydown', prevented: true, trusted: true }));
+    modalPlacementReady();
     audit('controlled-refused-modal', 'modal');
     cy.get('#external-close').realClick();
     surface().should('not.exist');
@@ -2029,11 +2180,13 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
       });
       cy.wrap(clicked).should('have.been.calledOnce');
       cy.then(() => expect((clicked.firstCall.args[0] as React.MouseEvent).nativeEvent.isTrusted).to.equal(true));
+      iframeRootPlacementReady();
       audit('iframe-surface-open', 'frame');
       cy.realPress('Escape');
       cy.get('#inside-frame').should($frame =>
         expect(($frame[0] as HTMLIFrameElement).contentDocument?.getElementById('frame-surface')).to.equal(null),
       );
+      cy.wrap(keyed).should('have.been.calledOnce');
       cy.then(() => {
         expect(rootRef.current).to.equal(null);
         expect((keyed.firstCall.args[0] as React.KeyboardEvent).nativeEvent.isTrusted).to.equal(true);

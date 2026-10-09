@@ -140,6 +140,127 @@ This suite makes **no claim of delivered carousel announcement**.
 
 ## Accessibility receipts and limitations
 
+Final closed-stage restoration and the complete strict audit/classification
+chain now run at each matching case body's tail. The existing in-body
+`close()`/hidden-ancestor check and the same final closed-stage recheck both
+remain; a late re-hide fails that testcase rather than aborting the last 28
+cases through `afterEach`. All original viewport/cache/hover/media/listener
+setup and case-local cleanup keep their effective order.
+
+### Native Modalizer initialized-placement prerequisite
+
+Only the existing default-modal and controlled-refusal modal checkpoints now
+require initialized native dummy placement immediately before their original
+AXE scans, after the original opening/settling/refusal interactions. The exact
+V1 core was restored from its byte-verified archive; no diagnostic observer or
+probe code remains in this candidate.
+
+Each prerequisite captures the active Surface and its exact first/last native
+Modalizer pair once. Its qualified native selectors use the same convention as
+the independent static selectors already accepted by the strict modal validator.
+Both resolutions must be unique and identify the same real nodes. Bounded Cypress
+assertion retries retain those original references: replacement, missing nodes,
+wrong parent/owner/marker or disconnection cannot pass by recapturing a new pair.
+The native markers, empty `I` shape, ARIA/tabindex/role and fixed positioning remain
+required before and during the placement check.
+
+Installed Tabster 8.8.0 `DummyInput` creates these fixed-position inputs without
+top/left. Its queued `_computeTransformOffsets` starts numeric offsets at zero,
+adds scroll offsets only from transformed ancestors, then `setTopLeft` assigns
+the captured numeric offsets to the first/last inputs. These two unchanged
+no-scroll fixtures have zero offsets, including the positioned Surface's translated
+ancestor context. Source-derived controls exercise that bound calculation and
+distinguish an actually scrolled transformed context; the zero expectation is
+not generalized to iframe, shadow, stable-story or other transformed-root profiles.
+The prerequisite reads only the original nodes' inline CSS and requires `top`
+and `left` to be `0px`, not merely absent, parseable or mutually equal.
+
+Both preserved real diagnostic baselines passed 90/90:
+`2026-10-09T14-51-50-839Z-surface-native-sentinel-forensic-54856` and
+`2026-10-09T14-57-03-609Z-surface-native-sentinel-forensic-second-bounded-sample-76792`.
+Their cleanup traces show the same native references acquiring the source's
+top/left initialization before AXE, then retaining exact HTML through raw
+persistence and comparison. Initialization delivery preceded AXE by 341.0 and
+344.1 ms, respectively. These are observation/delivery intervals, not timer
+registration or mutation occurrence timestamps. Diagnostic overhead is unquantified.
+The earlier failed restoration's writer and same-node continuity across its failing
+capture/comparison interval were not directly traced; its failed receipt remains
+preserved. This candidate asserts the supported necessary source boundary, not a
+claim that production cleanup or the earlier failed interval has been repaired.
+
+No sleep, layout/ComputedStyle/scroll probe, queue/private-engine API, DOM write,
+cache warming, extra AXE scan or snapshot normalization is introduced. All 90
+titles and 214 original `expect` calls remain. The complete post-scan raw/classified
+validator, native Root/modal selector identity, unnormalized HTML/style and
+related-node equality, classifier probes, inline closure and final closed-stage
+recheck remain unchanged. A later style drift still fails the original comparison.
+The parent owns the V2 manifest against the original 13:01 passing base and the
+fresh full mutation/restoration cycle before any commit.
+
+### Iframe key callback presence
+
+The preserved V2 native-key-forwarding trial completed all 90 cases with four
+assertion failures and one incidental null `firstCall.args` TypeError in the
+existing iframe portal case. Its single native Escape now requires the consumer
+key callback to have been called exactly once before the unchanged payload read,
+using the same Cypress assertion style as the existing click callback.
+All original iframe ref/document identity, CDP interactions, trusted-event checks,
+full raw frame audits and exact sentinel HTML/style proofs remain unchanged.
+V3 adds no case, audit, producer or harness change. The original failed receipt
+and exact passing V2 restoration remain preserved; the parent owns V3 sealing
+against the original 13:01 base and the fresh full cycle after the separately
+approved bounded-ledger harness fix is frozen.
+
+### Plain child-body Root initialized placement
+
+Only the existing iframe portal open checkpoint now requires initialized placement
+immediately after its original native click/trust check and before its existing
+`iframe-surface-open` AXE scan. Its child document, child window, body autoRoot and
+exact first/last native Root pair are captured once. The original child-native
+targets `i:nth-child(1)` / `i:nth-child(3)` must uniquely identify the same nodes
+as independent direct-body first/last selectors. Bounded assertion retries retain
+those references, document/body ownership, parentage and exact
+`Root, tabbable=true, isOutside=false` fields; replacement or recapture cannot
+turn a missing or wrongly owned pair into a pass.
+
+The preserved V3 restoration
+`2026-10-09T17-38-50-919Z-restore-TeachingPopoverSurface-native-key-forwarding-74952`
+failed the first Root's exact live/captured HTML comparison: the open raw snapshot
+lacked top/left, while live HTML and the later genuine failed-final capture had
+`top: 0px; left: 0px`. The open checkpoint aborted before Escape. This is consistent
+with bound Tabster's queued dummy initialization, not evidence of a closure repair;
+the failed interval's actual writer and same-node continuity were not directly traced.
+The exact V3 restoration subsequently passed 90/90 and both receipts remain unchanged.
+
+For this plain `srcDoc`, the raw Body is the `{"root":{}}` autoRoot and the physical
+offset chain is native `I -> BODY -> HTML`. The bound offset calculation starts
+at numeric zero and adds scroll offsets only from transformed physical ancestors.
+Outer iframe placement/transform, the content main's transform and Portal's
+virtual-parent focus/containment traversal are not that chain. Native iframe
+source-derived controls confirm zero for this context and a nonzero result for
+a transformed/scrolled child body. Therefore this fixture alone requires fixed
+inline `top`/`left` of `0px`; no iframe-global zero assumption or layout/scroll probe
+is introduced, and Root focus/tabbability behavior is not altered.
+
+The final audit has no new gate. All original native frame/shadow paths, Root
+identity/fields, related-node equality, full unnormalized post-persistence HTML/style
+comparisons, CDP/trusted payload checks, modal placement and key callback premises
+remain unchanged. Later drift still fails the original comparison. No DOM write,
+private-engine call, arbitrary delay, cache warming, additional AXE scan or snapshot
+normalization is added. The parent owns V4 sealing against the original 13:01
+passing base and fresh full-cycle acceptance under the frozen bounded wrapper.
+
+The original unconditional final hook also audited already-failed bodies.
+Operational `afterEach` preserves genuine raw-only final capture for an actual
+failed case whose final scan never started and whose acquisition/write is not
+unfinished. `failedCaseDiagnostic: true` remains `classified: false`: it never
+runs semantic normalization, writes a classified-success overwrite, or claims
+an accessibility pass. Successful cases retain both original raw/classified
+writes, exact native modal selector identity proof, frame/shadow traversal,
+sentinel checks and classifier probes. Started scans and unfinished operations
+are not retried; transport errors remain explicit, and no checkpoints are
+fabricated or backfilled.
+
 Every new case has a full-default, unfiltered axe audit of the real nonempty stage
 plus owned light-DOM portals. There are **90 final / 100 total** audits in the full
 round. The additional ten checkpoints are controlled group refusal, default modal,
