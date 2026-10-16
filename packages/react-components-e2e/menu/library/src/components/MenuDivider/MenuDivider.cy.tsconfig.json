@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node", "cypress-real-events"],
+    "typeRoots": ["../../../../../../../node_modules", "../../../../../../../node_modules/@types"],
+    "lib": ["ES2019", "DOM"],
+    "noEmit": true
+  },
+  "include": ["./MenuDivider.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

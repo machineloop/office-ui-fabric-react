@@ -1,0 +1,22 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["cypress", "node", "cypress-real-events", "static-assets"],
+    "typeRoots": [
+      "../../../../../../../node_modules",
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../typings"
+    ],
+    "lib": ["ES2019", "DOM"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "./ColorPicker.cy.tsx",
+    "./testing/*.stories.ts",
+    "./testing/*.stories.tsx",
+    "../../../../stories/src/ColorPicker/*.stories.tsx"
+  ],
+  "exclude": [],
+  "references": []
+}

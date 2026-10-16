@@ -1,0 +1,16 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2019", "DOM"],
+    "types": ["cypress", "cypress-real-events", "node"],
+    "typeRoots": [
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../node_modules",
+      "../../../../../../../typings"
+    ],
+    "noEmit": true
+  },
+  "include": ["./Textarea.cy.tsx"],
+  "exclude": [],
+  "references": []
+}

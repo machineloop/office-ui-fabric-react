@@ -1,0 +1,5 @@
+{
+  "extends": "./ToolbarButton.cy.tsconfig.json",
+  "include": ["../../../../../../../packages/**/*.ts", "../../../../../../../packages/**/*.tsx"],
+  "exclude": []
+}

@@ -1,0 +1,1329 @@
+{
+  "sourceManifest": "..\\..\\..\\..\\.scout\\copilot\\session-state\\3191b290-6c3c-4903-9a1d-3429fda3aeb2\\files\\reviewed-test-fixes\\final-sweep\\manifest.json",
+  "sourceManifestSha256": "136dd7ca49fd3be3605aafc9a78d372a2fb05a8592dfc1dbb533f2526bd80539",
+  "sourceHead": "de1a1be3e6644ec6ab33314d6858ae0395543246",
+  "sourceSpecCount": 188,
+  "copiedSpecCount": 188,
+  "scope": "Complete manifest inventory including base Button; no base Image spec was present. No exact numbered top-142 mapping is asserted.",
+  "layout": "Mirror packages/react-components, removing the react- prefix from package directory names; retain component paths and deprecated namespace.",
+  "execution": "Byte-identical spec copies only. Relative imports and Cypress configuration still require the original layout; this directory is not a standalone runnable test project.",
+  "excluded": [],
+  "specs": [
+    {
+      "source": "packages\\react-components\\react-accordion\\library\\src\\components\\Accordion\\Accordion.cy.stories.tsx",
+      "destination": "accordion\\library\\src\\components\\Accordion\\Accordion.cy.stories.tsx",
+      "sha256": "6ea7bb0b9699f1372b456ca2fa78ad53ea542dfc3d5b044a107a826afd6043bd",
+      "originalConfig": "packages\\react-components\\react-accordion\\library\\src\\components\\Accordion\\Accordion.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-accordion\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionHeader\\AccordionHeader.cy.stories.tsx",
+      "destination": "accordion\\library\\src\\components\\AccordionHeader\\AccordionHeader.cy.stories.tsx",
+      "sha256": "51ee50a9d2b5953a9db3944bf7a21548cadc2657c000da07e6182504746c7dc6",
+      "originalConfig": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionHeader\\AccordionHeader.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-accordion\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionItem\\AccordionItem.cy.stories.tsx",
+      "destination": "accordion\\library\\src\\components\\AccordionItem\\AccordionItem.cy.stories.tsx",
+      "sha256": "607e93da2bb5a1e28b31db0027ef2f1280efd02b9a3a292967c0245313b5e2f4",
+      "originalConfig": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionItem\\AccordionItem.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-accordion\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionPanel\\AccordionPanel.cy.stories.tsx",
+      "destination": "accordion\\library\\src\\components\\AccordionPanel\\AccordionPanel.cy.stories.tsx",
+      "sha256": "f7d881aaaa43504d52f34cfc21dba186a5a4f79bafd15b6716525a82af899a83",
+      "originalConfig": "packages\\react-components\\react-accordion\\library\\src\\components\\AccordionPanel\\AccordionPanel.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-accordion\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-aria\\library\\src\\activedescendant\\useActiveDescendant.cy.tsx",
+      "destination": "aria\\library\\src\\activedescendant\\useActiveDescendant.cy.tsx",
+      "sha256": "ebf78ce2d7346ea27b31b517d8750c85b4dcf0eccb039930f1872ce1a4cff919",
+      "originalConfig": "packages\\react-components\\react-aria\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-aria\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-avatar\\library\\src\\components\\Avatar\\Avatar.cy.tsx",
+      "destination": "avatar\\library\\src\\components\\Avatar\\Avatar.cy.tsx",
+      "sha256": "333541fc32129491e08aaad84bf0d42272a184b52b18795318116fc7b161083c",
+      "originalConfig": "packages\\react-components\\react-avatar\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-avatar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroup\\AvatarGroup.cy.tsx",
+      "destination": "avatar\\library\\src\\components\\AvatarGroup\\AvatarGroup.cy.tsx",
+      "sha256": "b11f18773bc786530f918d90f9fc945d62d3006ae4e4b713d10f721f9fd0c64b",
+      "originalConfig": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroup\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-avatar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroupItem\\AvatarGroupItem.cy.tsx",
+      "destination": "avatar\\library\\src\\components\\AvatarGroupItem\\AvatarGroupItem.cy.tsx",
+      "sha256": "020579853015e6513644c9fdaea684fd9bdd449bb3f4c7e33da60accd6707ae1",
+      "originalConfig": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroupItem\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-avatar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroupPopover\\AvatarGroupPopover.cy.tsx",
+      "destination": "avatar\\library\\src\\components\\AvatarGroupPopover\\AvatarGroupPopover.cy.tsx",
+      "sha256": "4b1aab62f21aa917bebbf20e0d6c6bf914a46b30fbc504738394a65f18762f64",
+      "originalConfig": "packages\\react-components\\react-avatar\\library\\src\\components\\AvatarGroupPopover\\AvatarGroupPopover.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-avatar\\library"
+    },
+    {
+      "source": "packages\\react-components\\babel-preset-global-context\\src\\Test.cy.tsx",
+      "destination": "babel-preset-global-context\\src\\Test.cy.tsx",
+      "sha256": "44a2e3e318f82f97d727e6412d570506909ed46c5450e1adc6c7737adc3b198e",
+      "originalConfig": "packages\\react-components\\babel-preset-global-context\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\babel-preset-global-context"
+    },
+    {
+      "source": "packages\\react-components\\react-badge\\library\\src\\components\\Badge\\Badge.cy.tsx",
+      "destination": "badge\\library\\src\\components\\Badge\\Badge.cy.tsx",
+      "sha256": "cc5d8e99578889f28a0a3733cb295fb7e9040ee1b7d49b31032ebea7af0750d3",
+      "originalConfig": "packages\\react-components\\react-badge\\library\\src\\components\\Badge\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-badge\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-badge\\library\\src\\components\\CounterBadge\\CounterBadge.cy.tsx",
+      "destination": "badge\\library\\src\\components\\CounterBadge\\CounterBadge.cy.tsx",
+      "sha256": "631fa6666c97af88702186584e2919ea112e4363dbdcb737f81afc3bcbed7a71",
+      "originalConfig": "packages\\react-components\\react-badge\\library\\src\\components\\Badge\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-badge\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\Breadcrumb\\Breadcrumb.cy.tsx",
+      "destination": "breadcrumb\\library\\src\\components\\Breadcrumb\\Breadcrumb.cy.tsx",
+      "sha256": "012ebdeff23e8b1adca9109873f0c9fd5eba41534de52a41da3db5dbfad54785",
+      "originalConfig": "packages\\react-components\\react-breadcrumb\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-breadcrumb\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\Breadcrumb\\BreadcrumbWithMenu.cy.tsx",
+      "destination": "breadcrumb\\library\\src\\components\\Breadcrumb\\BreadcrumbWithMenu.cy.tsx",
+      "sha256": "100b2e02246a0770011e6d0ce8cb0777792d53955c41631061cd9d4f91e92b5c",
+      "originalConfig": "packages\\react-components\\react-breadcrumb\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-breadcrumb\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbButton\\BreadcrumbButton.cy.stories.tsx",
+      "destination": "breadcrumb\\library\\src\\components\\BreadcrumbButton\\BreadcrumbButton.cy.stories.tsx",
+      "sha256": "6e069e6c926f20c1b152b7899973f62f5cf887bcab90dfcf1d8a6fd2d0881730",
+      "originalConfig": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbButton\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-breadcrumb\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbDivider\\BreadcrumbDivider.cy.tsx",
+      "destination": "breadcrumb\\library\\src\\components\\BreadcrumbDivider\\BreadcrumbDivider.cy.tsx",
+      "sha256": "53d9a445376d841cbf9f3fa7970a5551f3ec8b815de16ad00db4a38d690b37f5",
+      "originalConfig": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbDivider\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-breadcrumb\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbItem\\BreadcrumbItem.cy.stories.tsx",
+      "destination": "breadcrumb\\library\\src\\components\\BreadcrumbItem\\BreadcrumbItem.cy.stories.tsx",
+      "sha256": "af605ebb843b663f4c5ae7b8c11e933adb0f8d78522fce7e74a688345d151d5a",
+      "originalConfig": "packages\\react-components\\react-breadcrumb\\library\\src\\components\\BreadcrumbItem\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-breadcrumb\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-button\\library\\src\\components\\Button\\Button.cy.tsx",
+      "destination": "button\\library\\src\\components\\Button\\Button.cy.tsx",
+      "sha256": "24d7a8bf0273e9bc1eaf370286e99e730ae90fb07374f9f483f572488611bcd2",
+      "originalConfig": "packages\\react-components\\react-button\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-button\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-button\\library\\src\\components\\CompoundButton\\CompoundButton.cy.tsx",
+      "destination": "button\\library\\src\\components\\CompoundButton\\CompoundButton.cy.tsx",
+      "sha256": "1ee81794b46f32005907f3dd375478f135b2788691d62594cd8dccd814092ada",
+      "originalConfig": "packages\\react-components\\react-button\\library\\src\\components\\CompoundButton\\CompoundButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-button\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-button\\library\\src\\components\\MenuButton\\MenuButton.cy.tsx",
+      "destination": "button\\library\\src\\components\\MenuButton\\MenuButton.cy.tsx",
+      "sha256": "8b388e6069f6db7ddc89da53d6791b815d4745bd03d3c0f3c8fcfeee5056d734",
+      "originalConfig": "packages\\react-components\\react-button\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-button\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-button\\library\\src\\components\\SplitButton\\SplitButton.cy.tsx",
+      "destination": "button\\library\\src\\components\\SplitButton\\SplitButton.cy.tsx",
+      "sha256": "4dcfcd846d4728f5cdd643a542c221b8a9865b1b3d593d7fd34085b3b5d2ed7c",
+      "originalConfig": "packages\\react-components\\react-button\\library\\src\\components\\SplitButton\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-button\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-button\\library\\src\\components\\ToggleButton\\ToggleButton.cy.stories.tsx",
+      "destination": "button\\library\\src\\components\\ToggleButton\\ToggleButton.cy.stories.tsx",
+      "sha256": "433d00aa00d2d7c8fedbeaa7d41c225f721dd2c314623094d5f038620242191a",
+      "originalConfig": "packages\\react-components\\react-button\\library\\src\\components\\ToggleButton\\ToggleButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-button\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\Card\\Card.cy.tsx",
+      "destination": "card\\library\\src\\components\\Card\\Card.cy.tsx",
+      "sha256": "471e3b9cddb1d6f9addb7964bb0ce510a05081cf0c73d385d5d4a6c6e9b2ea36",
+      "originalConfig": "packages\\react-components\\react-card\\library\\src\\components\\Card\\Card.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\Card\\Card.functional.cy.tsx",
+      "destination": "card\\library\\src\\components\\Card\\Card.functional.cy.tsx",
+      "sha256": "729136e83b056dadef8f7b1be6a8ff6f8c9c471e23d7b2f69bbba5f2572612ac",
+      "originalConfig": "packages\\react-components\\react-card\\library\\src\\components\\Card\\Card.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\Card\\Card.functional.styles.cy.tsx",
+      "destination": "card\\library\\src\\components\\Card\\Card.functional.styles.cy.tsx",
+      "sha256": "66b38e8bd66b13d518807d865cc4d1c5df389604205ee1bc0bf470869ea75f74",
+      "originalConfig": "packages\\react-components\\react-card\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\CardFooter\\CardFooter.cy.tsx",
+      "destination": "card\\library\\src\\components\\CardFooter\\CardFooter.cy.tsx",
+      "sha256": "110d277c811e595f9fb8f9dae6366e3eb931e77ef2ccea36074a7ce479d17dd4",
+      "originalConfig": "packages\\react-components\\react-card\\library\\src\\components\\CardFooter\\CardFooter.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\CardHeader\\CardHeader.cy.tsx",
+      "destination": "card\\library\\src\\components\\CardHeader\\CardHeader.cy.tsx",
+      "sha256": "c412c82e3d8bb7dd97fac5b502cd98c11a513f2eed2eac13596e81979e058e80",
+      "originalConfig": "packages\\react-components\\react-card\\library\\src\\components\\CardHeader\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-card\\library\\src\\components\\CardPreview\\CardPreview.cy.tsx",
+      "destination": "card\\library\\src\\components\\CardPreview\\CardPreview.cy.tsx",
+      "sha256": "5dff1c52a0585d5060400017658177a946cf841c4a37a4befd31babe2b0e8839",
+      "originalConfig": "packages\\react-components\\react-card\\library\\src\\components\\CardPreview\\CardPreview.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-card\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\Carousel\\Carousel.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\Carousel\\Carousel.cy.tsx",
+      "sha256": "b7d981a00a04c853f8bb11fff430439696221ca695b92e835ae9668f442374b8",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\Carousel\\Carousel.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselCard\\CarouselCard.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselCard\\CarouselCard.cy.tsx",
+      "sha256": "5241586aaa60344c6bf7159f8590ab50eb9e2fcc98922cf42841ef49a6439350",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselCard\\CarouselCard.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNav\\CarouselNav.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselNav\\CarouselNav.cy.tsx",
+      "sha256": "173c1e31b914b40a185c12f97bddc5b0347a22db383b71926e400ab05886bb1a",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNav\\CarouselNav.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavButton\\CarouselNavButton.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselNavButton\\CarouselNavButton.cy.tsx",
+      "sha256": "835d74736a7ba6a42613363bca8cb294d13cf369864f7dd7cf0918271ac06bd3",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavButton\\CarouselNavButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavContainer\\CarouselNavContainer.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselNavContainer\\CarouselNavContainer.cy.tsx",
+      "sha256": "254d0a0b62955cf92c15b4237d60c008f54238627c019bd69bb63c1173a6cd6d",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavContainer\\CarouselNavContainer.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavImageButton\\CarouselNavImageButton.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselNavImageButton\\CarouselNavImageButton.cy.tsx",
+      "sha256": "97008525c350ac708d3b852250efd0dbbd2c3b18b19e981841f6e10b165f4abc",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselNavImageButton\\CarouselNavImageButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselSlider\\CarouselSlider.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselSlider\\CarouselSlider.cy.tsx",
+      "sha256": "9eecad0226b038c746d01c501bcb2c59cdbae7a36563df8125fccb25739fcdc2",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-carousel\\library\\src\\components\\CarouselViewport\\CarouselViewport.cy.tsx",
+      "destination": "carousel\\library\\src\\components\\CarouselViewport\\CarouselViewport.cy.tsx",
+      "sha256": "3051a25289799848b28afa3e66897d7121320fb10b02b38b661a857c00b287b3",
+      "originalConfig": "packages\\react-components\\react-carousel\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-carousel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-checkbox\\library\\src\\components\\Checkbox\\Checkbox.cy.tsx",
+      "destination": "checkbox\\library\\src\\components\\Checkbox\\Checkbox.cy.tsx",
+      "sha256": "14a3c6ac0236b83ac2544066cf44d7f3db1bca20ecb381538a1ed478c17347a1",
+      "originalConfig": "packages\\react-components\\react-checkbox\\library\\src\\components\\Checkbox\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-checkbox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-color-picker\\library\\src\\components\\AlphaSlider\\AlphaSlider.cy.tsx",
+      "destination": "color-picker\\library\\src\\components\\AlphaSlider\\AlphaSlider.cy.tsx",
+      "sha256": "2b29ed6d2b90592d97d9694a2a658be38be933d1bd2d46c6dc7ab29e6510165f",
+      "originalConfig": "packages\\react-components\\react-color-picker\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-color-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorArea\\ColorArea.cy.tsx",
+      "destination": "color-picker\\library\\src\\components\\ColorArea\\ColorArea.cy.tsx",
+      "sha256": "0b59ba7d853c0b97a1848dc0f2be61bf376e86cdf52dcb7e06dca4a3cec409d5",
+      "originalConfig": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorArea\\ColorArea.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-color-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorPicker\\ColorPicker.cy.tsx",
+      "destination": "color-picker\\library\\src\\components\\ColorPicker\\ColorPicker.cy.tsx",
+      "sha256": "804505dce890b7e4f9ca99927c697f9185f79369c3d20a90c7150afa7fea1d3c",
+      "originalConfig": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorPicker\\ColorPicker.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-color-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorSlider\\ColorSlider.cy.tsx",
+      "destination": "color-picker\\library\\src\\components\\ColorSlider\\ColorSlider.cy.tsx",
+      "sha256": "2344fb5b78a499aaee78cd6a0f1ba3bd249c36586a42ee02f2c19665c78ed83d",
+      "originalConfig": "packages\\react-components\\react-color-picker\\library\\src\\components\\ColorSlider\\ColorSlider.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-color-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-combobox\\library\\src\\components\\Combobox\\Combobox.cy.tsx",
+      "destination": "combobox\\library\\src\\components\\Combobox\\Combobox.cy.tsx",
+      "sha256": "ad2744a5e885125798cd83b19bce6b8812ffc41dafc763250ecac0148b5d9d28",
+      "originalConfig": "packages\\react-components\\react-combobox\\library\\src\\components\\Combobox\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-combobox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-combobox\\library\\src\\components\\Dropdown\\Dropdown.cy.tsx",
+      "destination": "combobox\\library\\src\\components\\Dropdown\\Dropdown.cy.tsx",
+      "sha256": "ddec617e4d079e6a9151e13462a0555b043382ff7322e94be2fcc39b5cada525",
+      "originalConfig": "packages\\react-components\\react-combobox\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-combobox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-combobox\\library\\src\\components\\Listbox\\Listbox.cy.tsx",
+      "destination": "combobox\\library\\src\\components\\Listbox\\Listbox.cy.tsx",
+      "sha256": "6188bf6163f42eac83b977773f7e6096b9056d0dfcff9aee6da0108c99973bfc",
+      "originalConfig": "packages\\react-components\\react-combobox\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-combobox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-combobox\\library\\src\\components\\Option\\Option.cy.tsx",
+      "destination": "combobox\\library\\src\\components\\Option\\Option.cy.tsx",
+      "sha256": "9bf2a7bb8d3538d7a744185b7aaa98bd878b98d2865728e2616e4a48df8c5552",
+      "originalConfig": "packages\\react-components\\react-combobox\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-combobox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-combobox\\library\\src\\components\\OptionGroup\\OptionGroup.cy.tsx",
+      "destination": "combobox\\library\\src\\components\\OptionGroup\\OptionGroup.cy.tsx",
+      "sha256": "995d6fba4883537d2ee0f938defb6df987da1c20061f55709d74159d76fae6ce",
+      "originalConfig": "packages\\react-components\\react-combobox\\library\\src\\components\\OptionGroup\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-combobox\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-components\\src\\components\\RendererProvider\\RendererProvider.cy.stories.tsx",
+      "destination": "components\\src\\components\\RendererProvider\\RendererProvider.cy.stories.tsx",
+      "sha256": "cde5a9a51f0db141a8f68a7f8a59ae7142101573f715cb427373669c3a08883a",
+      "originalConfig": "packages\\react-components\\react-components\\src\\components\\RendererProvider\\RendererProvider.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-components"
+    },
+    {
+      "source": "packages\\react-components\\react-context-selector\\src\\useContextSelector.cy.tsx",
+      "destination": "context-selector\\src\\useContextSelector.cy.tsx",
+      "sha256": "4a42e7c6123014b470889ae0c13d792980732d9bd3d7b1edcf752c0aad301572",
+      "originalConfig": "packages\\react-components\\react-context-selector\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-context-selector"
+    },
+    {
+      "source": "packages\\react-components\\react-datepicker-compat\\library\\src\\components\\DatePicker\\DatePicker.cy.tsx",
+      "destination": "datepicker-compat\\library\\src\\components\\DatePicker\\DatePicker.cy.tsx",
+      "sha256": "d581ba207ae1eb916af2d77df65ba2fcf7a5aba486df91ffdaf3d21ef706017b",
+      "originalConfig": "packages\\react-components\\react-datepicker-compat\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-datepicker-compat\\library"
+    },
+    {
+      "source": "packages\\react-components\\deprecated\\react-infobutton\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "destination": "deprecated\\infobutton\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "sha256": "786978906d0aec4af2b42cae0286e78251e0d5f523c4bcf47a02a578e8b11772",
+      "originalConfig": "packages\\react-components\\deprecated\\react-infobutton\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\deprecated\\react-infobutton"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\Dialog\\Dialog.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\Dialog\\Dialog.cy.tsx",
+      "sha256": "e0a318d5163dd902186d32794160ba6ec845d4cd82e6ac4195c7449412539d0b",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogActions\\DialogActions.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogActions\\DialogActions.cy.tsx",
+      "sha256": "23768e3a67c279277304bc0296a2ae795b45a26dd2a38964ae608365eab1b5db",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogBody\\DialogBody.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogBody\\DialogBody.cy.tsx",
+      "sha256": "79682b83e0a6989a8f41e56b78b6190459ee25dcc5cd6e3099988541366cbfff",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogContent\\DialogContent.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogContent\\DialogContent.cy.tsx",
+      "sha256": "f64e974b377e51790638d486aec4892aee20ad0fa32167d80d1fc667dd47e3fc",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogSurface\\DialogSurface.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogSurface\\DialogSurface.cy.tsx",
+      "sha256": "d485e9f7cd4861f4320cca56f4bd8b8d7b7639c0328959ef284b729d2fd64705",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogTitle\\DialogTitle.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogTitle\\DialogTitle.cy.tsx",
+      "sha256": "38e961ca6a91e644e402839ecd5c3ec524bafd3a37bcd4aaf8a5145b5334d26d",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-dialog\\library\\src\\components\\DialogTrigger\\DialogTrigger.cy.tsx",
+      "destination": "dialog\\library\\src\\components\\DialogTrigger\\DialogTrigger.cy.tsx",
+      "sha256": "5ac20483ed79824272ce925a0254e670be0314cbaddda78fcf1ac96f33cc69cf",
+      "originalConfig": "packages\\react-components\\react-dialog\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-dialog\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-divider\\library\\src\\components\\Divider\\Divider.cy.tsx",
+      "destination": "divider\\library\\src\\components\\Divider\\Divider.cy.tsx",
+      "sha256": "bfc490d4fbec2ddeeaf5e6e43f5e7f05d514e35a4a59c9d3532cdf8ed6c6de04",
+      "originalConfig": "packages\\react-components\\react-divider\\library\\src\\components\\Divider\\Divider.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-divider\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\Drawer\\Drawer.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\Drawer\\Drawer.cy.tsx",
+      "sha256": "a81803e41b79e4a3a77a117d03f5eee85a6fe614014918d1642196f335741ad8",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerBody\\DrawerBody.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerBody\\DrawerBody.cy.tsx",
+      "sha256": "3debbad1852863b306cd46cab677bbf966a854a95290e405661f5320abf084d1",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerBody\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerFooter\\DrawerFooter.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerFooter\\DrawerFooter.cy.tsx",
+      "sha256": "444e41265d37e779e74a8d125fdd756a1950126bcc1ef641e5eb7f7de937556a",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerFooter\\DrawerFooter.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeader\\DrawerHeader.cy.stories.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerHeader\\DrawerHeader.cy.stories.tsx",
+      "sha256": "f5517d9dddb879ceaac02b234e341ad09a905dd7111c871774d477ba4bacb425",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeader\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeader\\DrawerHeader.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerHeader\\DrawerHeader.cy.tsx",
+      "sha256": "32323d5173d2ef999e67a1f724b8b8acc95b1a1c4606fa718ea3676cdd58448a",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeaderNavigation\\DrawerHeaderNavigation.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerHeaderNavigation\\DrawerHeaderNavigation.cy.tsx",
+      "sha256": "10417059d0de55eeb5f710c8233d679df2f1e878a78da3b63d00d32bb0789312",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeaderTitle\\DrawerHeaderTitle.cy.stories.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerHeaderTitle\\DrawerHeaderTitle.cy.stories.tsx",
+      "sha256": "b078537d8881faf09a7abf44b77f8aa6c85daea38f4ecccf27c3c3a7b47a510c",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeaderTitle\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\DrawerHeaderTitle\\DrawerHeaderTitle.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\DrawerHeaderTitle\\DrawerHeaderTitle.cy.tsx",
+      "sha256": "2cacc5b118133233cded1296be2acc890fc476aab198064d7c4ca96e723063d1",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\InlineDrawer\\InlineDrawer.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\InlineDrawer\\InlineDrawer.cy.tsx",
+      "sha256": "180b4b5b28abb5c59eaf83892b0e2f385ac5392d5e90e7690a0ba4217790a115",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-drawer\\library\\src\\components\\OverlayDrawer\\OverlayDrawer.cy.tsx",
+      "destination": "drawer\\library\\src\\components\\OverlayDrawer\\OverlayDrawer.cy.tsx",
+      "sha256": "b3ef25f8b53a65098f8634e90cc9b0be43ee3cd58b38b4f2380f53da9217a664",
+      "originalConfig": "packages\\react-components\\react-drawer\\library\\src\\components\\OverlayDrawer\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-drawer\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-field\\library\\src\\components\\Field\\Field.cy.tsx",
+      "destination": "field\\library\\src\\components\\Field\\Field.cy.tsx",
+      "sha256": "3fce059ec96f5b5a2b6b86417fc68283bc3609bb339390b2f34b7da0a46bec00",
+      "originalConfig": "packages\\react-components\\react-field\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-field\\library"
+    },
+    {
+      "source": "packages\\react-components\\global-context\\src\\global-context.cy.tsx",
+      "destination": "global-context\\src\\global-context.cy.tsx",
+      "sha256": "c52fd2c78761510d824109a6c575988e214c3880e1a40079cd5bfb0dacf37860",
+      "originalConfig": "packages\\react-components\\global-context\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\global-context"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Combobox\\Combobox.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Combobox\\Combobox.cy.tsx",
+      "sha256": "48f9af41e56acb36de53658db50117673c115ca8c414dc22febb82998e19325a",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Dialog\\Dialog.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Dialog\\Dialog.cy.tsx",
+      "sha256": "d9ae90a2e17b794b92705224be41885d771c10f024f2f9b60cdd94f15913c386",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Drawer\\Drawer.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Drawer\\Drawer.cy.tsx",
+      "sha256": "27fef58a97231b8753ab7b3278f0899b0901d4a4de48c0aceeb4420434d2b42c",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Dropdown\\Dropdown.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Dropdown\\Dropdown.cy.tsx",
+      "sha256": "1cc75115fa92d0837035622a2107a9dab28172280726947e5272ccc8e121ef3f",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "sha256": "88426391a15f6d7a55ab8749697a6b5a2cabf1be819418e35a8eedbb3ab35628",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Menu\\Menu.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Menu\\Menu.cy.tsx",
+      "sha256": "4a1aa0b2fe455c3bf215324c63f558a07b831eedce54f4e8d7852706166f3e6a",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Popover\\Popover.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Popover\\Popover.cy.tsx",
+      "sha256": "00d741326f735998fc625b87163f815601739856c3e997b4ca7cbf716ead9261",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\SwatchPicker\\SwatchPicker.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\SwatchPicker\\SwatchPicker.cy.tsx",
+      "sha256": "75400fea4f089950766700461c5592323c46cae11ed1c73b822fabb75ffb7b1e",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\TagPicker\\TagPicker.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\TagPicker\\TagPicker.cy.tsx",
+      "sha256": "67bb758ed3a0e8b9be47190da900b6e9e0ce1b5c4921d42389e29eafe1fee23e",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\TeachingPopover\\TeachingPopover.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\TeachingPopover\\TeachingPopover.cy.tsx",
+      "sha256": "aae104d185867101cae4f4f348480e2a6e3538f992f224da95477e02388dde2e",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Toast\\Toast.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Toast\\Toast.cy.tsx",
+      "sha256": "daad666a338b10fb1961f0f5752cd02343cb87e160c8b1c9685b846f6a0714bd",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-headless-components-preview\\library\\src\\components\\Tooltip\\Tooltip.cy.tsx",
+      "destination": "headless-components-preview\\library\\src\\components\\Tooltip\\Tooltip.cy.tsx",
+      "sha256": "1b64831c41a455e669628bd00c96ddd41e2a608e371ad4776fd8b6c05e93b914",
+      "originalConfig": "packages\\react-components\\react-headless-components-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-headless-components-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-infolabel\\library\\src\\components\\InfoButton\\InfoButton.cy.stories.tsx",
+      "destination": "infolabel\\library\\src\\components\\InfoButton\\InfoButton.cy.stories.tsx",
+      "sha256": "d5d12005e95116124fa509e1e73e068e44934dbfe0113fe30c02935bb05df520",
+      "originalConfig": "packages\\react-components\\react-infolabel\\library\\src\\components\\InfoButton\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-infolabel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-infolabel\\library\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "destination": "infolabel\\library\\src\\components\\InfoLabel\\InfoLabel.cy.tsx",
+      "sha256": "5fcba614219d2653376f380c51a43fa77082d1d3ee9de699ef6ae09890f42b9f",
+      "originalConfig": "packages\\react-components\\react-infolabel\\library\\src\\components\\InfoLabel\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-infolabel\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-input\\library\\src\\components\\Input\\Input.cy.tsx",
+      "destination": "input\\library\\src\\components\\Input\\Input.cy.tsx",
+      "sha256": "706c5152b58c93cd02ff9f20122f5459fec2e661bb33bbd8b0f6d884d1d63b22",
+      "originalConfig": "packages\\react-components\\react-input\\library\\src\\components\\Input\\Input.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-input\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-label\\library\\src\\components\\Label\\Label.cy.stories.tsx",
+      "destination": "label\\library\\src\\components\\Label\\Label.cy.stories.tsx",
+      "sha256": "a58b4657d2ae7e9edab7046ea6b78edd19043acec5bd0a3d34dfec0f588bb920",
+      "originalConfig": "packages\\react-components\\react-label\\library\\src\\components\\Label\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-label\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-link\\library\\src\\components\\Link\\Link.cy.stories.tsx",
+      "destination": "link\\library\\src\\components\\Link\\Link.cy.stories.tsx",
+      "sha256": "ef6bce93725c6d39d36a57e9f39e4db059bb05f7bb19fbf54b674bbd50a35608",
+      "originalConfig": "packages\\react-components\\react-link\\library\\src\\components\\Link\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-link\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-list\\library\\src\\components\\List\\List.cy.stories.tsx",
+      "destination": "list\\library\\src\\components\\List\\List.cy.stories.tsx",
+      "sha256": "91673b34686523fdadd6d08f50b3d483be7a278e590936657edd6f1c8144dd35",
+      "originalConfig": "packages\\react-components\\react-list\\library\\src\\components\\List\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-list\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-list\\library\\src\\components\\List\\List.cy.tsx",
+      "destination": "list\\library\\src\\components\\List\\List.cy.tsx",
+      "sha256": "f2b1fb09445bdf67a44ba1b775d26068f2c835a97fb4e6ed93b65238cbac0316",
+      "originalConfig": "packages\\react-components\\react-list\\library\\src\\components\\List\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-list\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-list\\library\\src\\components\\ListItem\\ListItem.cy.stories.tsx",
+      "destination": "list\\library\\src\\components\\ListItem\\ListItem.cy.stories.tsx",
+      "sha256": "658130c46b06493094c14fcfbca73fc2cf4f33258738a781cfb2e27e22ca9d8b",
+      "originalConfig": "packages\\react-components\\react-list\\library\\src\\components\\ListItem\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-list\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu-grid-preview\\library\\src\\components\\MenuGrid\\MenuGrid.cy.tsx",
+      "destination": "menu-grid-preview\\library\\src\\components\\MenuGrid\\MenuGrid.cy.tsx",
+      "sha256": "8aa10ec805dbe2af6a63d6e408b1de432c0472a4cd9c46376bcc8a02b8e18931",
+      "originalConfig": "packages\\react-components\\react-menu-grid-preview\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu-grid-preview\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\Menu\\Menu.cy.tsx",
+      "destination": "menu\\library\\src\\components\\Menu\\Menu.cy.tsx",
+      "sha256": "227a6538fdff75d1bea6e5a6abd91a36f3eccbd34f7003dc8bcbe72c54e753c9",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuDivider\\MenuDivider.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuDivider\\MenuDivider.cy.tsx",
+      "sha256": "5963fce84cb64caa9c5c9f1c4e8b60e8d3d51e4b1b317667b95a6ea7d7c59e04",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\src\\components\\MenuDivider\\MenuDivider.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuGroup\\MenuGroup.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuGroup\\MenuGroup.cy.tsx",
+      "sha256": "18d0a8bd49ce9585116d7c1e4eb6ebaa0b777f8d1c23fb82651952e9895fb41b",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\src\\components\\MenuGroup\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuGroupHeader\\MenuGroupHeader.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuGroupHeader\\MenuGroupHeader.cy.tsx",
+      "sha256": "3165b2a06fbe261b3f2c4f3e94afbaad9c4789c2b8d71e72b690e5b122e60642",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\src\\components\\MenuGroupHeader\\MenuGroupHeader.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItem\\MenuItem.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuItem\\MenuItem.cy.tsx",
+      "sha256": "033c7d018795068ddd497bf6843754112e6e9ee8fc1b357c895b3b77cbd5141f",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItemCheckbox\\MenuItemCheckbox.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuItemCheckbox\\MenuItemCheckbox.cy.tsx",
+      "sha256": "30bd2700430d86d20c72529fea62ba85b7a89d542a9145d12c66a642dc2ba8b8",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItemCheckbox\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItemLink\\MenuItemLink.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuItemLink\\MenuItemLink.cy.tsx",
+      "sha256": "780e630db72437eecbe65f13522ab108202c0e2599b2431fdc2e75003d5f166f",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItemLink\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuItemRadio\\MenuItemRadio.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuItemRadio\\MenuItemRadio.cy.tsx",
+      "sha256": "a0c8bd3aa2c174f3aa5d7e1d293572b925d1394ac1e770c3e465fb595b5aaf3f",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuList\\MenuList.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuList\\MenuList.cy.tsx",
+      "sha256": "7804aac78fead9422453e58bbee0b4f8d5c250ebb9ae04f43c96369bcda9eb90",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuList\\MenuList.functional.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuList\\MenuList.functional.cy.tsx",
+      "sha256": "ff60349f21f5dad1d62dfa15a44dc7eb5a9566bc5d7cafbad59ae6e5ec166132",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuPopover\\MenuPopover.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuPopover\\MenuPopover.cy.tsx",
+      "sha256": "9380cfc02514d805a1d7cafca330742f8de4b23efd933f7411b8fd60afd2c7be",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-menu\\library\\src\\components\\MenuTrigger\\MenuTrigger.cy.tsx",
+      "destination": "menu\\library\\src\\components\\MenuTrigger\\MenuTrigger.cy.tsx",
+      "sha256": "d34b8dc122a2a45ce0df37c6d5f6fd79969a4cbbd1c3f06e53065417a26c898b",
+      "originalConfig": "packages\\react-components\\react-menu\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-menu\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-message-bar\\library\\src\\components\\MessageBar\\MessageBar.cy.tsx",
+      "destination": "message-bar\\library\\src\\components\\MessageBar\\MessageBar.cy.tsx",
+      "sha256": "e79a6124e04641d5f1f730a8ef43ebb3203423ce9bac8c6b72ed265a83b6ca44",
+      "originalConfig": "packages\\react-components\\react-message-bar\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-message-bar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-message-bar\\library\\src\\components\\MessageBarActions\\MessageBarActions.cy.tsx",
+      "destination": "message-bar\\library\\src\\components\\MessageBarActions\\MessageBarActions.cy.tsx",
+      "sha256": "922516d2f01c563ef9d6413bfff2ce24c0d48cb5dcfd6bf9597693245ab00804",
+      "originalConfig": "packages\\react-components\\react-message-bar\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-message-bar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-message-bar\\library\\src\\components\\MessageBarBody\\MessageBarBody.cy.tsx",
+      "destination": "message-bar\\library\\src\\components\\MessageBarBody\\MessageBarBody.cy.tsx",
+      "sha256": "247bd3e5ad90bf295d16b27567ab0229d085666673710427b8dd9d407503e7b9",
+      "originalConfig": "packages\\react-components\\react-message-bar\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-message-bar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-message-bar\\library\\src\\components\\MessageBarTitle\\MessageBarTitle.cy.tsx",
+      "destination": "message-bar\\library\\src\\components\\MessageBarTitle\\MessageBarTitle.cy.tsx",
+      "sha256": "8506d973539370e02907a2169f94ad89cf19aa422d67dc8ea02fc635f6e75bf6",
+      "originalConfig": "packages\\react-components\\react-message-bar\\library\\src\\components\\MessageBarTitle\\MessageBarTitle.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-message-bar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-motion\\library\\src\\factories\\createPresenceComponent.cy.tsx",
+      "destination": "motion\\library\\src\\factories\\createPresenceComponent.cy.tsx",
+      "sha256": "78df079b748adf10409233760b75cbc2732efe928179fde987e4ad8974047f4d",
+      "originalConfig": "packages\\react-components\\react-motion\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-motion\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-overflow\\library\\src\\components\\Overflow\\Overflow.cy.tsx",
+      "destination": "overflow\\library\\src\\components\\Overflow\\Overflow.cy.tsx",
+      "sha256": "f8277ae82fb41d5e9cc81bad44e509859e8c1cfa999875f897f1fe3382a60808",
+      "originalConfig": "packages\\react-components\\react-overflow\\library\\src\\components\\Overflow\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-overflow\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-overflow\\library\\src\\components\\OverflowItem\\OverflowItem.cy.stories.tsx",
+      "destination": "overflow\\library\\src\\components\\OverflowItem\\OverflowItem.cy.stories.tsx",
+      "sha256": "821f1248443dce3e1274b80dd5f8f5684af1f57c28c894e1ef02c780bc1bad2a",
+      "originalConfig": "packages\\react-components\\react-overflow\\library\\src\\components\\OverflowItem\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-overflow\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-overflow\\library\\src\\Overflow.cy.tsx",
+      "destination": "overflow\\library\\src\\Overflow.cy.tsx",
+      "sha256": "b641119969840f5609962dc32a5284e1bfd695575832eed266103d63d5846377",
+      "originalConfig": "packages\\react-components\\react-overflow\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-overflow\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-overflow\\library\\src\\Overflow.paint-probe.cy.tsx",
+      "destination": "overflow\\library\\src\\Overflow.paint-probe.cy.tsx",
+      "sha256": "677adb8e7bd0982995cb10679585c53af7913ebdc9286906cf1748777e8b0c56",
+      "originalConfig": "packages\\react-components\\react-overflow\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-overflow\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-persona\\library\\src\\components\\Persona\\Persona.cy.stories.tsx",
+      "destination": "persona\\library\\src\\components\\Persona\\Persona.cy.stories.tsx",
+      "sha256": "cc7329cd4f9aa191be935e27133d5be753acc3eb01d0684177803d447c5c6d6a",
+      "originalConfig": "packages\\react-components\\react-persona\\library\\src\\components\\Persona\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-persona\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-popover\\library\\src\\components\\Popover\\Popover.cy.tsx",
+      "destination": "popover\\library\\src\\components\\Popover\\Popover.cy.tsx",
+      "sha256": "a03085d3d6035067796563ff1516d1aac3565db274f4807fd3489a22c03c7b4f",
+      "originalConfig": "packages\\react-components\\react-popover\\library\\src\\components\\Popover\\Popover.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-popover\\library\\src\\components\\PopoverSurface\\PopoverSurface.cy.stories.tsx",
+      "destination": "popover\\library\\src\\components\\PopoverSurface\\PopoverSurface.cy.stories.tsx",
+      "sha256": "823fc509768ebaf909f4a99a114a2bc6e87a372709b6f5b1b93798a178e0fdcb",
+      "originalConfig": "packages\\react-components\\react-popover\\library\\src\\components\\PopoverSurface\\PopoverSurface.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-popover\\library\\src\\components\\PopoverTrigger\\PopoverTrigger.cy.tsx",
+      "destination": "popover\\library\\src\\components\\PopoverTrigger\\PopoverTrigger.cy.tsx",
+      "sha256": "b1045a40434fd507d2839948c919b15167ab816dc086c522e63c79f6f4e89091",
+      "originalConfig": "packages\\react-components\\react-popover\\library\\src\\components\\PopoverTrigger\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-portal-compat\\src\\PortalCompat.cy.tsx",
+      "destination": "portal-compat\\src\\PortalCompat.cy.tsx",
+      "sha256": "1d53b22596c37858d9238c385b950fbe90b0b4ea66cbf91440c02623fe01958f",
+      "originalConfig": "packages\\react-components\\react-portal-compat\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-portal-compat"
+    },
+    {
+      "source": "packages\\react-components\\react-portal\\library\\src\\components\\Portal\\testing\\Portal.cy-entry.stories.tsx",
+      "destination": "portal\\library\\src\\components\\Portal\\testing\\Portal.cy-entry.stories.tsx",
+      "sha256": "00fdb529a9d2ded0a25e5cf24ca251e702f952dbcefb3ac5a2daf003ef067131",
+      "originalConfig": "packages\\react-components\\react-portal\\library\\src\\components\\Portal\\Portal.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-portal\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-positioning\\library\\src\\hooks\\useSafeZoneArea\\useSafeZoneArea.cy.tsx",
+      "destination": "positioning\\library\\src\\hooks\\useSafeZoneArea\\useSafeZoneArea.cy.tsx",
+      "sha256": "45ebdc04ca27fccbe5f5475d083c45fd4c654ff4073aa7a5329a532fad6060e6",
+      "originalConfig": "packages\\react-components\\react-positioning\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-positioning\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-progress\\library\\src\\components\\ProgressBar\\ProgressBar.cy.tsx",
+      "destination": "progress\\library\\src\\components\\ProgressBar\\ProgressBar.cy.tsx",
+      "sha256": "d687c8c9a0eda79b5c45109fb6c30deb4021a305f9aa10c320d3309d63df8e04",
+      "originalConfig": "packages\\react-components\\react-progress\\library\\src\\components\\ProgressBar\\ProgressBar.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-progress\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-provider\\library\\src\\components\\FluentProvider\\FluentProvider.cy.stories.tsx",
+      "destination": "provider\\library\\src\\components\\FluentProvider\\FluentProvider.cy.stories.tsx",
+      "sha256": "bd6d190bfe23b4038dbb76da0652b70e7455d42696c9918d63c2e2d5fdddfbfd",
+      "originalConfig": "packages\\react-components\\react-provider\\library\\src\\components\\FluentProvider\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-provider\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-radio\\library\\src\\components\\Radio\\Radio.cy.tsx",
+      "destination": "radio\\library\\src\\components\\Radio\\Radio.cy.tsx",
+      "sha256": "1fbdb30e6a71a192706fa4c5e083b5c6079d8d9363e2433c581e8c95cf030e2a",
+      "originalConfig": "packages\\react-components\\react-radio\\library\\src\\components\\Radio\\Radio.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-radio\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-radio\\library\\src\\components\\RadioGroup\\RadioGroup.cy.stories.tsx",
+      "destination": "radio\\library\\src\\components\\RadioGroup\\RadioGroup.cy.stories.tsx",
+      "sha256": "ae08f0754c51d8836bfd39c2f12dcc39b1ed873a7623cb6a0ed800704b9f8ebd",
+      "originalConfig": "packages\\react-components\\react-radio\\library\\src\\components\\RadioGroup\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-radio\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-search\\library\\src\\components\\SearchBox\\SearchBox.cy.stories.tsx",
+      "destination": "search\\library\\src\\components\\SearchBox\\SearchBox.cy.stories.tsx",
+      "sha256": "c36237e4f8ee4f4d671f381470d0ed92dd66582c3bb51ea0526f1f0df96e7f86",
+      "originalConfig": "packages\\react-components\\react-search\\library\\src\\components\\SearchBox\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-search\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-skeleton\\library\\src\\components\\Skeleton\\Skeleton.cy.tsx",
+      "destination": "skeleton\\library\\src\\components\\Skeleton\\Skeleton.cy.tsx",
+      "sha256": "e33dd0eca3a6739855c913d6a4f0cb1603820ad5d6bc18541e0fe9d28303da94",
+      "originalConfig": "packages\\react-components\\react-skeleton\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-skeleton\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-skeleton\\library\\src\\components\\SkeletonItem\\SkeletonItem.cy.tsx",
+      "destination": "skeleton\\library\\src\\components\\SkeletonItem\\SkeletonItem.cy.tsx",
+      "sha256": "045e572e7f0559028702905f08aa6956676729093f0c2b242b5aa6c8beaf240e",
+      "originalConfig": "packages\\react-components\\react-skeleton\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-skeleton\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-spinner\\library\\src\\components\\Spinner\\Spinner.cy.tsx",
+      "destination": "spinner\\library\\src\\components\\Spinner\\Spinner.cy.tsx",
+      "sha256": "9d70654f8190387b887d1b9380f0b031063b1ad06bfa3e2da403dd93dcda7c9d",
+      "originalConfig": "packages\\react-components\\react-spinner\\library\\src\\components\\Spinner\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-spinner\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\ColorSwatch\\ColorSwatch.cy.tsx",
+      "destination": "swatch-picker\\library\\src\\components\\ColorSwatch\\ColorSwatch.cy.tsx",
+      "sha256": "c4763b18355a7cae85d6f29515e8bf5b91c2d5459395b6b63510830a90acbd51",
+      "originalConfig": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\ColorSwatch\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-swatch-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\ImageSwatch\\ImageSwatch.cy.tsx",
+      "destination": "swatch-picker\\library\\src\\components\\ImageSwatch\\ImageSwatch.cy.tsx",
+      "sha256": "519182630f5350573502173314c76434e5600f745ecdc1957f2efa4738b83c60",
+      "originalConfig": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\ImageSwatch\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-swatch-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\SwatchPicker\\SwatchPicker.cy.tsx",
+      "destination": "swatch-picker\\library\\src\\components\\SwatchPicker\\SwatchPicker.cy.tsx",
+      "sha256": "ce7a8d1deac4eb2731b3a1a6fe28d6fea8fb936f6bdf7f97d6a54277c74234e8",
+      "originalConfig": "packages\\react-components\\react-swatch-picker\\library\\src\\components\\SwatchPicker\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-swatch-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-switch\\library\\src\\components\\Switch\\Switch.cy.tsx",
+      "destination": "switch\\library\\src\\components\\Switch\\Switch.cy.tsx",
+      "sha256": "c54bc5264e69d62a339533351f3332d306d8dbbfa29275ea2ae0597c72016a59",
+      "originalConfig": "packages\\react-components\\react-switch\\library\\src\\components\\Switch\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-switch\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGrid\\DataGrid.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGrid\\DataGrid.cy.tsx",
+      "sha256": "fc3c2f470355032483aacd6d862a3dc16cfb9f28c36ed85a8d0c1c0fea0ec9ad",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGridBody\\DataGridBody.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGridBody\\DataGridBody.cy.tsx",
+      "sha256": "1774ae8ad9c08fbe89dfb5c7a8568b8d773534ac26d104d92a154411a6e994df",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGridCell\\DataGridCell.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGridCell\\DataGridCell.cy.tsx",
+      "sha256": "12d93b3e34265808c11679af7315f1e5b0444d90df2a90a5e167f64dbe6e25af",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGridHeader\\DataGridHeader.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGridHeader\\DataGridHeader.cy.tsx",
+      "sha256": "6a7351ecaa0f4491fdde1ff2a27434b7c8b5566da5b15d17c4c676db94953dd4",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\DataGridHeader\\DataGridHeader.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGridHeaderCell\\DataGridHeaderCell.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGridHeaderCell\\DataGridHeaderCell.cy.tsx",
+      "sha256": "4e926ccb959d0994ddb3ee6dfd21af7a96f0499542d51a0cc3f8d7616e6b058c",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\DataGridHeaderCell\\DataGridHeaderCell.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\DataGridRow\\DataGridRow.cy.tsx",
+      "destination": "table\\library\\src\\components\\DataGridRow\\DataGridRow.cy.tsx",
+      "sha256": "311b402fc8dc7152ec4804a5a19179d5b66fa1fb0ec2a8f8f1a4050d12e039e4",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\DataGridRow\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\Table\\Table.cy.stories.tsx",
+      "destination": "table\\library\\src\\components\\Table\\Table.cy.stories.tsx",
+      "sha256": "0a79d0715e03ec6da87685295d367d24e4e925fb801eba42e06987c496d1a79f",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\Table\\Table.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableBody\\TableBody.cy.stories.tsx",
+      "destination": "table\\library\\src\\components\\TableBody\\TableBody.cy.stories.tsx",
+      "sha256": "fec37dd6dd42bcf6ab5b8861fb344c2dfc33cc90cf7d9599a70f2bcc7a5e75c3",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\TableBody\\TableBody.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableCell\\TableCell.cy.tsx",
+      "destination": "table\\library\\src\\components\\TableCell\\TableCell.cy.tsx",
+      "sha256": "ad1ef29d4db65a3114f7216263091fa7a0deae5fe2ddb4eec60c4335d4cae618",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableCellLayout\\TableCellLayout.cy.stories.tsx",
+      "destination": "table\\library\\src\\components\\TableCellLayout\\TableCellLayout.cy.stories.tsx",
+      "sha256": "9a14b398838bd4bb791e20007daa06b5fe21ecb3a722d06482de7aed8b2aa60c",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\TableCellLayout\\TableCellLayout.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableHeader\\TableHeader.cy.stories.tsx",
+      "destination": "table\\library\\src\\components\\TableHeader\\TableHeader.cy.stories.tsx",
+      "sha256": "a1406c2e48520339d15b3619dd6810e4d5e41d828345e0b6bc78c803926d1452",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\TableHeader\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableHeaderCell\\TableHeaderCell.cy.tsx",
+      "destination": "table\\library\\src\\components\\TableHeaderCell\\TableHeaderCell.cy.tsx",
+      "sha256": "22693eeced8a8d34cc8c1d930884a1c869aabd348db3993cb3d19a28303bf387",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableRow\\TableRow.cy.tsx",
+      "destination": "table\\library\\src\\components\\TableRow\\TableRow.cy.tsx",
+      "sha256": "ffc0a4dce08fcde2182c41f615f27b4e1f32a86af98c6271ffc1b802efd88774",
+      "originalConfig": "packages\\react-components\\react-table\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-table\\library\\src\\components\\TableSelectionCell\\TableSelectionCell.cy.tsx",
+      "destination": "table\\library\\src\\components\\TableSelectionCell\\TableSelectionCell.cy.tsx",
+      "sha256": "fb3fc539aabbf7ffb7192d96974db623750cbf3a69db5d0243b4e195041400bf",
+      "originalConfig": "packages\\react-components\\react-table\\library\\src\\components\\TableSelectionCell\\TableSelectionCell.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-table\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tabs\\library\\src\\components\\Tab\\Tab.cy.tsx",
+      "destination": "tabs\\library\\src\\components\\Tab\\Tab.cy.tsx",
+      "sha256": "866f40285d5709e41621c38d0d1210b52136857578aa8070533deabda85c91fe",
+      "originalConfig": "packages\\react-components\\react-tabs\\library\\src\\components\\Tab\\Tab.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabs\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tabs\\library\\src\\components\\TabList\\TabList.cy.tsx",
+      "destination": "tabs\\library\\src\\components\\TabList\\TabList.cy.tsx",
+      "sha256": "403a0fa8e9e90c0ea0db767ea864534985df83294709163b19e2806c0423dd16",
+      "originalConfig": "packages\\react-components\\react-tabs\\library\\src\\components\\TabList\\TabList.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabs\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\hooks\\useFocusedElementChange.cy.tsx",
+      "destination": "tabster\\src\\hooks\\useFocusedElementChange.cy.tsx",
+      "sha256": "0f23eaf4c086de1bdc97976a8cbb2f1f4f1be01ae2519a11d847501d1d37e863",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\hooks\\useFocusVisible.cy.tsx",
+      "destination": "tabster\\src\\hooks\\useFocusVisible.cy.tsx",
+      "sha256": "3cb8c545fa728088454b0255823bdf3a915310a1c0761617a6f6f9453d2bcf58",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\useFocusObserved.cy.tsx",
+      "destination": "tabster\\src\\useFocusObserved.cy.tsx",
+      "sha256": "6a8d03d5b1aeb070b8c8fec7a976a8f92c7ae2e1a5f9fb8d79dbe4daff014d88",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\useKeyborgRef.cy.tsx",
+      "destination": "tabster\\src\\useKeyborgRef.cy.tsx",
+      "sha256": "957fcada1eeaae0ec4a48fe1481fa2401b9b81c76ac6b5392833d62f05dcee93",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\useOnKeyboardNavigationChange.cy.tsx",
+      "destination": "tabster\\src\\useOnKeyboardNavigationChange.cy.tsx",
+      "sha256": "4f33499f0d874fc11281769f4fbe95fca56f9ce8ed7191a3da37f0cc0c10cec3",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tabster\\src\\useSetKeyboardNavigation.cy.tsx",
+      "destination": "tabster\\src\\useSetKeyboardNavigation.cy.tsx",
+      "sha256": "0b74e7fcd9a101808a3e90978654d58d8fc0e506b3e76216aac67db1e25c3f7f",
+      "originalConfig": "packages\\react-components\\react-tabster\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tabster"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPicker\\TagPicker.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPicker\\TagPicker.cy.tsx",
+      "sha256": "cda9cfd1307c6492c8e04c001de8c998dae2a8f28852bad85c9f2cc338e24aee",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPicker\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerButton\\TagPickerButton.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerButton\\TagPickerButton.cy.tsx",
+      "sha256": "44139576205acc13c79b88c39ec9050cff1f496a5415174564db2f18b8547b9c",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerButton\\TagPickerButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerControl\\TagPickerControl.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerControl\\TagPickerControl.cy.tsx",
+      "sha256": "6d935912d7096dd5195537f851320a4275a4ea3ddaa367b0dfbb617ffd0c908a",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerControl\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerGroup\\TagPickerGroup.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerGroup\\TagPickerGroup.cy.tsx",
+      "sha256": "fecc11b888db1368c8e8c50cecd9035dc24c662dbbffa95ade415140c7b86fa3",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerGroup\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerInput\\TagPickerInput.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerInput\\TagPickerInput.cy.tsx",
+      "sha256": "564801c649dec541197e15c801d03b254daea39ec6a2484aba4b9bba643ff3cc",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerInput\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerList\\TagPickerList.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerList\\TagPickerList.cy.tsx",
+      "sha256": "b290aee15d3fbb6a3a8dcacc2475d52fbfa1588bf0ab0249b04df5a3fc92ec68",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerOption\\TagPickerOption.cy.stories.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerOption\\TagPickerOption.cy.stories.tsx",
+      "sha256": "69905a0d7d2d15745570839fbb3ae58db198a467249ffe9bf7342b2cfbb8150d",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerOption\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerOptionGroup\\TagPickerOptionGroup.cy.tsx",
+      "destination": "tag-picker\\library\\src\\components\\TagPickerOptionGroup\\TagPickerOptionGroup.cy.tsx",
+      "sha256": "0b7043015123dcbbc8f6581980462f4b8c4e337f0decc17390f8112605ec7921",
+      "originalConfig": "packages\\react-components\\react-tag-picker\\library\\src\\components\\TagPickerOptionGroup\\TagPickerOptionGroup.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tag-picker\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTag\\InteractionTag.cy.stories.tsx",
+      "destination": "tags\\library\\src\\components\\InteractionTag\\InteractionTag.cy.stories.tsx",
+      "sha256": "a89df7e3b1857ecf2aaf1f21c0a85409eeb0d327cf6e62d66e9b41a89b64376f",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTag\\InteractionTag.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTagPrimary\\InteractionTagPrimary.cy.stories.tsx",
+      "destination": "tags\\library\\src\\components\\InteractionTagPrimary\\InteractionTagPrimary.cy.stories.tsx",
+      "sha256": "c3f94feac1ea1fe650f5c1c3f451e3d83ab9490643b7985dc00e90ffbb1979d2",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTagPrimary\\InteractionTagPrimary.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTagSecondary\\InteractionTagSecondary.cy.tsx",
+      "destination": "tags\\library\\src\\components\\InteractionTagSecondary\\InteractionTagSecondary.cy.tsx",
+      "sha256": "baf39f0db2d8c5849946f35f4ad437e47b9252f0ef33f61a90e94de4c3942270",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\src\\components\\InteractionTagSecondary\\InteractionTagSecondary.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\Tag\\Tag.cy.styles.cy.tsx",
+      "destination": "tags\\library\\src\\components\\Tag\\Tag.cy.styles.cy.tsx",
+      "sha256": "7badcd3a9bdaaf8c4b829e903fc589cc351a69fb931573dee2430771f15b5e4f",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\Tag\\Tag.cy.tsx",
+      "destination": "tags\\library\\src\\components\\Tag\\Tag.cy.tsx",
+      "sha256": "d55a68116e71e9d28f5cd28951554279002355815b5e3401043461a3e6d711f4",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\src\\components\\Tag\\Tag.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tags\\library\\src\\components\\TagGroup\\TagGroup.cy.tsx",
+      "destination": "tags\\library\\src\\components\\TagGroup\\TagGroup.cy.tsx",
+      "sha256": "ebd45092612bad5966a9acf5d386c73cf4b70a29a5c542495d0dd84c70f8af20",
+      "originalConfig": "packages\\react-components\\react-tags\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tags\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopover\\TeachingPopover.cy.tsx",
+      "destination": "teaching-popover\\library\\src\\components\\TeachingPopover\\TeachingPopover.cy.tsx",
+      "sha256": "452ea2e7b2b6301a9cc742eec945425837f2d6c5bf9120a588806364236cea2a",
+      "originalConfig": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopover\\TeachingPopover.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-teaching-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverBody\\TeachingPopoverBody.cy.tsx",
+      "destination": "teaching-popover\\library\\src\\components\\TeachingPopoverBody\\TeachingPopoverBody.cy.tsx",
+      "sha256": "8f9ef8bb67e297a0f5dd5463f6312b8e87b59e1cb5c2086cccb385f689a72bf6",
+      "originalConfig": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverBody\\TeachingPopoverBody.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-teaching-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverFooter\\TeachingPopoverFooter.cy.tsx",
+      "destination": "teaching-popover\\library\\src\\components\\TeachingPopoverFooter\\TeachingPopoverFooter.cy.tsx",
+      "sha256": "8f9ef8bb67e297a0f5dd5463f6312b8e87b59e1cb5c2086cccb385f689a72bf6",
+      "originalConfig": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverFooter\\TeachingPopoverFooter.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-teaching-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverSurface\\TeachingPopoverSurface.cy.tsx",
+      "destination": "teaching-popover\\library\\src\\components\\TeachingPopoverSurface\\TeachingPopoverSurface.cy.tsx",
+      "sha256": "8f9ef8bb67e297a0f5dd5463f6312b8e87b59e1cb5c2086cccb385f689a72bf6",
+      "originalConfig": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverSurface\\TeachingPopoverSurface.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-teaching-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverTitle\\TeachingPopoverTitle.cy.tsx",
+      "destination": "teaching-popover\\library\\src\\components\\TeachingPopoverTitle\\TeachingPopoverTitle.cy.tsx",
+      "sha256": "c625f6b093ee5ae4ccbd3ff3f5731d81477d733c131e4b207421df6a9ec0574e",
+      "originalConfig": "packages\\react-components\\react-teaching-popover\\library\\src\\components\\TeachingPopoverTitle\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-teaching-popover\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-text\\library\\src\\components\\Text\\Text.cy.tsx",
+      "destination": "text\\library\\src\\components\\Text\\Text.cy.tsx",
+      "sha256": "3b729b5056d46e72b1c0dcaa3bb04c70a68593305ab899e27b3d92d13b640b9c",
+      "originalConfig": "packages\\react-components\\react-text\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-text\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-textarea\\library\\src\\components\\Textarea\\Textarea.cy.tsx",
+      "destination": "textarea\\library\\src\\components\\Textarea\\Textarea.cy.tsx",
+      "sha256": "a1b3ffb76a8a666beae62bc58b971e828254f2c67a387871335a1cb5c76debf9",
+      "originalConfig": "packages\\react-components\\react-textarea\\library\\src\\components\\Textarea\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-textarea\\library\\src\\components\\Textarea"
+    },
+    {
+      "source": "packages\\react-components\\react-timepicker-compat\\library\\src\\components\\TimePicker\\TimePicker.cy.tsx",
+      "destination": "timepicker-compat\\library\\src\\components\\TimePicker\\TimePicker.cy.tsx",
+      "sha256": "59de4c2d615b8b3ca5495dc09d241cff19e43a5a18e198cf185ffad1e622ca7e",
+      "originalConfig": "packages\\react-components\\react-timepicker-compat\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-timepicker-compat\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toast\\library\\src\\components\\Toast\\Toast.cy.tsx",
+      "destination": "toast\\library\\src\\components\\Toast\\Toast.cy.tsx",
+      "sha256": "c4522f92990adfb203fb56392ebe2d698579b31d3796483cc0b5a1b7ce9354d4",
+      "originalConfig": "packages\\react-components\\react-toast\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-toast\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toast\\library\\src\\components\\Toaster\\Toaster.cy.tsx",
+      "destination": "toast\\library\\src\\components\\Toaster\\Toaster.cy.tsx",
+      "sha256": "50b0c4f9474c3b1ae1c2e8493045584fe86fd09bf824e7508e71d47418c05239",
+      "originalConfig": "packages\\react-components\\react-toast\\library\\src\\components\\Toaster\\Toaster.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-toast\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toolbar\\library\\src\\components\\Toolbar\\Toolbar.cy.tsx",
+      "destination": "toolbar\\library\\src\\components\\Toolbar\\Toolbar.cy.tsx",
+      "sha256": "1c08c5b84bbca57f7ccc93a3a582154cdde4a367a848dfc4f0d998d1e47ad9e9",
+      "originalConfig": "packages\\react-components\\react-toolbar\\library\\src\\components\\Toolbar\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-toolbar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarButton\\ToolbarButton.cy.tsx",
+      "destination": "toolbar\\library\\src\\components\\ToolbarButton\\ToolbarButton.cy.tsx",
+      "sha256": "f10f6c0ceb8b47dcbf2c23a7ca74dbdcdeba1bf4e46905a1fe299e1d0ac32cd1",
+      "originalConfig": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarButton\\ToolbarButton.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-toolbar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarDivider\\ToolbarDivider.cy.tsx",
+      "destination": "toolbar\\library\\src\\components\\ToolbarDivider\\ToolbarDivider.cy.tsx",
+      "sha256": "637f3592e9dbdcf5584b6b00e010d549e8f0d410feb162f50fb6617eba9edc91",
+      "originalConfig": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarDivider\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-toolbar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarToggleButton\\ToolbarToggleButton.cy.tsx",
+      "destination": "toolbar\\library\\src\\components\\ToolbarToggleButton\\ToolbarToggleButton.cy.tsx",
+      "sha256": "8e3657b7e60416c3d4e2c910db44aea27d67c384ee19e5446cd98d9bfaf48c23",
+      "originalConfig": "packages\\react-components\\react-toolbar\\library\\src\\components\\ToolbarToggleButton\\cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-toolbar\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tooltip\\library\\src\\components\\Tooltip\\Tooltip.cy.tsx",
+      "destination": "tooltip\\library\\src\\components\\Tooltip\\Tooltip.cy.tsx",
+      "sha256": "d502652eccadee822feb41280b931ef7b1d3de1ecfc2edc0c80ee18b7967eb1a",
+      "originalConfig": "packages\\react-components\\react-tooltip\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tooltip\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tree\\library\\src\\components\\FlatTree\\FlatTree.cy.tsx",
+      "destination": "tree\\library\\src\\components\\FlatTree\\FlatTree.cy.tsx",
+      "sha256": "7567454775c3702221b365978d3e1d4e9d389b6457c384a0fb5cd332ed60a2d2",
+      "originalConfig": "packages\\react-components\\react-tree\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tree\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tree\\library\\src\\components\\Tree\\Tree.cy.tsx",
+      "destination": "tree\\library\\src\\components\\Tree\\Tree.cy.tsx",
+      "sha256": "ea169fe3f96c73a7cd8b18b6f7ec9554bbe613689294e86d4d94e9f82897ee55",
+      "originalConfig": "packages\\react-components\\react-tree\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tree\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-tree\\library\\src\\components\\TreeProvider.cy.tsx",
+      "destination": "tree\\library\\src\\components\\TreeProvider.cy.tsx",
+      "sha256": "f59a2a3b49e2a3208d52a74bcbf7391458f05dde3290519d63d57e1745cdc5f5",
+      "originalConfig": "packages\\react-components\\react-tree\\library\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-tree\\library"
+    },
+    {
+      "source": "packages\\react-components\\react-utilities\\src\\hooks\\useOnClickOutside.cy.tsx",
+      "destination": "utilities\\src\\hooks\\useOnClickOutside.cy.tsx",
+      "sha256": "25efa033ccb75f510c6d237613e1348d41ff2a233402b30e7b8fe1b10a73cce5",
+      "originalConfig": "packages\\react-components\\react-utilities\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-utilities"
+    },
+    {
+      "source": "packages\\react-components\\react-utilities\\src\\hooks\\useOnScrollOutside.cy.tsx",
+      "destination": "utilities\\src\\hooks\\useOnScrollOutside.cy.tsx",
+      "sha256": "ead3b47e86a623c9b1c57b1004177314c5153c18bafaf597386c2e6c69a798c9",
+      "originalConfig": "packages\\react-components\\react-utilities\\cypress.config.ts",
+      "originalWorkingDirectory": "packages\\react-components\\react-utilities"
+    },
+    {
+      "source": "packages\\react-components\\react-utilities\\testing\\IdPrefixProvider\\IdPrefixProvider.cy.tsx",
+      "destination": "utilities\\testing\\IdPrefixProvider\\IdPrefixProvider.cy.tsx",
+      "sha256": "8f9ef8bb67e297a0f5dd5463f6312b8e87b59e1cb5c2086cccb385f689a72bf6",
+      "originalConfig": "packages\\react-components\\react-utilities\\testing\\IdPrefixProvider\\IdPrefixProvider.cypress.config.cjs",
+      "originalWorkingDirectory": "packages\\react-components\\react-utilities"
+    }
+  ]
+}

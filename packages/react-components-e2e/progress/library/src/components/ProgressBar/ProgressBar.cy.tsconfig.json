@@ -1,0 +1,11 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "cypress", "cypress-real-events"],
+    "typeRoots": ["../../../../../../../node_modules", "../../../../../../../node_modules/@types"],
+    "lib": ["ES2019", "dom"],
+    "noEmit": true
+  },
+  "include": ["ProgressBar.cy.tsx", "ProgressBar.cy.styles.ts"],
+  "references": []
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "cypress", "cypress-real-events"],
+    "typeRoots": ["../../../../../../../node_modules", "../../../../../../../node_modules/@types"],
+    "lib": ["ES2019", "dom"]
+  },
+  "include": ["CompoundButton.cy.tsx", "CompoundButton.cy.styles.ts", "CompoundButton.cy-jsx.stories.ts"],
+  "references": []
+}
