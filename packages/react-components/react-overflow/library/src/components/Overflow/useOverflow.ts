@@ -2,7 +2,13 @@
 
 import type * as React from 'react';
 import type { OnUpdateOverflow } from '@fluentui/priority-overflow';
-import { getTriggerChild, getReactElementRef, useMergedRefs, useEventCallback } from '@fluentui/react-utilities';
+import {
+  getTriggerChild,
+  getReactElementRef,
+  useMergedRefs,
+  useEventCallback,
+  useIsomorphicLayoutEffect,
+} from '@fluentui/react-utilities';
 
 import { updateVisibilityAttribute, useOverflowContainer } from '../../useOverflowContainer';
 import type { OverflowComponentState, OverflowProps, OverflowState } from './Overflow.types';
@@ -52,6 +58,11 @@ export const useOverflow_unstable = (props: OverflowProps, ref: React.Ref<HTMLEl
     hasHiddenItems,
     onUpdateItemVisibility: updateVisibilityAttribute,
   });
+
+  useIsomorphicLayoutEffect(() => {
+    // Option resets to zero/false need a recompute even when the child's size stays unchanged.
+    forceUpdateOverflow();
+  }, [overflowDirection, overflowAxis, padding, minimumVisible, hasHiddenItems, forceUpdateOverflow]);
 
   const child = getTriggerChild<HTMLElement>(children);
 
