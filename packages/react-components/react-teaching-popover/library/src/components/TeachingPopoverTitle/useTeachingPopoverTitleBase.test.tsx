@@ -33,6 +33,7 @@ describe('useTeachingPopoverTitleBase_unstable', () => {
     expect(result.current.components).toEqual({ root: 'h2', dismissButton: 'button' });
     expect(result.current).not.toHaveProperty('appearance');
     expect(result.current.dismissButton?.children).toBeUndefined();
+    expect(result.current.dismissButton?.type).toBe('button');
   });
 
   it('dismisses the popover and restores focus', () => {

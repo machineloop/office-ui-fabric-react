@@ -45,6 +45,7 @@ export const useTeachingPopoverTitleBase_unstable = (
     dismissButton: slot.optional(dismissButton, {
       renderByDefault: false,
       defaultProps: {
+        type: 'button',
         onClick: onDismissButtonClick,
         'aria-label': 'dismiss',
         'aria-hidden': true,
