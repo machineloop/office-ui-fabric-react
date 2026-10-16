@@ -44,6 +44,29 @@ const wrap = (overrides: Partial<TagPickerContextValue> = {}): React.FC<{ childr
 };
 
 describe('useTagPickerInput_unstable', () => {
+  it.each([ArrowLeft, Backspace])('does not move focus into tags for consumer-cancelled %s', key => {
+    findLastFocusable.mockReset();
+    const group = document.createElement('div');
+    const ref = React.createRef<HTMLInputElement>();
+    const { result } = renderHook(
+      () => useTagPickerInput_unstable({ onKeyDown: event => event.preventDefault() }, ref),
+      { wrapper: wrap({ tagPickerGroupRef: { current: group } }) },
+    );
+    const event = {
+      key,
+      code: key,
+      currentTarget: { selectionStart: 0, selectionEnd: 0 },
+      defaultPrevented: false,
+      preventDefault() {
+        this.defaultPrevented = true;
+      },
+    } as unknown as React.KeyboardEvent<HTMLInputElement>;
+
+    act(() => result.current.root.onKeyDown?.(event));
+
+    expect(findLastFocusable).not.toHaveBeenCalled();
+  });
+
   it('renders the input with type="text"', () => {
     const ref = React.createRef<HTMLInputElement>();
     const { result } = renderHook(() => useTagPickerInput_unstable({}, ref), { wrapper: wrap() });

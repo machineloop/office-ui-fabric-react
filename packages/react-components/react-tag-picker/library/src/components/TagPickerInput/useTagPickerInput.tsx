@@ -55,13 +55,14 @@ export const useTagPickerInputBase_unstable = (
   const selectOption = useTagPickerContext_unstable(ctx => ctx.selectOption);
   const getOptionById = useTagPickerContext_unstable(ctx => ctx.getOptionById);
   const contextValue = useTagPickerContext_unstable(ctx => ctx.value);
+  const { value = contextValue, disabled = contextDisabled } = fieldProps;
 
   useIsomorphicLayoutEffect(() => {
     if (!triggerRef.current) {
       return;
     }
     setTagPickerInputStretchStyle(triggerRef.current);
-  }, [selectedOptions, triggerRef]);
+  }, [selectedOptions, triggerRef, value]);
 
   useIsomorphicLayoutEffect(() => {
     if (triggerRef.current) {
@@ -73,8 +74,6 @@ export const useTagPickerInputBase_unstable = (
       };
     }
   }, [triggerRef]);
-
-  const { value = contextValue, disabled = contextDisabled } = fieldProps;
 
   const isTypingRef = React.useRef(false);
 
@@ -152,6 +151,7 @@ export const useTagPickerInput_unstable = (
   const onKeyDown = useEventCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
     props.onKeyDown?.(event);
     if (
+      !event.defaultPrevented &&
       (event.key === ArrowLeft || event.key === Backspace) &&
       event.currentTarget.selectionStart === 0 &&
       event.currentTarget.selectionEnd === 0 &&
