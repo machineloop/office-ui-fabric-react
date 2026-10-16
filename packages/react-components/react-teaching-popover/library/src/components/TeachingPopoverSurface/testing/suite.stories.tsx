@@ -243,6 +243,20 @@ function expected(profile: Profile) {
   };
 }
 const modalTargets = ['#surface > i:nth-child(1)', '#surface > i:nth-child(4)'];
+function waitForNativePlacement(
+  placements: ReadonlyArray<{ sentinel: HTMLElement }>,
+  verifyRetained: () => void,
+  label: string,
+) {
+  verifyRetained();
+  return cy.wrap(placements).should(() => {
+    verifyRetained();
+    for (const { sentinel } of placements) {
+      expect(sentinel.style.top, `${label} vertical placement is initialized`).to.equal('0px');
+      expect(sentinel.style.left, `${label} horizontal placement is initialized`).to.equal('0px');
+    }
+  });
+}
 function modalPlacementReady() {
   return surface().then($surface => {
     expect($surface, 'one active native modal Surface').to.have.length(1);
@@ -289,15 +303,68 @@ function modalPlacementReady() {
         expect(sentinel.style.position).to.equal('fixed');
       }
     }
-    retainedPair();
-    return cy.wrap(placements).should(() => {
-      retainedPair();
-      for (const { sentinel } of placements) {
-        expect(sentinel.style.top, 'no-scroll modal dummy vertical placement is initialized').to.equal('0px');
-        expect(sentinel.style.left, 'no-scroll modal dummy horizontal placement is initialized').to.equal('0px');
-      }
-    });
+    return waitForNativePlacement(placements, retainedPair, 'no-scroll modal dummy');
   });
+}
+function stablePlacementReady(profile: 'stable-basic' | 'stable-carousel' | 'stable-text') {
+  const targets = expected(profile).incomplete[0].nodes.map(node => {
+    expect(node.target, 'one static stable sentinel selector').to.have.length(1);
+    return String(node.target[0]);
+  });
+  return surface()
+    .should($surface => {
+      expect($surface, 'one original stable Surface').to.have.length(1);
+      for (const selector of targets) {
+        expect($surface[0].ownerDocument.querySelectorAll(selector), `${selector} is globally unique`).to.have.length(
+          1,
+        );
+      }
+    })
+    .then($surface => {
+      const surfaceRoot = $surface[0];
+      const document = surfaceRoot.ownerDocument;
+      const placements = targets.map(selector => {
+        const sentinel = document.querySelector<HTMLElement>(selector);
+        if (!sentinel) throw new Error(`Missing required stable sentinel ${selector}`);
+        return {
+          sentinel,
+          selector,
+          parent: sentinel.parentElement,
+          mover: selector.startsWith('.fui-TeachingPopoverCarouselNav'),
+          first: selector.includes('nth-child(1)'),
+        };
+      });
+      const verifyRetained = () => {
+        const roots = document.querySelectorAll('.fui-TeachingPopoverSurface');
+        expect(roots, 'original stable Surface remains unique').to.have.length(1);
+        expect(roots[0]).to.equal(surfaceRoot);
+        expect(surfaceRoot.isConnected).to.equal(true);
+        for (const { sentinel, selector, parent, mover, first } of placements) {
+          const matches = document.querySelectorAll(selector);
+          expect(matches, 'static selector retains one native sentinel').to.have.length(1);
+          expect(matches[0], 'static selector retains the captured native sentinel').to.equal(sentinel);
+          expect(sentinel.isConnected).to.equal(true);
+          expect(sentinel.ownerDocument).to.equal(document);
+          expect(sentinel.parentElement).to.equal(parent);
+          expect(sentinel.closest('.fui-TeachingPopoverSurface')).to.equal(surfaceRoot);
+          if (mover) {
+            expect(parent?.classList.contains('fui-TeachingPopoverCarouselNav')).to.equal(true);
+          } else {
+            expect(parent).to.equal(surfaceRoot);
+          }
+          expect(sentinel.tagName).to.equal('I');
+          expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+            `isFirst=${first}, isOutside=false, (${mover ? 'Mover' : 'Modalizer'}, tabbable=true)`,
+          );
+          expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+          expect(sentinel.getAttribute('tabindex')).to.equal('0');
+          expect(sentinel.getAttribute('role')).to.equal('none');
+          expect(sentinel.childNodes).to.have.length(0);
+          expect(sentinel.style.position).to.equal('fixed');
+        }
+      };
+      return waitForNativePlacement(placements, verifyRetained, 'stable native dummy');
+    });
 }
 function iframeRootPlacementReady() {
   return cy.get<HTMLIFrameElement>('#inside-frame').then($frame => {
@@ -358,14 +425,7 @@ function iframeRootPlacementReady() {
         expect(sentinel.style.position).to.equal('fixed');
       }
     }
-    retainedPair();
-    return cy.wrap(placements).should(() => {
-      retainedPair();
-      for (const { sentinel } of placements) {
-        expect(sentinel.style.top, 'plain child body Root vertical placement is initialized').to.equal('0px');
-        expect(sentinel.style.left, 'plain child body Root horizontal placement is initialized').to.equal('0px');
-      }
-    });
+    return waitForNativePlacement(placements, retainedPair, 'plain child body Root');
   });
 }
 function semanticModalShape(
@@ -786,6 +846,13 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
       expect(computeAccessibleName($node[0])).to.equal('Rendered title');
       expect(computeAccessibleDescription($node[0])).to.equal('Rendered description');
     });
+    settled();
+    cy.get('#standalone-title')
+      .should('be.visible')
+      .should($heading => {
+        expect($heading[0].closest('[aria-hidden="true"]'), 'audited rendered heading is exposed').to.equal(null);
+        expect($heading[0].closest('[inert]')).to.equal(null);
+      });
   });
   scenario(1, 'native language direction hidden-false and data metadata pass through without owner props', () => {
     standalone({ lang: 'en', dir: 'rtl', hidden: false, 'data-testid': 'surface-metadata' });
@@ -2022,6 +2089,7 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
         if (brand) {
           surface().should('have.css', 'background-color', 'rgb(15, 108, 189)');
         }
+        stablePlacementReady('stable-basic');
         audit('stable-open', 'stable-basic');
         cy.screenshot(`positive/stable-${name}`, { capture: 'viewport' });
         cy.then(() => Cypress.automation('remote:debugger:protocol', { command: 'Page.bringToFront' }));
@@ -2240,6 +2308,7 @@ describe('row140 TeachingPopoverSurface', { retries: 0 }, () => {
           }
         };
         page(1);
+        stablePlacementReady(text ? 'stable-text' : 'stable-carousel');
         audit('stable-open', text ? 'stable-text' : 'stable-carousel');
         cy.contains('button', 'Next').realClick();
         page(2);

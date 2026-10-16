@@ -1,5 +1,34 @@
 # TeachingPopoverSurface functional coverage (row 140)
 
+## Native sentinel audit readiness
+
+The labelledby/describedby standalone case also observes settled Surface
+animations and actual heading visibility/exposure before its unchanged full
+audit. The loaded sweep recorded a `heading-order` incomplete
+(`Unable to determine previous heading`), not a naming violation. The installed
+axe rule compares visible heading ancestry snapshots; animation and exposure
+are relevant readiness premises, not proof of the precise race. A trial requiring
+a body-owned Root sentinel failed because this standalone fixture does not
+require that sentinel; that unsupported premise was removed. The original h2,
+rendered name/description assertions, clean audit oracle
+and all other 89 cases remain unchanged; no heading is relabelled or hidden, and
+no finding is filtered.
+
+The five unchanged stable-story open audits now wait for the real Modalizer and,
+where present, Mover sentinels to initialize their native `top` and `left`
+placement. The bounded check retains the original Surface, exact globally unique
+static selectors, sentinel references, parents, ownership attributes and empty
+native sentinel shape throughout the wait. No coordinates or attributes are
+written by the test.
+
+This avoids comparing an AXE HTML capture taken before asynchronous placement
+with later live markup. Raw AXE findings, exact expected rule/node inventories,
+HTML equality, classifier guards, real story actions and final closed-stage
+exposure assertions remain unchanged. The same small placement-wait helper also
+serves the existing modal and child-iframe readiness checks without changing their
+premises. There are no sleeps, retry increases, filtered findings, story edits or
+component source changes.
+
 Implementation-only handoff for the parent's initial and fresh repeat reviews.
 No review or commit is performed by this component's runner. The parent owns the
 separate commit and final campaign verification.
