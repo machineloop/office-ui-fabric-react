@@ -1,5 +1,30 @@
 # ONLY132 ColorArea Cypress traceability
 
+## Modal audit and fixture handoff
+
+Before the unchanged Popup audit, a bounded retrying assertion observes both
+original modal sentinels in their existing tabbable state. The 32-worker sweep
+exposed a timing-sensitive Popup audit: the modal sentinels appeared in an
+`aria-hidden-focus` incomplete instead of the required violation. Its failed
+verdict prevented the already-required real Ok close and caused later exposure
+checks to fail. This does not prove pre-insertion timing, and the current green
+receipts establish single-worker warm Nx overrides, not renewed 32-worker or
+cold/default-target acceptance. This readiness check does not insert sentinels, change focus or
+attributes, weaken the exact known findings, or move the audit after dismissal.
+
+The Popup scenario still reopens the selected color and receives its original
+full open-modal audit, including the exact known dialog/sentinel findings. Only
+after that audit succeeds, the test uses the story's real Ok action to close the
+Popup and checks that the retained fixture is no longer accessibility-hidden or
+inert before its provider can be unmounted.
+
+Other scenarios require an exposed, visible, nonempty fixture before their
+unchanged full audit. This prevents an accessibility-hidden mount ancestor from
+turning meaningful rule coverage into near-empty apparent success. No attributes
+are removed by the test, no findings are filtered, and all 103 cases, 96 audits,
+existing classifications and retry-zero checks remain. The handoff verdict is in
+the Popup test body, not a Mocha hook that could skip subsequent scenarios.
+
 ## Scope and execution
 
 All authored files, configuration, temporary files, screenshots and reports are confined to this `ColorArea` directory. The checked-in `ColorArea.cy.tsx` gains only an import of `testing/ColorArea.cy.stories`; all seven original test bodies and assertions are unchanged. Implementation, unit tests, published stories, dependency manifests and shared configuration are untouched. No commit or delegated review is performed.

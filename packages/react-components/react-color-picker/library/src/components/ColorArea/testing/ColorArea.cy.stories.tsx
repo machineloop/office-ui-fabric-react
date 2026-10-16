@@ -202,140 +202,166 @@ const HookArea = ({ base }: { base: boolean }) => {
 
 describe('ONLY132 ColorArea browser coverage', () => {
   const auditCurrentFixture = () => {
-    return cy.get('#fixture').then($scope =>
-      cy
-        .then(() =>
-          axe.run([$scope[0], ...Array.from($scope[0].ownerDocument.querySelectorAll('.fui-PopoverSurface'))], {
-            elementRef: true,
-          }),
-        )
-        .then(result => {
-          const report = {
-            scenario: Cypress.currentTest.title,
-            retries: Cypress.currentRetry,
-            classification:
-              Cypress.currentTest.title ===
-              'R3.03 stable Shape shares controlled channels and renders rounded and square areas'
-                ? 'unchanged Shape story: four unnamed square-picker ranges'
-                : Cypress.currentTest.title ===
-                  'R3.04 stable Popup updates the draft area and commits with Ok then reopens the selected color'
-                ? 'unchanged Popup story: unnamed dialog and two Tabster modal sentinels'
-                : Cypress.currentTest.title ===
-                  'R3.05 stable Swatch story adds the current area color and Reset restores area and empty swatches'
-                ? 'unchanged Swatch story: two Tabster mover sentinels'
-                : Cypress.currentTest.title ===
-                  'R3.07 stable ColorSliderChannels updates saturation independently of hue and brightness'
-                ? 'unchanged Channels story: three unnamed ranges'
-                : 'clean',
-            passes: result.passes.map(({ id }) => id),
-            violations: result.violations.map(({ id, nodes }) => ({
-              id,
-              nodes: nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
-            })),
-            incomplete: result.incomplete.map(({ id, nodes }) => ({
-              id,
-              nodes: nodes.map(({ target, html, any: anyChecks, all, none }) => ({
-                target,
-                html,
-                anyChecks,
-                all,
-                none,
-              })),
-            })),
-          };
-          cy.writeFile(`${evidenceRoot}/audit-${++auditIndex}.json`, report).then(() => {
-            expect(report.passes.length, 'axe evaluated rules').to.be.greaterThan(0);
-            if (
-              report.classification === 'unchanged Shape story: four unnamed square-picker ranges' ||
-              report.classification === 'unchanged Channels story: three unnamed ranges'
-            ) {
-              expect(report.violations.map(({ id }) => id)).to.deep.equal(['label']);
-              const shape = report.classification === 'unchanged Shape story: four unnamed square-picker ranges';
-              const inputs = shape
-                ? $scope[0].querySelectorAll('.fui-ColorPicker')[1].querySelectorAll('input')
-                : $scope[0].querySelectorAll<HTMLInputElement>('.fui-ColorSlider__input');
-              expect(inputs).to.have.length(shape ? 4 : 3);
-              expect(result.violations[0].nodes).to.have.length(shape ? 4 : 3);
-              const values = shape ? ['99', '91', '109', '100'] : ['109', '100', '91'];
-              result.violations[0].nodes.forEach((node, index) => {
-                expect(node.target).to.have.length(1);
-                expect($scope[0].ownerDocument.querySelector(String(node.target[0]))).to.equal(inputs[index]);
-                expect(inputs[index].type).to.equal('range');
-                expect(inputs[index].value).to.equal(values[index]);
-                expect(computeAccessibleName(inputs[index])).to.equal('');
-                expect(node.failureSummary).to.equal(
-                  'Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element\'s default semantics were not overridden with role="none" or role="presentation"',
-                );
-              });
-            } else if (
-              report.classification === 'unchanged Popup story: unnamed dialog and two Tabster modal sentinels'
-            ) {
-              expect(report.violations.map(({ id }) => id)).to.deep.equal(['aria-dialog-name', 'aria-hidden-focus']);
-              const document = $scope[0].ownerDocument;
-              const surface = document.querySelector('.fui-PopoverSurface')!;
-              expect(surface.getAttribute('role')).to.equal('dialog');
-              expect(surface.getAttribute('aria-modal')).to.equal('true');
-              expect(computeAccessibleName(surface)).to.equal('');
-              expect(result.violations[0].nodes).to.have.length(1);
-              expect(result.violations[0].nodes[0].target).to.deep.equal(['.fui-PopoverSurface']);
-              expect(result.violations[0].nodes[0].failureSummary).to.equal(
-                'Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute',
-              );
-              expect(result.violations[1].nodes).to.have.length(2);
-              const sentinels = [surface.firstElementChild, surface.lastElementChild];
-              result.violations[1].nodes.forEach((node, index) => {
-                expect(node.target).to.have.length(1);
-                const sentinel = document.querySelector(String(node.target[0]))!;
-                expect(sentinel).to.equal(sentinels[index]);
-                expect(sentinel.tagName).to.equal('I');
-                expect(sentinel.getAttribute('tabindex')).to.equal('0');
-                expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinel.getAttribute('role')).to.equal('none');
-                expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
-                  `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
-                );
-                expect(node.failureSummary).to.equal(
-                  'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
-                );
-              });
-            } else if (report.classification === 'unchanged Swatch story: two Tabster mover sentinels') {
-              expect(report.violations.map(({ id }) => id)).to.deep.equal(
-                result.violations.length ? ['aria-hidden-focus'] : [],
-              );
-              const sentinels = $scope[0].querySelectorAll('.fui-SwatchPicker i[data-tabster-dummy]');
-              expect(sentinels).to.have.length(2);
-              if (result.violations.length) {
-                expect(result.violations[0].nodes).to.have.length(2);
-              }
-              (result.violations[0]?.nodes || []).forEach((node, index) => {
-                expect(node.target).to.have.length(1);
-                expect(node.element).to.equal(sentinels[index]);
-                const sentinel = new DOMParser().parseFromString(node.html, 'text/html').body.firstElementChild!;
-                expect(sentinel.tagName).to.equal('I');
-                expect(sentinel.getAttribute('tabindex')).to.equal('0');
-                expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
-                expect(sentinel.getAttribute('role')).to.equal('none');
-                expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
-                  `isFirst=${index === 0}, isOutside=false, (Mover, tabbable=true)`,
-                );
-                expect(node.failureSummary).to.equal(
-                  'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
-                );
-              });
-            } else {
-              expect(report.violations, 'unexpected axe violations').to.deep.equal([]);
-            }
-            expect(report.incomplete, 'unexpected axe incompletes').to.deep.equal([]);
+    return cy
+      .get('#fixture')
+      .should('be.visible')
+      .and('not.be.empty')
+      .should($scope => {
+        if (
+          Cypress.currentTest.title ===
+          'R3.04 stable Popup updates the draft area and commits with Ok then reopens the selected color'
+        ) {
+          const surface = $scope[0].ownerDocument.querySelector('.fui-PopoverSurface')!;
+          expect(surface, 'original reopened Popup is present').not.to.equal(null);
+          [surface.firstElementChild, surface.lastElementChild].forEach((sentinel, index) => {
+            expect(sentinel?.getAttribute('data-tabster-dummy'), 'original modal sentinel is ready').to.equal(
+              `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
+            );
+            expect(sentinel?.getAttribute('tabindex')).to.equal('0');
           });
-        }),
-    );
+        } else {
+          expect($scope[0].closest('[aria-hidden="true"]'), 'non-modal fixture is accessibility-exposed').to.equal(
+            null,
+          );
+          expect($scope[0].closest('[inert]'), 'non-modal fixture is not inert').to.equal(null);
+        }
+      })
+      .then($scope =>
+        cy
+          .then(() =>
+            axe.run([$scope[0], ...Array.from($scope[0].ownerDocument.querySelectorAll('.fui-PopoverSurface'))], {
+              elementRef: true,
+            }),
+          )
+          .then(result => {
+            const report = {
+              scenario: Cypress.currentTest.title,
+              retries: Cypress.currentRetry,
+              classification:
+                Cypress.currentTest.title ===
+                'R3.03 stable Shape shares controlled channels and renders rounded and square areas'
+                  ? 'unchanged Shape story: four unnamed square-picker ranges'
+                  : Cypress.currentTest.title ===
+                    'R3.04 stable Popup updates the draft area and commits with Ok then reopens the selected color'
+                  ? 'unchanged Popup story: unnamed dialog and two Tabster modal sentinels'
+                  : Cypress.currentTest.title ===
+                    'R3.05 stable Swatch story adds the current area color and Reset restores area and empty swatches'
+                  ? 'unchanged Swatch story: two Tabster mover sentinels'
+                  : Cypress.currentTest.title ===
+                    'R3.07 stable ColorSliderChannels updates saturation independently of hue and brightness'
+                  ? 'unchanged Channels story: three unnamed ranges'
+                  : 'clean',
+              passes: result.passes.map(({ id }) => id),
+              violations: result.violations.map(({ id, nodes }) => ({
+                id,
+                nodes: nodes.map(({ target, html, failureSummary }) => ({ target, html, failureSummary })),
+              })),
+              incomplete: result.incomplete.map(({ id, nodes }) => ({
+                id,
+                nodes: nodes.map(({ target, html, any: anyChecks, all, none }) => ({
+                  target,
+                  html,
+                  anyChecks,
+                  all,
+                  none,
+                })),
+              })),
+            };
+            cy.writeFile(`${evidenceRoot}/audit-${++auditIndex}.json`, report).then(() => {
+              expect(report.passes.length, 'axe evaluated rules').to.be.greaterThan(0);
+              if (
+                report.classification === 'unchanged Shape story: four unnamed square-picker ranges' ||
+                report.classification === 'unchanged Channels story: three unnamed ranges'
+              ) {
+                expect(report.violations.map(({ id }) => id)).to.deep.equal(['label']);
+                const shape = report.classification === 'unchanged Shape story: four unnamed square-picker ranges';
+                const inputs = shape
+                  ? $scope[0].querySelectorAll('.fui-ColorPicker')[1].querySelectorAll('input')
+                  : $scope[0].querySelectorAll<HTMLInputElement>('.fui-ColorSlider__input');
+                expect(inputs).to.have.length(shape ? 4 : 3);
+                expect(result.violations[0].nodes).to.have.length(shape ? 4 : 3);
+                const values = shape ? ['99', '91', '109', '100'] : ['109', '100', '91'];
+                result.violations[0].nodes.forEach((node, index) => {
+                  expect(node.target).to.have.length(1);
+                  expect($scope[0].ownerDocument.querySelector(String(node.target[0]))).to.equal(inputs[index]);
+                  expect(inputs[index].type).to.equal('range');
+                  expect(inputs[index].value).to.equal(values[index]);
+                  expect(computeAccessibleName(inputs[index])).to.equal('');
+                  expect(node.failureSummary).to.equal(
+                    'Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element\'s default semantics were not overridden with role="none" or role="presentation"',
+                  );
+                });
+              } else if (
+                report.classification === 'unchanged Popup story: unnamed dialog and two Tabster modal sentinels'
+              ) {
+                expect(report.violations.map(({ id }) => id)).to.deep.equal(['aria-dialog-name', 'aria-hidden-focus']);
+                const document = $scope[0].ownerDocument;
+                const surface = document.querySelector('.fui-PopoverSurface')!;
+                expect(surface.getAttribute('role')).to.equal('dialog');
+                expect(surface.getAttribute('aria-modal')).to.equal('true');
+                expect(computeAccessibleName(surface)).to.equal('');
+                expect(result.violations[0].nodes).to.have.length(1);
+                expect(result.violations[0].nodes[0].target).to.deep.equal(['.fui-PopoverSurface']);
+                expect(result.violations[0].nodes[0].failureSummary).to.equal(
+                  'Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute',
+                );
+                expect(result.violations[1].nodes).to.have.length(2);
+                const sentinels = [surface.firstElementChild, surface.lastElementChild];
+                result.violations[1].nodes.forEach((node, index) => {
+                  expect(node.target).to.have.length(1);
+                  const sentinel = document.querySelector(String(node.target[0]))!;
+                  expect(sentinel).to.equal(sentinels[index]);
+                  expect(sentinel.tagName).to.equal('I');
+                  expect(sentinel.getAttribute('tabindex')).to.equal('0');
+                  expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+                  expect(sentinel.getAttribute('role')).to.equal('none');
+                  expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+                    `isFirst=${index === 0}, isOutside=false, (Modalizer, tabbable=true)`,
+                  );
+                  expect(node.failureSummary).to.equal(
+                    'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
+                  );
+                });
+              } else if (report.classification === 'unchanged Swatch story: two Tabster mover sentinels') {
+                expect(report.violations.map(({ id }) => id)).to.deep.equal(
+                  result.violations.length ? ['aria-hidden-focus'] : [],
+                );
+                const sentinels = $scope[0].querySelectorAll('.fui-SwatchPicker i[data-tabster-dummy]');
+                expect(sentinels).to.have.length(2);
+                if (result.violations.length) {
+                  expect(result.violations[0].nodes).to.have.length(2);
+                }
+                (result.violations[0]?.nodes || []).forEach((node, index) => {
+                  expect(node.target).to.have.length(1);
+                  expect(node.element).to.equal(sentinels[index]);
+                  const sentinel = new DOMParser().parseFromString(node.html, 'text/html').body.firstElementChild!;
+                  expect(sentinel.tagName).to.equal('I');
+                  expect(sentinel.getAttribute('tabindex')).to.equal('0');
+                  expect(sentinel.getAttribute('aria-hidden')).to.equal('true');
+                  expect(sentinel.getAttribute('role')).to.equal('none');
+                  expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(
+                    `isFirst=${index === 0}, isOutside=false, (Mover, tabbable=true)`,
+                  );
+                  expect(node.failureSummary).to.equal(
+                    'Fix all of the following:\n  Focusable content should have tabindex="-1" or be removed from the DOM',
+                  );
+                });
+              } else {
+                expect(report.violations, 'unexpected axe violations').to.deep.equal([]);
+              }
+              expect(report.incomplete, 'unexpected axe incompletes').to.deep.equal([]);
+            });
+          }),
+      );
   };
 
   // Preserve this suite's audit scope while keeping verdict failures in test bodies.
-  const it = (title: string, body: () => void): Mocha.Test =>
+  const it = (title: string, body: () => void, afterAudit?: () => void): Mocha.Test =>
     globalThis.it(title, () => {
       body();
-      return auditCurrentFixture();
+      return auditCurrentFixture().then(() => {
+        afterAudit?.();
+      });
     });
 
   const registerRoundTwo = () => {
@@ -717,17 +743,28 @@ describe('ONLY132 ColorArea browser coverage', () => {
       cy.get('.fui-ColorArea__inputX').each($el => expect($el.val()).to.equal('99'));
       cy.get('.fui-ColorArea__inputY').each($el => expect($el.val()).to.equal('91'));
     });
-    it('R3.04 stable Popup updates the draft area and commits with Ok then reopens the selected color', () => {
-      render(<ColorPickerPopup />);
-      cy.contains('button', 'Choose color').realClick();
-      cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').focus();
-      cy.realPress('ArrowLeft');
-      cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').should('have.value', '99');
-      cy.contains('button', 'Ok').realClick();
-      cy.get('.fui-PopoverSurface').should('not.exist');
-      cy.contains('button', 'Choose color').realClick();
-      cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').should('have.value', '99');
-    });
+    it(
+      'R3.04 stable Popup updates the draft area and commits with Ok then reopens the selected color',
+      () => {
+        render(<ColorPickerPopup />);
+        cy.contains('button', 'Choose color').realClick();
+        cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').focus();
+        cy.realPress('ArrowLeft');
+        cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').should('have.value', '99');
+        cy.contains('button', 'Ok').realClick();
+        cy.get('.fui-PopoverSurface').should('not.exist');
+        cy.contains('button', 'Choose color').realClick();
+        cy.get('.fui-PopoverSurface .fui-ColorArea__inputX').should('have.value', '99');
+      },
+      () => {
+        cy.contains('.fui-PopoverSurface button', 'Ok').realClick();
+        cy.get('.fui-PopoverSurface').should('not.exist');
+        cy.get('#fixture').should($scope => {
+          expect($scope[0].closest('[aria-hidden="true"]'), 'audited Popup releases fixture isolation').to.equal(null);
+          expect($scope[0].closest('[inert]')).to.equal(null);
+        });
+      },
+    );
     it('R3.05 stable Swatch story adds the current area color and Reset restores area and empty swatches', () => {
       render(<ColorAndSwatchPicker />);
       cy.get('.fui-ColorArea__inputX').focus();
