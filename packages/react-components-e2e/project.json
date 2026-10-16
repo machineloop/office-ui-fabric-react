@@ -1,0 +1,42 @@
+{
+  "name": "react-components-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "packages/react-components-e2e",
+  "tags": ["vNext", "platform:web", "type:e2e"],
+  "targets": {
+    "analyze": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [],
+      "options": {
+        "cwd": ".",
+        "command": "node packages/react-components-e2e/analyze-imports.cjs --copy"
+      },
+      "metadata": {
+        "description": "Regenerate the mirrored test-support closure and provenance using static import analysis."
+      }
+    },
+    "e2e": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [],
+      "options": {
+        "cwd": "packages/react-components-e2e",
+        "command": "node run-suites.cjs"
+      },
+      "metadata": {
+        "description": "Run the mirrored Cypress inventory against original production modules, with isolated external artifacts."
+      }
+    },
+    "test-harness": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [],
+      "options": {
+        "cwd": "packages/react-components-e2e",
+        "command": "node --test run-suites.test.cjs"
+      }
+    }
+  }
+}

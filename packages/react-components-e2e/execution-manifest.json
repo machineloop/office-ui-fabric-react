@@ -1,0 +1,3621 @@
+{
+  "version": 1,
+  "sourceInventorySha256": "136dd7ca49fd3be3605aafc9a78d372a2fb05a8592dfc1dbb533f2526bd80539",
+  "jobCount": 186,
+  "uniquePrimarySpecs": 188,
+  "jobs": [
+    {
+      "id": "packages/react-components/react-accordion/library/src/components/Accordion/Accordion.cy.stories.tsx",
+      "name": "packages/react-components/react-accordion/library/src/components/Accordion",
+      "config": "packages/react-components/react-accordion/library/src/components/Accordion/Accordion.cypress.config.cjs",
+      "cwd": "packages/react-components/react-accordion/library",
+      "group": "packages/react-components/react-accordion/library",
+      "specs": [
+        "packages/react-components/react-accordion/library/src/components/Accordion/Accordion.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-accordion",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-accordion/library/src/components/Accordion/Accordion.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-accordion/library/src/components/AccordionHeader/AccordionHeader.cy.stories.tsx",
+      "name": "packages/react-components/react-accordion/library/src/components/AccordionHeader",
+      "config": "packages/react-components/react-accordion/library/src/components/AccordionHeader/AccordionHeader.cypress.config.cjs",
+      "cwd": "packages/react-components/react-accordion/library",
+      "group": "packages/react-components/react-accordion/library",
+      "specs": [
+        "packages/react-components/react-accordion/library/src/components/AccordionHeader/AccordionHeader.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-accordion",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-accordion/library/src/components/AccordionHeader/AccordionHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-accordion/library/src/components/AccordionItem/AccordionItem.cy.stories.tsx",
+      "name": "packages/react-components/react-accordion/library/src/components/AccordionItem",
+      "config": "packages/react-components/react-accordion/library/src/components/AccordionItem/AccordionItem.cypress.config.cjs",
+      "cwd": "packages/react-components/react-accordion/library",
+      "group": "packages/react-components/react-accordion/library",
+      "specs": [
+        "packages/react-components/react-accordion/library/src/components/AccordionItem/AccordionItem.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-accordion",
+      "nxTarget": "e2e-accordionitem",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-accordion/library/src/components/AccordionItem/AccordionItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-accordion/library/src/components/AccordionPanel/AccordionPanel.cy.stories.tsx",
+      "name": "packages/react-components/react-accordion/library/src/components/AccordionPanel",
+      "config": "packages/react-components/react-accordion/library/src/components/AccordionPanel/AccordionPanel.cypress.config.cjs",
+      "cwd": "packages/react-components/react-accordion/library",
+      "group": "packages/react-components/react-accordion/library",
+      "specs": [
+        "packages/react-components/react-accordion/library/src/components/AccordionPanel/AccordionPanel.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-accordion",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-accordion/library/src/components/AccordionPanel/AccordionPanel.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-avatar/library/src/components/AvatarGroup/AvatarGroup.cy.tsx",
+      "name": "packages/react-components/react-avatar/library/src/components/AvatarGroup",
+      "config": "packages/react-components/react-avatar/library/src/components/AvatarGroup/cypress.config.cjs",
+      "cwd": "packages/react-components/react-avatar/library",
+      "group": "packages/react-components/react-avatar/library",
+      "specs": [
+        "packages/react-components/react-avatar/library/src/components/AvatarGroup/AvatarGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-avatar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-avatar/library/src/components/AvatarGroup/AvatarGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-avatar/library/src/components/AvatarGroupItem/AvatarGroupItem.cy.tsx",
+      "name": "packages/react-components/react-avatar/library/src/components/AvatarGroupItem",
+      "config": "packages/react-components/react-avatar/library/src/components/AvatarGroupItem/cypress.config.cjs",
+      "cwd": "packages/react-components/react-avatar/library",
+      "group": "packages/react-components/react-avatar/library",
+      "specs": [
+        "packages/react-components/react-avatar/library/src/components/AvatarGroupItem/AvatarGroupItem.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-avatar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-avatar/library/src/components/AvatarGroupItem/AvatarGroupItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-avatar/library/src/components/AvatarGroupPopover/AvatarGroupPopover.cy.tsx",
+      "name": "packages/react-components/react-avatar/library/src/components/AvatarGroupPopover",
+      "config": "packages/react-components/react-avatar/library/src/components/AvatarGroupPopover/AvatarGroupPopover.cypress.config.cjs",
+      "cwd": "packages/react-components/react-avatar/library",
+      "group": "packages/react-components/react-avatar/library",
+      "specs": [
+        "packages/react-components/react-avatar/library/src/components/AvatarGroupPopover/AvatarGroupPopover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-avatar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-avatar/library/src/components/AvatarGroupPopover/AvatarGroupPopover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-badge/library/src/components/Badge/Badge.cy.tsx",
+      "name": "packages/react-components/react-badge/library/src/components/Badge",
+      "config": "packages/react-components/react-badge/library/src/components/Badge/cypress.config.cjs",
+      "cwd": "packages/react-components/react-badge/library",
+      "group": "packages/react-components/react-badge/library",
+      "specs": [
+        "packages/react-components/react-badge/library/src/components/Badge/Badge.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-badge",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-badge/library/src/components/Badge/Badge.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbButton/BreadcrumbButton.cy.stories.tsx",
+      "name": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbButton",
+      "config": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbButton/cypress.config.cjs",
+      "cwd": "packages/react-components/react-breadcrumb/library",
+      "group": "packages/react-components/react-breadcrumb/library",
+      "specs": [
+        "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbButton/BreadcrumbButton.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-breadcrumb",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbButton/BreadcrumbButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbDivider/BreadcrumbDivider.cy.tsx",
+      "name": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbDivider",
+      "config": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbDivider/cypress.config.cjs",
+      "cwd": "packages/react-components/react-breadcrumb/library",
+      "group": "packages/react-components/react-breadcrumb/library",
+      "specs": [
+        "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbDivider/BreadcrumbDivider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-breadcrumb",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbDivider/BreadcrumbDivider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbItem/BreadcrumbItem.cy.stories.tsx",
+      "name": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbItem",
+      "config": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbItem/cypress.config.cjs",
+      "cwd": "packages/react-components/react-breadcrumb/library",
+      "group": "packages/react-components/react-breadcrumb/library",
+      "specs": [
+        "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbItem/BreadcrumbItem.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-breadcrumb",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-breadcrumb/library/src/components/BreadcrumbItem/BreadcrumbItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-button/library/src/components/CompoundButton/CompoundButton.cy.tsx",
+      "name": "packages/react-components/react-button/library/src/components/CompoundButton",
+      "config": "packages/react-components/react-button/library/src/components/CompoundButton/CompoundButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-button/library",
+      "group": "packages/react-components/react-button/library",
+      "specs": [
+        "packages/react-components/react-button/library/src/components/CompoundButton/CompoundButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-button",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-button/library/src/components/CompoundButton/CompoundButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-button/library/src/components/SplitButton/SplitButton.cy.tsx",
+      "name": "packages/react-components/react-button/library/src/components/SplitButton",
+      "config": "packages/react-components/react-button/library/src/components/SplitButton/cypress.config.cjs",
+      "cwd": "packages/react-components/react-button/library",
+      "group": "packages/react-components/react-button/library",
+      "specs": [
+        "packages/react-components/react-button/library/src/components/SplitButton/SplitButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-button",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-button/library/src/components/SplitButton/SplitButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-button/library/src/components/ToggleButton/ToggleButton.cy.stories.tsx",
+      "name": "packages/react-components/react-button/library/src/components/ToggleButton",
+      "config": "packages/react-components/react-button/library/src/components/ToggleButton/ToggleButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-button/library",
+      "group": "packages/react-components/react-button/library",
+      "specs": [
+        "packages/react-components/react-button/library/src/components/ToggleButton/ToggleButton.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-button",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-button/library/src/components/ToggleButton/ToggleButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-card/library/src/components/Card/Card.cy.tsx",
+      "name": "packages/react-components/react-card/library/src/components/Card",
+      "config": "packages/react-components/react-card/library/src/components/Card/Card.cypress.config.cjs",
+      "cwd": "packages/react-components/react-card/library",
+      "group": "packages/react-components/react-card/library",
+      "specs": [
+        "packages/react-components/react-card/library/src/components/Card/Card.cy.tsx",
+        "packages/react-components/react-card/library/src/components/Card/Card.functional.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-card",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-card/library/src/components/Card/Card.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-card/library/src/components/CardFooter/CardFooter.cy.tsx",
+      "name": "packages/react-components/react-card/library/src/components/CardFooter",
+      "config": "packages/react-components/react-card/library/src/components/CardFooter/CardFooter.cypress.config.cjs",
+      "cwd": "packages/react-components/react-card/library",
+      "group": "packages/react-components/react-card/library",
+      "specs": [
+        "packages/react-components/react-card/library/src/components/CardFooter/CardFooter.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-card",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-card/library/src/components/CardFooter/CardFooter.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-card/library/src/components/CardHeader/CardHeader.cy.tsx",
+      "name": "packages/react-components/react-card/library/src/components/CardHeader",
+      "config": "packages/react-components/react-card/library/src/components/CardHeader/cypress.config.cjs",
+      "cwd": "packages/react-components/react-card/library",
+      "group": "packages/react-components/react-card/library",
+      "specs": [
+        "packages/react-components/react-card/library/src/components/CardHeader/CardHeader.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-card",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-card/library/src/components/CardHeader/CardHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-card/library/src/components/CardPreview/CardPreview.cy.tsx",
+      "name": "packages/react-components/react-card/library/src/components/CardPreview",
+      "config": "packages/react-components/react-card/library/src/components/CardPreview/CardPreview.cypress.config.cjs",
+      "cwd": "packages/react-components/react-card/library",
+      "group": "packages/react-components/react-card/library",
+      "specs": [
+        "packages/react-components/react-card/library/src/components/CardPreview/CardPreview.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-card",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-card/library/src/components/CardPreview/CardPreview.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/Carousel/Carousel.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/Carousel",
+      "config": "packages/react-components/react-carousel/library/src/components/Carousel/Carousel.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/Carousel/Carousel.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/Carousel/Carousel.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselCard/CarouselCard.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/CarouselCard",
+      "config": "packages/react-components/react-carousel/library/src/components/CarouselCard/CarouselCard.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselCard/CarouselCard.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselCard/CarouselCard.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselNav/CarouselNav.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/CarouselNav",
+      "config": "packages/react-components/react-carousel/library/src/components/CarouselNav/CarouselNav.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselNav/CarouselNav.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselNav/CarouselNav.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselNavButton/CarouselNavButton.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/CarouselNavButton",
+      "config": "packages/react-components/react-carousel/library/src/components/CarouselNavButton/CarouselNavButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselNavButton/CarouselNavButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselNavButton/CarouselNavButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselNavContainer/CarouselNavContainer.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/CarouselNavContainer",
+      "config": "packages/react-components/react-carousel/library/src/components/CarouselNavContainer/CarouselNavContainer.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselNavContainer/CarouselNavContainer.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselNavContainer/CarouselNavContainer.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/CarouselNavImageButton.cy.tsx",
+      "name": "packages/react-components/react-carousel/library/src/components/CarouselNavImageButton",
+      "config": "packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/CarouselNavImageButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/CarouselNavImageButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselNavImageButton/CarouselNavImageButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-checkbox/library/src/components/Checkbox/Checkbox.cy.tsx",
+      "name": "packages/react-components/react-checkbox/library/src/components/Checkbox",
+      "config": "packages/react-components/react-checkbox/library/src/components/Checkbox/cypress.config.cjs",
+      "cwd": "packages/react-components/react-checkbox/library",
+      "group": "packages/react-components/react-checkbox/library",
+      "specs": [
+        "packages/react-components/react-checkbox/library/src/components/Checkbox/Checkbox.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-checkbox",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-checkbox/library/src/components/Checkbox/Checkbox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-color-picker/library/src/components/ColorArea/ColorArea.cy.tsx",
+      "name": "packages/react-components/react-color-picker/library/src/components/ColorArea",
+      "config": "packages/react-components/react-color-picker/library/src/components/ColorArea/ColorArea.cypress.config.cjs",
+      "cwd": "packages/react-components/react-color-picker/library",
+      "group": "packages/react-components/react-color-picker/library",
+      "specs": [
+        "packages/react-components/react-color-picker/library/src/components/ColorArea/ColorArea.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-color-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-color-picker/library/src/components/ColorArea/ColorArea.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-color-picker/library/src/components/ColorPicker/ColorPicker.cy.tsx",
+      "name": "packages/react-components/react-color-picker/library/src/components/ColorPicker",
+      "config": "packages/react-components/react-color-picker/library/src/components/ColorPicker/ColorPicker.cypress.config.cjs",
+      "cwd": "packages/react-components/react-color-picker/library",
+      "group": "packages/react-components/react-color-picker/library",
+      "specs": [
+        "packages/react-components/react-color-picker/library/src/components/ColorPicker/ColorPicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-color-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-color-picker/library/src/components/ColorPicker/ColorPicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-color-picker/library/src/components/ColorSlider/ColorSlider.cy.tsx",
+      "name": "packages/react-components/react-color-picker/library/src/components/ColorSlider",
+      "config": "packages/react-components/react-color-picker/library/src/components/ColorSlider/ColorSlider.cypress.config.cjs",
+      "cwd": "packages/react-components/react-color-picker/library",
+      "group": "packages/react-components/react-color-picker/library",
+      "specs": [
+        "packages/react-components/react-color-picker/library/src/components/ColorSlider/ColorSlider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-color-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-color-picker/library/src/components/ColorSlider/ColorSlider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-combobox/library/src/components/Combobox/Combobox.cy.tsx",
+      "name": "packages/react-components/react-combobox/library/src/components/Combobox",
+      "config": "packages/react-components/react-combobox/library/src/components/Combobox/cypress.config.cjs",
+      "cwd": "packages/react-components/react-combobox/library",
+      "group": "packages/react-components/react-combobox/library",
+      "specs": [
+        "packages/react-components/react-combobox/library/src/components/Combobox/Combobox.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-combobox",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-combobox/library/src/components/Combobox/Combobox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-combobox/library/src/components/OptionGroup/OptionGroup.cy.tsx",
+      "name": "packages/react-components/react-combobox/library/src/components/OptionGroup",
+      "config": "packages/react-components/react-combobox/library/src/components/OptionGroup/cypress.config.cjs",
+      "cwd": "packages/react-components/react-combobox/library",
+      "group": "packages/react-components/react-combobox/library",
+      "specs": [
+        "packages/react-components/react-combobox/library/src/components/OptionGroup/OptionGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-combobox",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-combobox/library/src/components/OptionGroup/OptionGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-components/src/components/RendererProvider/RendererProvider.cy.stories.tsx",
+      "name": "packages/react-components/react-components/src/components/RendererProvider",
+      "config": "packages/react-components/react-components/src/components/RendererProvider/RendererProvider.cypress.config.cjs",
+      "cwd": "packages/react-components/react-components",
+      "group": "packages/react-components/react-components",
+      "specs": [
+        "packages/react-components/react-components/src/components/RendererProvider/RendererProvider.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-components",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "node_modules/@griffel/react/src/RendererContext.js",
+          "reason": "RendererProvider re-exported by react-components is implemented by the original @griffel/react RendererContext module."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-divider/library/src/components/Divider/Divider.cy.tsx",
+      "name": "packages/react-components/react-divider/library/src/components/Divider",
+      "config": "packages/react-components/react-divider/library/src/components/Divider/Divider.cypress.config.cjs",
+      "cwd": "packages/react-components/react-divider/library",
+      "group": "packages/react-components/react-divider/library",
+      "specs": [
+        "packages/react-components/react-divider/library/src/components/Divider/Divider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-divider",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-divider/library/src/components/Divider/Divider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerBody/DrawerBody.cy.tsx",
+      "name": "packages/react-components/react-drawer/library/src/components/DrawerBody",
+      "config": "packages/react-components/react-drawer/library/src/components/DrawerBody/cypress.config.cjs",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerBody/DrawerBody.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerBody/DrawerBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerFooter/DrawerFooter.cy.tsx",
+      "name": "packages/react-components/react-drawer/library/src/components/DrawerFooter",
+      "config": "packages/react-components/react-drawer/library/src/components/DrawerFooter/DrawerFooter.cypress.config.cjs",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerFooter/DrawerFooter.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerFooter/DrawerFooter.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.cy.stories.tsx",
+      "name": "packages/react-components/react-drawer/library/src/components/DrawerHeader",
+      "config": "packages/react-components/react-drawer/library/src/components/DrawerHeader/cypress.config.cjs",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.cy.stories.tsx",
+      "name": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle",
+      "config": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/cypress.config.cjs",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/OverlayDrawer/OverlayDrawer.cy.tsx",
+      "name": "packages/react-components/react-drawer/library/src/components/OverlayDrawer",
+      "config": "packages/react-components/react-drawer/library/src/components/OverlayDrawer/cypress.config.cjs",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/OverlayDrawer/OverlayDrawer.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/OverlayDrawer/OverlayDrawer.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-infolabel/library/src/components/InfoButton/InfoButton.cy.stories.tsx",
+      "name": "packages/react-components/react-infolabel/library/src/components/InfoButton",
+      "config": "packages/react-components/react-infolabel/library/src/components/InfoButton/cypress.config.cjs",
+      "cwd": "packages/react-components/react-infolabel/library",
+      "group": "packages/react-components/react-infolabel/library",
+      "specs": [
+        "packages/react-components/react-infolabel/library/src/components/InfoButton/InfoButton.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-infolabel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-infolabel/library/src/components/InfoButton/InfoButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-infolabel/library/src/components/InfoLabel/InfoLabel.cy.tsx",
+      "name": "packages/react-components/react-infolabel/library/src/components/InfoLabel",
+      "config": "packages/react-components/react-infolabel/library/src/components/InfoLabel/cypress.config.cjs",
+      "cwd": "packages/react-components/react-infolabel/library",
+      "group": "packages/react-components/react-infolabel/library",
+      "specs": [
+        "packages/react-components/react-infolabel/library/src/components/InfoLabel/InfoLabel.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-infolabel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-infolabel/library/src/components/InfoLabel/InfoLabel.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-input/library/src/components/Input/Input.cy.tsx",
+      "name": "packages/react-components/react-input/library/src/components/Input",
+      "config": "packages/react-components/react-input/library/src/components/Input/Input.cypress.config.cjs",
+      "cwd": "packages/react-components/react-input/library",
+      "group": "packages/react-components/react-input/library",
+      "specs": [
+        "packages/react-components/react-input/library/src/components/Input/Input.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-input",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-input/library/src/components/Input/Input.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-label/library/src/components/Label/Label.cy.stories.tsx",
+      "name": "packages/react-components/react-label/library/src/components/Label",
+      "config": "packages/react-components/react-label/library/src/components/Label/cypress.config.cjs",
+      "cwd": "packages/react-components/react-label/library",
+      "group": "packages/react-components/react-label/library",
+      "specs": [
+        "packages/react-components/react-label/library/src/components/Label/Label.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-label",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-label/library/src/components/Label/Label.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-link/library/src/components/Link/Link.cy.stories.tsx",
+      "name": "packages/react-components/react-link/library/src/components/Link",
+      "config": "packages/react-components/react-link/library/src/components/Link/cypress.config.cjs",
+      "cwd": "packages/react-components/react-link/library",
+      "group": "packages/react-components/react-link/library",
+      "specs": [
+        "packages/react-components/react-link/library/src/components/Link/Link.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-link",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-link/library/src/components/Link/Link.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-list/library/src/components/List/List.cy.tsx",
+      "name": "packages/react-components/react-list/library/src/components/List",
+      "config": "packages/react-components/react-list/library/src/components/List/cypress.config.cjs",
+      "cwd": "packages/react-components/react-list/library",
+      "group": "packages/react-components/react-list/library",
+      "specs": [
+        "packages/react-components/react-list/library/src/components/List/List.cy.tsx",
+        "packages/react-components/react-list/library/src/components/List/List.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-list",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-list/library/src/components/List/List.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-list/library/src/components/ListItem/ListItem.cy.stories.tsx",
+      "name": "packages/react-components/react-list/library/src/components/ListItem",
+      "config": "packages/react-components/react-list/library/src/components/ListItem/cypress.config.cjs",
+      "cwd": "packages/react-components/react-list/library",
+      "group": "packages/react-components/react-list/library",
+      "specs": [
+        "packages/react-components/react-list/library/src/components/ListItem/ListItem.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-list",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-list/library/src/components/ListItem/ListItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuDivider/MenuDivider.cy.tsx",
+      "name": "packages/react-components/react-menu/library/src/components/MenuDivider",
+      "config": "packages/react-components/react-menu/library/src/components/MenuDivider/MenuDivider.cypress.config.cjs",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuDivider/MenuDivider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuDivider/MenuDivider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuGroup/MenuGroup.cy.tsx",
+      "name": "packages/react-components/react-menu/library/src/components/MenuGroup",
+      "config": "packages/react-components/react-menu/library/src/components/MenuGroup/cypress.config.cjs",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuGroup/MenuGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuGroup/MenuGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuGroupHeader/MenuGroupHeader.cy.tsx",
+      "name": "packages/react-components/react-menu/library/src/components/MenuGroupHeader",
+      "config": "packages/react-components/react-menu/library/src/components/MenuGroupHeader/MenuGroupHeader.cypress.config.cjs",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuGroupHeader/MenuGroupHeader.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuGroupHeader/MenuGroupHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuItemCheckbox/MenuItemCheckbox.cy.tsx",
+      "name": "packages/react-components/react-menu/library/src/components/MenuItemCheckbox",
+      "config": "packages/react-components/react-menu/library/src/components/MenuItemCheckbox/cypress.config.cjs",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuItemCheckbox/MenuItemCheckbox.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuItemCheckbox/MenuItemCheckbox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuItemLink/MenuItemLink.cy.tsx",
+      "name": "packages/react-components/react-menu/library/src/components/MenuItemLink",
+      "config": "packages/react-components/react-menu/library/src/components/MenuItemLink/cypress.config.cjs",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuItemLink/MenuItemLink.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuItemLink/MenuItemLink.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-message-bar/library/src/components/MessageBarTitle/MessageBarTitle.cy.tsx",
+      "name": "packages/react-components/react-message-bar/library/src/components/MessageBarTitle",
+      "config": "packages/react-components/react-message-bar/library/src/components/MessageBarTitle/MessageBarTitle.cypress.config.cjs",
+      "cwd": "packages/react-components/react-message-bar/library",
+      "group": "packages/react-components/react-message-bar/library",
+      "specs": [
+        "packages/react-components/react-message-bar/library/src/components/MessageBarTitle/MessageBarTitle.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-message-bar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-message-bar/library/src/components/MessageBarTitle/MessageBarTitle.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-overflow/library/src/components/Overflow/Overflow.cy.tsx",
+      "name": "packages/react-components/react-overflow/library/src/components/Overflow",
+      "config": "packages/react-components/react-overflow/library/src/components/Overflow/cypress.config.cjs",
+      "cwd": "packages/react-components/react-overflow/library",
+      "group": "packages/react-components/react-overflow/library",
+      "specs": [
+        "packages/react-components/react-overflow/library/src/components/Overflow/Overflow.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-overflow",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-overflow/library/src/components/Overflow/Overflow.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-overflow/library/src/components/OverflowItem/OverflowItem.cy.stories.tsx",
+      "name": "packages/react-components/react-overflow/library/src/components/OverflowItem",
+      "config": "packages/react-components/react-overflow/library/src/components/OverflowItem/cypress.config.cjs",
+      "cwd": "packages/react-components/react-overflow/library",
+      "group": "packages/react-components/react-overflow/library",
+      "specs": [
+        "packages/react-components/react-overflow/library/src/components/OverflowItem/OverflowItem.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-overflow",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-overflow/library/src/components/OverflowItem/OverflowItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-persona/library/src/components/Persona/Persona.cy.stories.tsx",
+      "name": "packages/react-components/react-persona/library/src/components/Persona",
+      "config": "packages/react-components/react-persona/library/src/components/Persona/cypress.config.cjs",
+      "cwd": "packages/react-components/react-persona/library",
+      "group": "packages/react-components/react-persona/library",
+      "specs": [
+        "packages/react-components/react-persona/library/src/components/Persona/Persona.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-persona",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-persona/library/src/components/Persona/Persona.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-popover/library/src/components/Popover/Popover.cy.tsx",
+      "name": "packages/react-components/react-popover/library/src/components/Popover",
+      "config": "packages/react-components/react-popover/library/src/components/Popover/Popover.cypress.config.cjs",
+      "cwd": "packages/react-components/react-popover/library",
+      "group": "packages/react-components/react-popover/library",
+      "specs": [
+        "packages/react-components/react-popover/library/src/components/Popover/Popover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-popover/library/src/components/Popover/Popover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-popover/library/src/components/PopoverSurface/PopoverSurface.cy.stories.tsx",
+      "name": "packages/react-components/react-popover/library/src/components/PopoverSurface",
+      "config": "packages/react-components/react-popover/library/src/components/PopoverSurface/PopoverSurface.cypress.config.cjs",
+      "cwd": "packages/react-components/react-popover/library",
+      "group": "packages/react-components/react-popover/library",
+      "specs": [
+        "packages/react-components/react-popover/library/src/components/PopoverSurface/PopoverSurface.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-popover/library/src/components/PopoverSurface/PopoverSurface.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-popover/library/src/components/PopoverTrigger/PopoverTrigger.cy.tsx",
+      "name": "packages/react-components/react-popover/library/src/components/PopoverTrigger",
+      "config": "packages/react-components/react-popover/library/src/components/PopoverTrigger/cypress.config.cjs",
+      "cwd": "packages/react-components/react-popover/library",
+      "group": "packages/react-components/react-popover/library",
+      "specs": [
+        "packages/react-components/react-popover/library/src/components/PopoverTrigger/PopoverTrigger.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-popover/library/src/components/PopoverTrigger/PopoverTrigger.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-portal/library/src/components/Portal/testing/Portal.cy-entry.stories.tsx",
+      "name": "packages/react-components/react-portal/library/src/components/Portal",
+      "config": "packages/react-components/react-portal/library/src/components/Portal/Portal.cypress.config.cjs",
+      "cwd": "packages/react-components/react-portal/library",
+      "group": "packages/react-components/react-portal/library",
+      "specs": [
+        "packages/react-components/react-portal/library/src/components/Portal/testing/Portal.cy-entry.stories.tsx"
+      ],
+      "configEnv": {
+        "portalEvidencePath": "src\\components\\Portal\\reports\\1791588686267-18924"
+      },
+      "nxProject": "react-portal",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-portal/library/src/components/Portal/Portal.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-progress/library/src/components/ProgressBar/ProgressBar.cy.tsx",
+      "name": "packages/react-components/react-progress/library/src/components/ProgressBar",
+      "config": "packages/react-components/react-progress/library/src/components/ProgressBar/ProgressBar.cypress.config.cjs",
+      "cwd": "packages/react-components/react-progress/library",
+      "group": "packages/react-components/react-progress/library",
+      "specs": [
+        "packages/react-components/react-progress/library/src/components/ProgressBar/ProgressBar.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-progress",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-progress/library/src/components/ProgressBar/ProgressBar.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-provider/library/src/components/FluentProvider/FluentProvider.cy.stories.tsx",
+      "name": "packages/react-components/react-provider/library/src/components/FluentProvider",
+      "config": "packages/react-components/react-provider/library/src/components/FluentProvider/cypress.config.cjs",
+      "cwd": "packages/react-components/react-provider/library",
+      "group": "packages/react-components/react-provider/library",
+      "specs": [
+        "packages/react-components/react-provider/library/src/components/FluentProvider/FluentProvider.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-provider",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-provider/library/src/components/FluentProvider/FluentProvider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-radio/library/src/components/Radio/Radio.cy.tsx",
+      "name": "packages/react-components/react-radio/library/src/components/Radio",
+      "config": "packages/react-components/react-radio/library/src/components/Radio/Radio.cypress.config.cjs",
+      "cwd": "packages/react-components/react-radio/library",
+      "group": "packages/react-components/react-radio/library",
+      "specs": [
+        "packages/react-components/react-radio/library/src/components/Radio/Radio.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-radio",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-radio/library/src/components/Radio/Radio.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-radio/library/src/components/RadioGroup/RadioGroup.cy.stories.tsx",
+      "name": "packages/react-components/react-radio/library/src/components/RadioGroup",
+      "config": "packages/react-components/react-radio/library/src/components/RadioGroup/cypress.config.cjs",
+      "cwd": "packages/react-components/react-radio/library",
+      "group": "packages/react-components/react-radio/library",
+      "specs": [
+        "packages/react-components/react-radio/library/src/components/RadioGroup/RadioGroup.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-radio",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-radio/library/src/components/RadioGroup/RadioGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-search/library/src/components/SearchBox/SearchBox.cy.stories.tsx",
+      "name": "packages/react-components/react-search/library/src/components/SearchBox",
+      "config": "packages/react-components/react-search/library/src/components/SearchBox/cypress.config.cjs",
+      "cwd": "packages/react-components/react-search/library",
+      "group": "packages/react-components/react-search/library",
+      "specs": [
+        "packages/react-components/react-search/library/src/components/SearchBox/SearchBox.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-search",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-search/library/src/components/SearchBox/SearchBox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-spinner/library/src/components/Spinner/Spinner.cy.tsx",
+      "name": "packages/react-components/react-spinner/library/src/components/Spinner",
+      "config": "packages/react-components/react-spinner/library/src/components/Spinner/cypress.config.cjs",
+      "cwd": "packages/react-components/react-spinner/library",
+      "group": "packages/react-components/react-spinner/library",
+      "specs": [
+        "packages/react-components/react-spinner/library/src/components/Spinner/Spinner.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-spinner",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-spinner/library/src/components/Spinner/Spinner.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-swatch-picker/library/src/components/ColorSwatch/ColorSwatch.cy.tsx",
+      "name": "packages/react-components/react-swatch-picker/library/src/components/ColorSwatch",
+      "config": "packages/react-components/react-swatch-picker/library/src/components/ColorSwatch/cypress.config.cjs",
+      "cwd": "packages/react-components/react-swatch-picker/library",
+      "group": "packages/react-components/react-swatch-picker/library",
+      "specs": [
+        "packages/react-components/react-swatch-picker/library/src/components/ColorSwatch/ColorSwatch.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-swatch-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-swatch-picker/library/src/components/ColorSwatch/ColorSwatch.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-swatch-picker/library/src/components/ImageSwatch/ImageSwatch.cy.tsx",
+      "name": "packages/react-components/react-swatch-picker/library/src/components/ImageSwatch",
+      "config": "packages/react-components/react-swatch-picker/library/src/components/ImageSwatch/cypress.config.cjs",
+      "cwd": "packages/react-components/react-swatch-picker/library",
+      "group": "packages/react-components/react-swatch-picker/library",
+      "specs": [
+        "packages/react-components/react-swatch-picker/library/src/components/ImageSwatch/ImageSwatch.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-swatch-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-swatch-picker/library/src/components/ImageSwatch/ImageSwatch.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-swatch-picker/library/src/components/SwatchPicker/SwatchPicker.cy.tsx",
+      "name": "packages/react-components/react-swatch-picker/library/src/components/SwatchPicker",
+      "config": "packages/react-components/react-swatch-picker/library/src/components/SwatchPicker/cypress.config.cjs",
+      "cwd": "packages/react-components/react-swatch-picker/library",
+      "group": "packages/react-components/react-swatch-picker/library",
+      "specs": [
+        "packages/react-components/react-swatch-picker/library/src/components/SwatchPicker/SwatchPicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-swatch-picker",
+      "nxTarget": "e2e-swatchpicker",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-swatch-picker/library/src/components/SwatchPicker/SwatchPicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-switch/library/src/components/Switch/Switch.cy.tsx",
+      "name": "packages/react-components/react-switch/library/src/components/Switch",
+      "config": "packages/react-components/react-switch/library/src/components/Switch/cypress.config.cjs",
+      "cwd": "packages/react-components/react-switch/library",
+      "group": "packages/react-components/react-switch/library",
+      "specs": [
+        "packages/react-components/react-switch/library/src/components/Switch/Switch.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-switch",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-switch/library/src/components/Switch/Switch.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGridHeader/DataGridHeader.cy.tsx",
+      "name": "packages/react-components/react-table/library/src/components/DataGridHeader",
+      "config": "packages/react-components/react-table/library/src/components/DataGridHeader/DataGridHeader.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGridHeader/DataGridHeader.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGridHeader/DataGridHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGridHeaderCell/DataGridHeaderCell.cy.tsx",
+      "name": "packages/react-components/react-table/library/src/components/DataGridHeaderCell",
+      "config": "packages/react-components/react-table/library/src/components/DataGridHeaderCell/DataGridHeaderCell.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGridHeaderCell/DataGridHeaderCell.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGridHeaderCell/DataGridHeaderCell.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGridRow/DataGridRow.cy.tsx",
+      "name": "packages/react-components/react-table/library/src/components/DataGridRow",
+      "config": "packages/react-components/react-table/library/src/components/DataGridRow/cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGridRow/DataGridRow.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGridRow/DataGridRow.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/Table/Table.cy.stories.tsx",
+      "name": "packages/react-components/react-table/library/src/components/Table",
+      "config": "packages/react-components/react-table/library/src/components/Table/Table.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/Table/Table.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/Table/Table.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableBody/TableBody.cy.stories.tsx",
+      "name": "packages/react-components/react-table/library/src/components/TableBody",
+      "config": "packages/react-components/react-table/library/src/components/TableBody/TableBody.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableBody/TableBody.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableBody/TableBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableCellLayout/TableCellLayout.cy.stories.tsx",
+      "name": "packages/react-components/react-table/library/src/components/TableCellLayout",
+      "config": "packages/react-components/react-table/library/src/components/TableCellLayout/TableCellLayout.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableCellLayout/TableCellLayout.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableCellLayout/TableCellLayout.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableHeader/TableHeader.cy.stories.tsx",
+      "name": "packages/react-components/react-table/library/src/components/TableHeader",
+      "config": "packages/react-components/react-table/library/src/components/TableHeader/cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableHeader/TableHeader.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableHeader/TableHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableSelectionCell/TableSelectionCell.cy.tsx",
+      "name": "packages/react-components/react-table/library/src/components/TableSelectionCell",
+      "config": "packages/react-components/react-table/library/src/components/TableSelectionCell/TableSelectionCell.cypress.config.cjs",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableSelectionCell/TableSelectionCell.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableSelectionCell/TableSelectionCell.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabs/library/src/components/Tab/Tab.cy.tsx",
+      "name": "packages/react-components/react-tabs/library/src/components/Tab",
+      "config": "packages/react-components/react-tabs/library/src/components/Tab/Tab.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tabs/library",
+      "group": "packages/react-components/react-tabs/library",
+      "specs": [
+        "packages/react-components/react-tabs/library/src/components/Tab/Tab.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabs",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabs/library/src/components/Tab/Tab.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabs/library/src/components/TabList/TabList.cy.tsx",
+      "name": "packages/react-components/react-tabs/library/src/components/TabList",
+      "config": "packages/react-components/react-tabs/library/src/components/TabList/TabList.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tabs/library",
+      "group": "packages/react-components/react-tabs/library",
+      "specs": [
+        "packages/react-components/react-tabs/library/src/components/TabList/TabList.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabs",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabs/library/src/components/TabList/TabList.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPicker/TagPicker.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPicker",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPicker/cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPicker/TagPicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPicker/TagPicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerButton/TagPickerButton.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerButton",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerButton/TagPickerButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerButton/TagPickerButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerButton/TagPickerButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerControl/TagPickerControl.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerControl",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerControl/cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerControl/TagPickerControl.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerControl/TagPickerControl.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerGroup/TagPickerGroup.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerGroup",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerGroup/cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerGroup/TagPickerGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerGroup/TagPickerGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerInput/TagPickerInput.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerInput",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerInput/cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerInput/TagPickerInput.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerInput/TagPickerInput.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerOption/TagPickerOption.cy.stories.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerOption",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerOption/cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerOption/TagPickerOption.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerOption/TagPickerOption.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerOptionGroup/TagPickerOptionGroup.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library/src/components/TagPickerOptionGroup",
+      "config": "packages/react-components/react-tag-picker/library/src/components/TagPickerOptionGroup/TagPickerOptionGroup.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerOptionGroup/TagPickerOptionGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerOptionGroup/TagPickerOptionGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/InteractionTag/InteractionTag.cy.stories.tsx",
+      "name": "packages/react-components/react-tags/library/src/components/InteractionTag",
+      "config": "packages/react-components/react-tags/library/src/components/InteractionTag/InteractionTag.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/InteractionTag/InteractionTag.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tags/library/src/components/InteractionTag/InteractionTag.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/InteractionTagPrimary/InteractionTagPrimary.cy.stories.tsx",
+      "name": "packages/react-components/react-tags/library/src/components/InteractionTagPrimary",
+      "config": "packages/react-components/react-tags/library/src/components/InteractionTagPrimary/InteractionTagPrimary.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/InteractionTagPrimary/InteractionTagPrimary.cy.stories.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tags/library/src/components/InteractionTagPrimary/InteractionTagPrimary.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/InteractionTagSecondary/InteractionTagSecondary.cy.tsx",
+      "name": "packages/react-components/react-tags/library/src/components/InteractionTagSecondary",
+      "config": "packages/react-components/react-tags/library/src/components/InteractionTagSecondary/InteractionTagSecondary.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/InteractionTagSecondary/InteractionTagSecondary.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tags/library/src/components/InteractionTagSecondary/InteractionTagSecondary.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.tsx",
+      "name": "packages/react-components/react-tags/library/src/components/Tag",
+      "config": "packages/react-components/react-tags/library/src/components/Tag/Tag.cypress.config.cjs",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tags/library/src/components/Tag/Tag.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopover/TeachingPopover.cy.tsx",
+      "name": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopover",
+      "config": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopover/TeachingPopover.cypress.config.cjs",
+      "cwd": "packages/react-components/react-teaching-popover/library",
+      "group": "packages/react-components/react-teaching-popover/library",
+      "specs": [
+        "packages/react-components/react-teaching-popover/library/src/components/TeachingPopover/TeachingPopover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-teaching-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopover/TeachingPopover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverBody/TeachingPopoverBody.cy.tsx",
+      "name": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverBody",
+      "config": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverBody/TeachingPopoverBody.cypress.config.cjs",
+      "cwd": "packages/react-components/react-teaching-popover/library",
+      "group": "packages/react-components/react-teaching-popover/library",
+      "specs": [
+        "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverBody/TeachingPopoverBody.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-teaching-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverBody/TeachingPopoverBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverFooter/TeachingPopoverFooter.cy.tsx",
+      "name": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverFooter",
+      "config": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverFooter/TeachingPopoverFooter.cypress.config.cjs",
+      "cwd": "packages/react-components/react-teaching-popover/library",
+      "group": "packages/react-components/react-teaching-popover/library",
+      "specs": [
+        "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverFooter/TeachingPopoverFooter.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-teaching-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverFooter/TeachingPopoverFooter.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverSurface/TeachingPopoverSurface.cy.tsx",
+      "name": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverSurface",
+      "config": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverSurface/TeachingPopoverSurface.cypress.config.cjs",
+      "cwd": "packages/react-components/react-teaching-popover/library",
+      "group": "packages/react-components/react-teaching-popover/library",
+      "specs": [
+        "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverSurface/TeachingPopoverSurface.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-teaching-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverSurface/TeachingPopoverSurface.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverTitle/TeachingPopoverTitle.cy.tsx",
+      "name": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverTitle",
+      "config": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverTitle/cypress.config.cjs",
+      "cwd": "packages/react-components/react-teaching-popover/library",
+      "group": "packages/react-components/react-teaching-popover/library",
+      "specs": [
+        "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverTitle/TeachingPopoverTitle.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-teaching-popover",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-teaching-popover/library/src/components/TeachingPopoverTitle/TeachingPopoverTitle.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-textarea/library/src/components/Textarea/Textarea.cy.tsx",
+      "name": "packages/react-components/react-textarea/library/src/components/Textarea",
+      "config": "packages/react-components/react-textarea/library/src/components/Textarea/cypress.config.cjs",
+      "cwd": "packages/react-components/react-textarea/library/src/components/Textarea",
+      "group": "packages/react-components/react-textarea/library",
+      "specs": [
+        "packages/react-components/react-textarea/library/src/components/Textarea/Textarea.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-textarea",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-textarea/library/src/components/Textarea/Textarea.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toast/library/src/components/Toaster/Toaster.cy.tsx",
+      "name": "packages/react-components/react-toast/library/src/components/Toaster",
+      "config": "packages/react-components/react-toast/library/src/components/Toaster/Toaster.cypress.config.cjs",
+      "cwd": "packages/react-components/react-toast/library",
+      "group": "packages/react-components/react-toast/library",
+      "specs": [
+        "packages/react-components/react-toast/library/src/components/Toaster/Toaster.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toast",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toast/library/src/components/Toaster/Toaster.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toolbar/library/src/components/Toolbar/Toolbar.cy.tsx",
+      "name": "packages/react-components/react-toolbar/library/src/components/Toolbar",
+      "config": "packages/react-components/react-toolbar/library/src/components/Toolbar/cypress.config.cjs",
+      "cwd": "packages/react-components/react-toolbar/library",
+      "group": "packages/react-components/react-toolbar/library",
+      "specs": [
+        "packages/react-components/react-toolbar/library/src/components/Toolbar/Toolbar.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toolbar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toolbar/library/src/components/Toolbar/Toolbar.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toolbar/library/src/components/ToolbarButton/ToolbarButton.cy.tsx",
+      "name": "packages/react-components/react-toolbar/library/src/components/ToolbarButton",
+      "config": "packages/react-components/react-toolbar/library/src/components/ToolbarButton/ToolbarButton.cypress.config.cjs",
+      "cwd": "packages/react-components/react-toolbar/library",
+      "group": "packages/react-components/react-toolbar/library",
+      "specs": [
+        "packages/react-components/react-toolbar/library/src/components/ToolbarButton/ToolbarButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toolbar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toolbar/library/src/components/ToolbarButton/ToolbarButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toolbar/library/src/components/ToolbarDivider/ToolbarDivider.cy.tsx",
+      "name": "packages/react-components/react-toolbar/library/src/components/ToolbarDivider",
+      "config": "packages/react-components/react-toolbar/library/src/components/ToolbarDivider/cypress.config.cjs",
+      "cwd": "packages/react-components/react-toolbar/library",
+      "group": "packages/react-components/react-toolbar/library",
+      "specs": [
+        "packages/react-components/react-toolbar/library/src/components/ToolbarDivider/ToolbarDivider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toolbar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toolbar/library/src/components/ToolbarDivider/ToolbarDivider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toolbar/library/src/components/ToolbarToggleButton/ToolbarToggleButton.cy.tsx",
+      "name": "packages/react-components/react-toolbar/library/src/components/ToolbarToggleButton",
+      "config": "packages/react-components/react-toolbar/library/src/components/ToolbarToggleButton/cypress.config.cjs",
+      "cwd": "packages/react-components/react-toolbar/library",
+      "group": "packages/react-components/react-toolbar/library",
+      "specs": [
+        "packages/react-components/react-toolbar/library/src/components/ToolbarToggleButton/ToolbarToggleButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toolbar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toolbar/library/src/components/ToolbarToggleButton/ToolbarToggleButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-utilities/testing/IdPrefixProvider/IdPrefixProvider.cy.tsx",
+      "name": "packages/react-components/react-utilities/testing/IdPrefixProvider",
+      "config": "packages/react-components/react-utilities/testing/IdPrefixProvider/IdPrefixProvider.cypress.config.cjs",
+      "cwd": "packages/react-components/react-utilities",
+      "group": "packages/react-components/react-utilities",
+      "specs": [
+        "packages/react-components/react-utilities/testing/IdPrefixProvider/IdPrefixProvider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-utilities",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-utilities/src/hooks/useId.ts",
+          "reason": "IdPrefixProvider is exported as IdPrefixContext.Provider by the original useId module."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/babel-preset-global-context/src/Test.cy.tsx",
+      "name": "packages/react-components/babel-preset-global-context",
+      "config": "packages/react-components/babel-preset-global-context/cypress.config.ts",
+      "cwd": "packages/react-components/babel-preset-global-context",
+      "group": "packages/react-components/babel-preset-global-context",
+      "specs": [
+        "packages/react-components/babel-preset-global-context/src/Test.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "babel-preset-global-context",
+      "nxTarget": "e2e",
+      "injectedProductionDependencies": [
+        {
+          "source": "packages/react-components/global-context/src/global-context.ts",
+          "reason": "The original Babel preset transformPlugin injects @fluentui/global-context imports into the copied fake context modules."
+        }
+      ],
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/global-context/src/global-context.ts",
+          "reason": "The original Babel preset transformPlugin injects @fluentui/global-context imports into the copied fake context modules."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/deprecated/react-infobutton/src/components/InfoLabel/InfoLabel.cy.tsx",
+      "name": "packages/react-components/deprecated/react-infobutton",
+      "config": "packages/react-components/deprecated/react-infobutton/cypress.config.ts",
+      "cwd": "packages/react-components/deprecated/react-infobutton",
+      "group": "packages/react-components/deprecated/react-infobutton",
+      "specs": [
+        "packages/react-components/deprecated/react-infobutton/src/components/InfoLabel/InfoLabel.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-infobutton",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/deprecated/react-infobutton/src/components/InfoLabel/InfoLabel.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/global-context/src/global-context.cy.tsx",
+      "name": "packages/react-components/global-context",
+      "config": "packages/react-components/global-context/cypress.config.ts",
+      "cwd": "packages/react-components/global-context",
+      "group": "packages/react-components/global-context",
+      "specs": [
+        "packages/react-components/global-context/src/global-context.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "global-context",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/global-context/src/global-context.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-aria/library/src/activedescendant/useActiveDescendant.cy.tsx",
+      "name": "packages/react-components/react-aria/library",
+      "config": "packages/react-components/react-aria/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-aria/library",
+      "group": "packages/react-components/react-aria/library",
+      "specs": [
+        "packages/react-components/react-aria/library/src/activedescendant/useActiveDescendant.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-aria",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-aria/library/src/activedescendant/useActiveDescendant.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-avatar/library/src/components/Avatar/Avatar.cy.tsx",
+      "name": "packages/react-components/react-avatar/library",
+      "config": "packages/react-components/react-avatar/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-avatar/library",
+      "group": "packages/react-components/react-avatar/library",
+      "specs": [
+        "packages/react-components/react-avatar/library/src/components/Avatar/Avatar.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-avatar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-avatar/library/src/components/Avatar/Avatar.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-badge/library/src/components/CounterBadge/CounterBadge.cy.tsx",
+      "name": "packages/react-components/react-badge/library/src/components/Badge",
+      "config": "packages/react-components/react-badge/library/src/components/Badge/cypress.config.cjs",
+      "cwd": "packages/react-components/react-badge/library",
+      "group": "packages/react-components/react-badge/library",
+      "specs": [
+        "packages/react-components/react-badge/library/src/components/CounterBadge/CounterBadge.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-badge",
+      "nxTarget": "format",
+      "nxTargetReason": "Owner has no inferred e2e target; existing run-command target is overridden with isolated Cypress CLI, not formatting or default target execution.",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-badge/library/src/components/CounterBadge/CounterBadge.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/Breadcrumb.cy.tsx",
+      "name": "packages/react-components/react-breadcrumb/library",
+      "config": "packages/react-components/react-breadcrumb/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-breadcrumb/library",
+      "group": "packages/react-components/react-breadcrumb/library",
+      "specs": [
+        "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/Breadcrumb.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-breadcrumb",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/Breadcrumb.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/BreadcrumbWithMenu.cy.tsx",
+      "name": "packages/react-components/react-breadcrumb/library",
+      "config": "packages/react-components/react-breadcrumb/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-breadcrumb/library",
+      "group": "packages/react-components/react-breadcrumb/library",
+      "specs": [
+        "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/BreadcrumbWithMenu.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-breadcrumb",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-breadcrumb/library/src/components/Breadcrumb/Breadcrumb.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-button/library/src/components/Button/Button.cy.tsx",
+      "name": "packages/react-components/react-button/library",
+      "config": "packages/react-components/react-button/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-button/library",
+      "group": "packages/react-components/react-button/library",
+      "specs": [
+        "packages/react-components/react-button/library/src/components/Button/Button.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-button",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-button/library/src/components/Button/Button.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-button/library/src/components/MenuButton/MenuButton.cy.tsx",
+      "name": "packages/react-components/react-button/library",
+      "config": "packages/react-components/react-button/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-button/library",
+      "group": "packages/react-components/react-button/library",
+      "specs": [
+        "packages/react-components/react-button/library/src/components/MenuButton/MenuButton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-button",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-button/library/src/components/MenuButton/MenuButton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-card/library/src/components/Card/Card.functional.styles.cy.tsx",
+      "name": "packages/react-components/react-card/library",
+      "config": "packages/react-components/react-card/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-card/library",
+      "group": "packages/react-components/react-card/library",
+      "specs": [
+        "packages/react-components/react-card/library/src/components/Card/Card.functional.styles.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-card",
+      "nxTarget": "e2e",
+      "productionAnchors": [],
+      "baselineExpectation": {
+        "version": 1,
+        "kind": "support-only-primary",
+        "source": "packages/react-components/react-card/library/src/components/Card/Card.functional.styles.cy.tsx",
+        "sourceSha256": "66b38e8bd66b13d518807d865cc4d1c5df389604205ee1bc0bf470869ea75f74",
+        "config": "packages/react-components/react-card/library/cypress.config.ts",
+        "configSha256": "40d144427b2fb38821ecec0878256a6d17e8b65c4e455ff1a187d1fd7e160aff",
+        "cwd": "packages/react-components/react-card/library",
+        "reason": "The original inventory includes this pure style-helper as a primary. It authors zero cases; its real owner spec imports and compiles the byte-identical helper.",
+        "expectedCases": [],
+        "consumers": [
+          {
+            "ownerJob": "packages/react-components/react-card/library/src/components/Card/Card.cy.tsx",
+            "specSource": "packages/react-components/react-card/library/src/components/Card/Card.functional.cy.tsx",
+            "specSha256": "729136e83b056dadef8f7b1be6a8ff6f8c9c471e23d7b2f69bbba5f2572612ac"
+          }
+        ]
+      }
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselSlider/CarouselSlider.cy.tsx",
+      "name": "packages/react-components/react-carousel/library",
+      "config": "packages/react-components/react-carousel/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselSlider/CarouselSlider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselSlider/CarouselSlider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-carousel/library/src/components/CarouselViewport/CarouselViewport.cy.tsx",
+      "name": "packages/react-components/react-carousel/library",
+      "config": "packages/react-components/react-carousel/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-carousel/library",
+      "group": "packages/react-components/react-carousel/library",
+      "specs": [
+        "packages/react-components/react-carousel/library/src/components/CarouselViewport/CarouselViewport.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-carousel",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-carousel/library/src/components/CarouselViewport/CarouselViewport.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-color-picker/library/src/components/AlphaSlider/AlphaSlider.cy.tsx",
+      "name": "packages/react-components/react-color-picker/library",
+      "config": "packages/react-components/react-color-picker/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-color-picker/library",
+      "group": "packages/react-components/react-color-picker/library",
+      "specs": [
+        "packages/react-components/react-color-picker/library/src/components/AlphaSlider/AlphaSlider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-color-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-color-picker/library/src/components/AlphaSlider/AlphaSlider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-combobox/library/src/components/Dropdown/Dropdown.cy.tsx",
+      "name": "packages/react-components/react-combobox/library",
+      "config": "packages/react-components/react-combobox/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-combobox/library",
+      "group": "packages/react-components/react-combobox/library",
+      "specs": [
+        "packages/react-components/react-combobox/library/src/components/Dropdown/Dropdown.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-combobox",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-combobox/library/src/components/Dropdown/Dropdown.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-combobox/library/src/components/Listbox/Listbox.cy.tsx",
+      "name": "packages/react-components/react-combobox/library",
+      "config": "packages/react-components/react-combobox/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-combobox/library",
+      "group": "packages/react-components/react-combobox/library",
+      "specs": [
+        "packages/react-components/react-combobox/library/src/components/Listbox/Listbox.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-combobox",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-combobox/library/src/components/Listbox/Listbox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-combobox/library/src/components/Option/Option.cy.tsx",
+      "name": "packages/react-components/react-combobox/library",
+      "config": "packages/react-components/react-combobox/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-combobox/library",
+      "group": "packages/react-components/react-combobox/library",
+      "specs": [
+        "packages/react-components/react-combobox/library/src/components/Option/Option.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-combobox",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-combobox/library/src/components/Option/Option.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-context-selector/src/useContextSelector.cy.tsx",
+      "name": "packages/react-components/react-context-selector",
+      "config": "packages/react-components/react-context-selector/cypress.config.ts",
+      "cwd": "packages/react-components/react-context-selector",
+      "group": "packages/react-components/react-context-selector",
+      "specs": [
+        "packages/react-components/react-context-selector/src/useContextSelector.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-context-selector",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-context-selector/src/useContextSelector.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-datepicker-compat/library/src/components/DatePicker/DatePicker.cy.tsx",
+      "name": "packages/react-components/react-datepicker-compat/library",
+      "config": "packages/react-components/react-datepicker-compat/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-datepicker-compat/library",
+      "group": "packages/react-components/react-datepicker-compat/library",
+      "specs": [
+        "packages/react-components/react-datepicker-compat/library/src/components/DatePicker/DatePicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-datepicker-compat",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-datepicker-compat/library/src/components/DatePicker/DatePicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/Dialog/Dialog.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/Dialog/Dialog.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/Dialog/Dialog.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogActions/DialogActions.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogActions/DialogActions.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogActions/DialogActions.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogBody/DialogBody.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogBody/DialogBody.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogBody/DialogBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogContent/DialogContent.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogContent/DialogContent.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogContent/DialogContent.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogSurface/DialogSurface.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogSurface/DialogSurface.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogSurface/DialogSurface.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogTitle/DialogTitle.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogTitle/DialogTitle.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogTitle/DialogTitle.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-dialog/library/src/components/DialogTrigger/DialogTrigger.cy.tsx",
+      "name": "packages/react-components/react-dialog/library",
+      "config": "packages/react-components/react-dialog/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-dialog/library",
+      "group": "packages/react-components/react-dialog/library",
+      "specs": [
+        "packages/react-components/react-dialog/library/src/components/DialogTrigger/DialogTrigger.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-dialog",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-dialog/library/src/components/DialogTrigger/DialogTrigger.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/Drawer/Drawer.cy.tsx",
+      "name": "packages/react-components/react-drawer/library",
+      "config": "packages/react-components/react-drawer/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/Drawer/Drawer.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/Drawer/Drawer.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.cy.tsx",
+      "name": "packages/react-components/react-drawer/library",
+      "config": "packages/react-components/react-drawer/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerHeader/DrawerHeader.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerHeaderNavigation/DrawerHeaderNavigation.cy.tsx",
+      "name": "packages/react-components/react-drawer/library",
+      "config": "packages/react-components/react-drawer/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerHeaderNavigation/DrawerHeaderNavigation.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerHeaderNavigation/DrawerHeaderNavigation.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.cy.tsx",
+      "name": "packages/react-components/react-drawer/library",
+      "config": "packages/react-components/react-drawer/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/DrawerHeaderTitle/DrawerHeaderTitle.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-drawer/library/src/components/InlineDrawer/InlineDrawer.cy.tsx",
+      "name": "packages/react-components/react-drawer/library",
+      "config": "packages/react-components/react-drawer/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-drawer/library",
+      "group": "packages/react-components/react-drawer/library",
+      "specs": [
+        "packages/react-components/react-drawer/library/src/components/InlineDrawer/InlineDrawer.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-drawer",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-drawer/library/src/components/InlineDrawer/InlineDrawer.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-field/library/src/components/Field/Field.cy.tsx",
+      "name": "packages/react-components/react-field/library",
+      "config": "packages/react-components/react-field/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-field/library",
+      "group": "packages/react-components/react-field/library",
+      "specs": [
+        "packages/react-components/react-field/library/src/components/Field/Field.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-field",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-field/library/src/components/Field/Field.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Combobox/Combobox.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Combobox/Combobox.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Combobox/Combobox.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Dialog/Dialog.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Dialog/Dialog.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Dialog/Dialog.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Drawer/Drawer.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Drawer/Drawer.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Drawer/Drawer.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Dropdown/Dropdown.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Dropdown/Dropdown.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Dropdown/Dropdown.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/InfoLabel/InfoLabel.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/InfoLabel/InfoLabel.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/InfoLabel/InfoLabel.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Menu/Menu.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Menu/Menu.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Menu/Menu.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Popover/Popover.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Popover/Popover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Popover/Popover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/SwatchPicker/SwatchPicker.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/SwatchPicker/SwatchPicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/SwatchPicker/SwatchPicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ],
+      "baselineExpectation": {
+        "version": 1,
+        "kind": "baseline-pending",
+        "source": "packages/react-components/react-headless-components-preview/library/src/components/SwatchPicker/SwatchPicker.cy.tsx",
+        "sourceSha256": "75400fea4f089950766700461c5592323c46cae11ed1c73b822fabb75ffb7b1e",
+        "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+        "configSha256": "40d144427b2fb38821ecec0878256a6d17e8b65c4e455ff1a187d1fd7e160aff",
+        "cwd": "packages/react-components/react-headless-components-preview/library",
+        "reason": "The original headless SwatchPicker spec authors exactly one it.skip case; preserve its exact pending title/state without claiming a passing test.",
+        "expectedCases": [
+          {
+            "title": [
+              "SwatchPicker",
+              "moves focus through a grid with arrow keys and wraps"
+            ],
+            "state": "pending"
+          }
+        ],
+        "consumers": []
+      }
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/TagPicker/TagPicker.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/TagPicker/TagPicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/TagPicker/TagPicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/TeachingPopover/TeachingPopover.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/TeachingPopover/TeachingPopover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/TeachingPopover/TeachingPopover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Toast/Toast.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Toast/Toast.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Toast/Toast.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-headless-components-preview/library/src/components/Tooltip/Tooltip.cy.tsx",
+      "name": "packages/react-components/react-headless-components-preview/library",
+      "config": "packages/react-components/react-headless-components-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-headless-components-preview/library",
+      "group": "packages/react-components/react-headless-components-preview/library",
+      "specs": [
+        "packages/react-components/react-headless-components-preview/library/src/components/Tooltip/Tooltip.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-headless-components-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-headless-components-preview/library/src/components/Tooltip/Tooltip.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu-grid-preview/library/src/components/MenuGrid/MenuGrid.cy.tsx",
+      "name": "packages/react-components/react-menu-grid-preview/library",
+      "config": "packages/react-components/react-menu-grid-preview/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu-grid-preview/library",
+      "group": "packages/react-components/react-menu-grid-preview/library",
+      "specs": [
+        "packages/react-components/react-menu-grid-preview/library/src/components/MenuGrid/MenuGrid.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu-grid-preview",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu-grid-preview/library/src/components/MenuGrid/MenuGrid.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/Menu/Menu.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/Menu/Menu.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/Menu/Menu.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuItem/MenuItem.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuItem/MenuItem.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuItem/MenuItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuItemRadio/MenuItemRadio.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuItemRadio/MenuItemRadio.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuItemRadio/MenuItemRadio.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuList/MenuList.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuList/MenuList.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuList/MenuList.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuList/MenuList.functional.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuList/MenuList.functional.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuList/MenuList.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuPopover/MenuPopover.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuPopover/MenuPopover.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuPopover/MenuPopover.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-menu/library/src/components/MenuTrigger/MenuTrigger.cy.tsx",
+      "name": "packages/react-components/react-menu/library",
+      "config": "packages/react-components/react-menu/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-menu/library",
+      "group": "packages/react-components/react-menu/library",
+      "specs": [
+        "packages/react-components/react-menu/library/src/components/MenuTrigger/MenuTrigger.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-menu",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-menu/library/src/components/MenuTrigger/MenuTrigger.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-message-bar/library/src/components/MessageBar/MessageBar.cy.tsx",
+      "name": "packages/react-components/react-message-bar/library",
+      "config": "packages/react-components/react-message-bar/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-message-bar/library",
+      "group": "packages/react-components/react-message-bar/library",
+      "specs": [
+        "packages/react-components/react-message-bar/library/src/components/MessageBar/MessageBar.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-message-bar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-message-bar/library/src/components/MessageBar/MessageBar.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-message-bar/library/src/components/MessageBarActions/MessageBarActions.cy.tsx",
+      "name": "packages/react-components/react-message-bar/library",
+      "config": "packages/react-components/react-message-bar/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-message-bar/library",
+      "group": "packages/react-components/react-message-bar/library",
+      "specs": [
+        "packages/react-components/react-message-bar/library/src/components/MessageBarActions/MessageBarActions.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-message-bar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-message-bar/library/src/components/MessageBarActions/MessageBarActions.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-message-bar/library/src/components/MessageBarBody/MessageBarBody.cy.tsx",
+      "name": "packages/react-components/react-message-bar/library",
+      "config": "packages/react-components/react-message-bar/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-message-bar/library",
+      "group": "packages/react-components/react-message-bar/library",
+      "specs": [
+        "packages/react-components/react-message-bar/library/src/components/MessageBarBody/MessageBarBody.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-message-bar",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-message-bar/library/src/components/MessageBarBody/MessageBarBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-motion/library/src/factories/createPresenceComponent.cy.tsx",
+      "name": "packages/react-components/react-motion/library",
+      "config": "packages/react-components/react-motion/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-motion/library",
+      "group": "packages/react-components/react-motion/library",
+      "specs": [
+        "packages/react-components/react-motion/library/src/factories/createPresenceComponent.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-motion",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-motion/library/src/factories/createPresenceComponent.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-overflow/library/src/Overflow.cy.tsx",
+      "name": "packages/react-components/react-overflow/library",
+      "config": "packages/react-components/react-overflow/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-overflow/library",
+      "group": "packages/react-components/react-overflow/library",
+      "specs": [
+        "packages/react-components/react-overflow/library/src/Overflow.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-overflow",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-overflow/library/src/components/Overflow/Overflow.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-overflow/library/src/Overflow.paint-probe.cy.tsx",
+      "name": "packages/react-components/react-overflow/library",
+      "config": "packages/react-components/react-overflow/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-overflow/library",
+      "group": "packages/react-components/react-overflow/library",
+      "specs": [
+        "packages/react-components/react-overflow/library/src/Overflow.paint-probe.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-overflow",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-overflow/library/src/components/Overflow/Overflow.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-portal-compat/src/PortalCompat.cy.tsx",
+      "name": "packages/react-components/react-portal-compat",
+      "config": "packages/react-components/react-portal-compat/cypress.config.ts",
+      "cwd": "packages/react-components/react-portal-compat",
+      "group": "packages/react-components/react-portal-compat",
+      "specs": [
+        "packages/react-components/react-portal-compat/src/PortalCompat.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-portal-compat",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-portal-compat/src/PortalCompatProvider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-positioning/library/src/hooks/useSafeZoneArea/useSafeZoneArea.cy.tsx",
+      "name": "packages/react-components/react-positioning/library",
+      "config": "packages/react-components/react-positioning/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-positioning/library",
+      "group": "packages/react-components/react-positioning/library",
+      "specs": [
+        "packages/react-components/react-positioning/library/src/hooks/useSafeZoneArea/useSafeZoneArea.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-positioning",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-positioning/library/src/hooks/useSafeZoneArea/useSafeZoneArea.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-skeleton/library/src/components/Skeleton/Skeleton.cy.tsx",
+      "name": "packages/react-components/react-skeleton/library",
+      "config": "packages/react-components/react-skeleton/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-skeleton/library",
+      "group": "packages/react-components/react-skeleton/library",
+      "specs": [
+        "packages/react-components/react-skeleton/library/src/components/Skeleton/Skeleton.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-skeleton",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-skeleton/library/src/components/Skeleton/Skeleton.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-skeleton/library/src/components/SkeletonItem/SkeletonItem.cy.tsx",
+      "name": "packages/react-components/react-skeleton/library",
+      "config": "packages/react-components/react-skeleton/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-skeleton/library",
+      "group": "packages/react-components/react-skeleton/library",
+      "specs": [
+        "packages/react-components/react-skeleton/library/src/components/SkeletonItem/SkeletonItem.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-skeleton",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-skeleton/library/src/components/SkeletonItem/SkeletonItem.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGrid/DataGrid.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGrid/DataGrid.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGrid/DataGrid.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGridBody/DataGridBody.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGridBody/DataGridBody.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGridBody/DataGridBody.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/DataGridCell/DataGridCell.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/DataGridCell/DataGridCell.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/DataGridCell/DataGridCell.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableCell/TableCell.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableCell/TableCell.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableCell/TableCell.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableHeaderCell/TableHeaderCell.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableHeaderCell/TableHeaderCell.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableHeaderCell/TableHeaderCell.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-table/library/src/components/TableRow/TableRow.cy.tsx",
+      "name": "packages/react-components/react-table/library",
+      "config": "packages/react-components/react-table/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-table/library",
+      "group": "packages/react-components/react-table/library",
+      "specs": [
+        "packages/react-components/react-table/library/src/components/TableRow/TableRow.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-table",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-table/library/src/components/TableRow/TableRow.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/hooks/useFocusVisible.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/hooks/useFocusVisible.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useFocusVisible.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/hooks/useFocusedElementChange.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/hooks/useFocusedElementChange.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useFocusedElementChange.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/useFocusObserved.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/useFocusObserved.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useFocusObserved.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/useKeyborgRef.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/useKeyborgRef.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useKeyborgRef.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/useOnKeyboardNavigationChange.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/useOnKeyboardNavigationChange.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useOnKeyboardNavigationChange.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tabster/src/useSetKeyboardNavigation.cy.tsx",
+      "name": "packages/react-components/react-tabster",
+      "config": "packages/react-components/react-tabster/cypress.config.ts",
+      "cwd": "packages/react-components/react-tabster",
+      "group": "packages/react-components/react-tabster",
+      "specs": [
+        "packages/react-components/react-tabster/src/useSetKeyboardNavigation.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tabster",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tabster/src/hooks/useSetKeyboardNavigation.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tag-picker/library/src/components/TagPickerList/TagPickerList.cy.tsx",
+      "name": "packages/react-components/react-tag-picker/library",
+      "config": "packages/react-components/react-tag-picker/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tag-picker/library",
+      "group": "packages/react-components/react-tag-picker/library",
+      "specs": [
+        "packages/react-components/react-tag-picker/library/src/components/TagPickerList/TagPickerList.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tag-picker",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tag-picker/library/src/components/TagPickerList/TagPickerList.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.styles.cy.tsx",
+      "name": "packages/react-components/react-tags/library",
+      "config": "packages/react-components/react-tags/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.styles.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [],
+      "baselineExpectation": {
+        "version": 1,
+        "kind": "support-only-primary",
+        "source": "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.styles.cy.tsx",
+        "sourceSha256": "7badcd3a9bdaaf8c4b829e903fc589cc351a69fb931573dee2430771f15b5e4f",
+        "config": "packages/react-components/react-tags/library/cypress.config.ts",
+        "configSha256": "40d144427b2fb38821ecec0878256a6d17e8b65c4e455ff1a187d1fd7e160aff",
+        "cwd": "packages/react-components/react-tags/library",
+        "reason": "The original inventory includes this pure style-helper as a primary. It authors zero cases; its real owner spec imports and compiles the byte-identical helper.",
+        "expectedCases": [],
+        "consumers": [
+          {
+            "ownerJob": "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.tsx",
+            "specSource": "packages/react-components/react-tags/library/src/components/Tag/Tag.cy.tsx",
+            "specSha256": "d55a68116e71e9d28f5cd28951554279002355815b5e3401043461a3e6d711f4"
+          }
+        ]
+      }
+    },
+    {
+      "id": "packages/react-components/react-tags/library/src/components/TagGroup/TagGroup.cy.tsx",
+      "name": "packages/react-components/react-tags/library",
+      "config": "packages/react-components/react-tags/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tags/library",
+      "group": "packages/react-components/react-tags/library",
+      "specs": [
+        "packages/react-components/react-tags/library/src/components/TagGroup/TagGroup.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tags",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tags/library/src/components/TagGroup/TagGroup.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-text/library/src/components/Text/Text.cy.tsx",
+      "name": "packages/react-components/react-text/library",
+      "config": "packages/react-components/react-text/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-text/library",
+      "group": "packages/react-components/react-text/library",
+      "specs": [
+        "packages/react-components/react-text/library/src/components/Text/Text.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-text",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-text/library/src/components/Text/Text.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-timepicker-compat/library/src/components/TimePicker/TimePicker.cy.tsx",
+      "name": "packages/react-components/react-timepicker-compat/library",
+      "config": "packages/react-components/react-timepicker-compat/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-timepicker-compat/library",
+      "group": "packages/react-components/react-timepicker-compat/library",
+      "specs": [
+        "packages/react-components/react-timepicker-compat/library/src/components/TimePicker/TimePicker.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-timepicker-compat",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-timepicker-compat/library/src/components/TimePicker/TimePicker.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-toast/library/src/components/Toast/Toast.cy.tsx",
+      "name": "packages/react-components/react-toast/library",
+      "config": "packages/react-components/react-toast/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-toast/library",
+      "group": "packages/react-components/react-toast/library",
+      "specs": [
+        "packages/react-components/react-toast/library/src/components/Toast/Toast.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-toast",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-toast/library/src/components/Toast/Toast.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tooltip/library/src/components/Tooltip/Tooltip.cy.tsx",
+      "name": "packages/react-components/react-tooltip/library",
+      "config": "packages/react-components/react-tooltip/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tooltip/library",
+      "group": "packages/react-components/react-tooltip/library",
+      "specs": [
+        "packages/react-components/react-tooltip/library/src/components/Tooltip/Tooltip.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tooltip",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tooltip/library/src/components/Tooltip/Tooltip.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tree/library/src/components/FlatTree/FlatTree.cy.tsx",
+      "name": "packages/react-components/react-tree/library",
+      "config": "packages/react-components/react-tree/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tree/library",
+      "group": "packages/react-components/react-tree/library",
+      "specs": [
+        "packages/react-components/react-tree/library/src/components/FlatTree/FlatTree.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tree",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tree/library/src/components/FlatTree/FlatTree.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tree/library/src/components/Tree/Tree.cy.tsx",
+      "name": "packages/react-components/react-tree/library",
+      "config": "packages/react-components/react-tree/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tree/library",
+      "group": "packages/react-components/react-tree/library",
+      "specs": [
+        "packages/react-components/react-tree/library/src/components/Tree/Tree.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tree",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tree/library/src/components/Tree/Tree.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-tree/library/src/components/TreeProvider.cy.tsx",
+      "name": "packages/react-components/react-tree/library",
+      "config": "packages/react-components/react-tree/library/cypress.config.ts",
+      "cwd": "packages/react-components/react-tree/library",
+      "group": "packages/react-components/react-tree/library",
+      "specs": [
+        "packages/react-components/react-tree/library/src/components/TreeProvider.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-tree",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-tree/library/src/components/TreeProvider.tsx",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-utilities/src/hooks/useOnClickOutside.cy.tsx",
+      "name": "packages/react-components/react-utilities",
+      "config": "packages/react-components/react-utilities/cypress.config.ts",
+      "cwd": "packages/react-components/react-utilities",
+      "group": "packages/react-components/react-utilities",
+      "specs": [
+        "packages/react-components/react-utilities/src/hooks/useOnClickOutside.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-utilities",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-utilities/src/hooks/useOnClickOutside.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    },
+    {
+      "id": "packages/react-components/react-utilities/src/hooks/useOnScrollOutside.cy.tsx",
+      "name": "packages/react-components/react-utilities",
+      "config": "packages/react-components/react-utilities/cypress.config.ts",
+      "cwd": "packages/react-components/react-utilities",
+      "group": "packages/react-components/react-utilities",
+      "specs": [
+        "packages/react-components/react-utilities/src/hooks/useOnScrollOutside.cy.tsx"
+      ],
+      "configEnv": {},
+      "nxProject": "react-utilities",
+      "nxTarget": "e2e",
+      "productionAnchors": [
+        {
+          "source": "packages/react-components/react-utilities/src/hooks/useOnScrollOutside.ts",
+          "reason": "Exact original implementation counterpart of the selected component or hook spec."
+        }
+      ]
+    }
+  ]
+}
