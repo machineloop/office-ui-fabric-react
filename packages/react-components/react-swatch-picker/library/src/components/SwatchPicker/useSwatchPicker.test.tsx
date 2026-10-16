@@ -3,6 +3,14 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { useSwatchPicker_unstable } from './useSwatchPicker';
 
 describe('useSwatchPicker', () => {
+  it('forwards native root style without discarding caller overrides', () => {
+    const ref = React.createRef<HTMLDivElement>();
+    const style = { padding: 13, maxWidth: 200 };
+    const { result } = renderHook(() => useSwatchPicker_unstable({ style }, ref));
+
+    expect(result.current.root.style).toBe(style);
+  });
+
   it('uses the default size, shape and spacing', () => {
     const ref = React.createRef<HTMLDivElement>();
     const { result } = renderHook(() => useSwatchPicker_unstable({}, ref));
