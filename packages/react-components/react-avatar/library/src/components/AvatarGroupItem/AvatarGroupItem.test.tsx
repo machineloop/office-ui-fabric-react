@@ -40,4 +40,29 @@ describe('AvatarGroupItem', () => {
 
     expect(screen.getByTestId(testId).textContent).toBe('Test Label');
   });
+
+  it.each([
+    [undefined, 'Slot Only'],
+    ['Stale Name', 'Resolved Name'],
+  ])('defaults the overflow label to the resolved avatar name (%s -> %s)', (name, slotName) => {
+    render(
+      <ContextWrapper>
+        <AvatarGroupItem name={name} avatar={{ name: slotName }} />
+      </ContextWrapper>,
+    );
+
+    expect(screen.getByRole('img', { name: slotName })).toBeTruthy();
+    expect(screen.getByText(slotName).getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('preserves an explicit overflow label when the avatar slot overrides the name', () => {
+    render(
+      <ContextWrapper>
+        <AvatarGroupItem name="Default Name" avatar={{ name: 'Avatar Name' }} overflowLabel="Custom Label" />
+      </ContextWrapper>,
+    );
+
+    expect(screen.getByRole('img', { name: 'Avatar Name' })).toBeTruthy();
+    expect(screen.getByText('Custom Label').getAttribute('aria-hidden')).toBe('true');
+  });
 });

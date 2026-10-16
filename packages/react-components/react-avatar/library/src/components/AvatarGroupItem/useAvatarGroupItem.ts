@@ -70,6 +70,14 @@ export const useAvatarGroupItemBase_unstable = (
     console.warn('AvatarGroupItem must only be used inside an AvatarGroup component.');
   }
 
+  const avatar: AvatarGroupItemBaseState['avatar'] = slot.always(props.avatar, {
+    defaultProps: {
+      ref,
+      ...avatarSlotProps,
+    },
+    elementType: 'span',
+  });
+
   return {
     isOverflowItem: groupIsOverflow,
     layout,
@@ -85,18 +93,12 @@ export const useAvatarGroupItemBase_unstable = (
       },
       elementType: groupIsOverflow ? 'li' : 'div',
     }),
-    avatar: slot.always(props.avatar, {
-      defaultProps: {
-        ref,
-        ...avatarSlotProps,
-      },
-      elementType: 'span',
-    }),
+    avatar,
     overflowLabel: slot.always(overflowLabel, {
       defaultProps: {
         // Avatar already has its aria-label set to the name, this will prevent the name to be read twice.
         'aria-hidden': true,
-        children: props.name,
+        children: avatar.name,
       },
       elementType: 'span',
     }),
