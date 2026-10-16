@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.lib.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "cypress", "cypress-real-events"],
+    "typeRoots": ["../../../../../../../node_modules", "../../../../../../../node_modules/@types"],
+    "lib": ["ES2019", "dom", "dom.iterable"],
+    "rootDir": "../../../../../../.."
+  },
+  "include": ["ToolbarDivider.cy.tsx", "ToolbarDivider.cy-jsx.stories.ts"],
+  "exclude": []
+}
