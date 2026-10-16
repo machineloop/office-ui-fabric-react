@@ -102,6 +102,29 @@ const assertShadow = (element: HTMLElement, expected: string) => {
   probe.remove();
   expect(view.getComputedStyle(element, '::after').boxShadow).to.equal(normalized);
 };
+const assertBadgeMask = (element: HTMLElement, edge: 'left' | 'right') => {
+  const view = element.ownerDocument.defaultView!;
+  const actual = view.getComputedStyle(element).maskImage;
+  const probe = element.ownerDocument.createElement('span');
+  probe.style.maskImage = `radial-gradient(circle at ${edge} 10px bottom 10px, transparent 11.75px, white 12.25px)`;
+  expect(probe.style.maskImage, 'independent mask recipe is valid CSS').not.to.equal('');
+  const normalized = (() => {
+    element.appendChild(probe);
+    try {
+      return view.getComputedStyle(probe).maskImage;
+    } finally {
+      probe.remove();
+    }
+  })();
+  expect(normalized, 'independent computed mask is present').not.to.equal('');
+  expect(normalized, 'independent mask is applied').not.to.equal('none');
+  // Older CSSOMs retain an equivalent calc(<absolute px>) after variable substitution.
+  const normalizeAbsolutePixelCalc = (image: string) => image.replace(/calc\((-?\d+(?:\.\d+)?)px\)/g, '$1px');
+  expect(
+    normalizeAbsolutePixelCalc(actual),
+    'logical-end transparent mask matches the native CSSOM reference',
+  ).to.equal(normalizeAbsolutePixelCalc(normalized));
+};
 const assertAvatarName = (element: HTMLElement, name: string) =>
   expect(getByRole(element.ownerDocument.body, 'img', { name })).to.equal(element);
 const settledAvatar = () =>
@@ -532,11 +555,7 @@ describe('Avatar supported API and accessibility edges', () => {
       );
       cy.get('#avatar .fui-Avatar__initials')
         .should('have.text', dir === 'rtl' ? 'LK' : 'KL')
-        .should($initials =>
-          expect($initials[0].ownerDocument.defaultView!.getComputedStyle($initials[0]).maskImage).to.contain(
-            dir === 'rtl' ? 'left 10px' : 'right 10px',
-          ),
-        );
+        .should($initials => assertBadgeMask($initials[0], dir === 'rtl' ? 'left' : 'right'));
       cy.get('#avatar').should($avatar => {
         const root = $avatar[0].getBoundingClientRect();
         const badge = $avatar[0].querySelector('.fui-Avatar__badge')!.getBoundingClientRect();
