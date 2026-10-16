@@ -397,13 +397,34 @@ describe('MessageBar', () => {
           </AriaLiveAnnouncer>
         );
       };
-      mount(<Fixture />);
-      cy.get('[aria-live]').should('have.text', '');
-      cy.contains('button', 'Show announced message').realClick();
-      cy.get('[aria-live]').should('contain.text', 'Descriptive title').and('contain.text', 'RetryDetails');
-      cy.get('[data-cy-root]').should(
-        $root => expect(getByRole($root[0], 'group', { name: 'Descriptive title' })).to.exist,
-      );
+      const narration = 'Descriptive title Message providing actionable information for this page. Help,RetryDetails';
+      cy.document().then(doc => {
+        const nativeAnnouncement =
+          'ariaNotify' in doc && typeof doc.ariaNotify === 'function'
+            ? cy.spy(doc, 'ariaNotify').as('nativeAnnouncement')
+            : undefined;
+        mount(<Fixture />);
+        if (nativeAnnouncement) {
+          cy.get('@nativeAnnouncement').should('not.have.been.called');
+        } else {
+          cy.get('[aria-live]').should('have.text', '');
+        }
+        cy.contains('button', 'Show announced message').realClick();
+        message().should('be.visible');
+        if (nativeAnnouncement) {
+          cy.get('@nativeAnnouncement').should(() => {
+            expect(nativeAnnouncement).to.have.been.calledTwice;
+            nativeAnnouncement
+              .getCalls()
+              .forEach(call => expect(call.args).to.deep.equal([narration, { priority: 'normal' }]));
+          });
+        } else {
+          cy.get('[aria-live]').should('have.text', `${narration}. ${narration}. `);
+        }
+        cy.get('[data-cy-root]').should(
+          $root => expect(getByRole($root[0], 'group', { name: 'Descriptive title' })).to.exist,
+        );
+      });
     });
 
     it('persists until the caller removes it rather than imposing an undocumented expiry timer', () => {
