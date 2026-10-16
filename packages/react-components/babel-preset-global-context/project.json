@@ -4,5 +4,30 @@
   "projectType": "library",
   "implicitDependencies": [],
   "sourceRoot": "packages/react-components/babel-preset-global-context/src",
-  "tags": ["vNext", "platform:node", "tools"]
+  "tags": ["vNext", "platform:node", "tools"],
+  "targets": {
+    "build-cypress-preset": {
+      "executor": "@fluentui/workspace-plugin:build",
+      "cache": true,
+      "inputs": ["production"],
+      "outputs": ["{projectRoot}/lib-commonjs"],
+      "metadata": {
+        "description": "Build the local CommonJS Babel preset required by the Cypress fixture transform, without API generation."
+      },
+      "options": {
+        "sourceRoot": "src",
+        "outputPathRoot": "packages/react-components/babel-preset-global-context",
+        "moduleOutput": [{ "module": "commonjs", "outputPath": "lib-commonjs" }],
+        "generateApi": false,
+        "clean": true
+      }
+    },
+    "e2e": {
+      "dependsOn": ["build-cypress-preset", { "target": "build", "projects": "scripts-cypress" }],
+      "inputs": ["default", "^production"],
+      "metadata": {
+        "description": "Verify targeted context major-version sharing and untargeted isolation with the locally built Babel preset."
+      }
+    }
+  }
 }

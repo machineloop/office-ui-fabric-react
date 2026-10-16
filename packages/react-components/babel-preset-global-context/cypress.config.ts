@@ -7,17 +7,27 @@ import { baseConfig } from '@fluentui/scripts-cypress';
  */
 const webpackConfigWithBabelPreset = () => {
   const baseWebpackConfig = baseConfig.component.devServer.webpackConfig;
-  baseWebpackConfig.module?.rules?.unshift({
-    test: /\.(ts|tsx)$/,
-    loader: 'babel-loader',
-    include: [/fake_node_modules\/context-*/],
-    options: {
-      presets: ['@fluentui/babel-preset-global-context'],
+  return {
+    ...baseWebpackConfig,
+    module: {
+      ...baseWebpackConfig.module,
+      rules: [
+        {
+          test: /\.(ts|tsx)$/,
+          loader: 'babel-loader',
+          // Webpack resource paths use the host's native separators.
+          include: [/[/\\]fake_node_modules[/\\]context-[^/\\]+[/\\]/],
+          options: {
+            presets: ['@fluentui/babel-preset-global-context'],
+          },
+        },
+        ...(baseWebpackConfig.module?.rules ?? []),
+      ],
     },
-  });
+  };
 };
 
-defineConfig({
+export default defineConfig({
   ...baseConfig,
   component: {
     ...baseConfig.component,
@@ -28,4 +38,3 @@ defineConfig({
     },
   },
 });
-export default baseConfig;
