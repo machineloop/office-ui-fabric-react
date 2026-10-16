@@ -48,7 +48,7 @@ export const useTagPickerGroup_unstable = (
       dismissible: true,
       onKeyDown: useEventCallback(event => {
         props.onKeyDown?.(event);
-        if (isHTMLElement(event.target) && event.key === ArrowRight) {
+        if (!event.defaultPrevented && isHTMLElement(event.target) && event.key === ArrowRight) {
           triggerRef.current?.focus();
         }
       }),

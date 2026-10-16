@@ -23,15 +23,18 @@ const useStyles = makeStyles({
   // size variants
   medium: {
     padding: `${tokens.spacingVerticalSNudge} 0 ${tokens.spacingVerticalSNudge} 0`,
-    gap: tokens.spacingHorizontalXS,
+    rowGap: tokens.spacingHorizontalXS,
+    columnGap: tokens.spacingHorizontalXS,
   },
   large: {
     padding: `${tokens.spacingVerticalS} 0 ${tokens.spacingVerticalS} 0`,
-    gap: tokens.spacingHorizontalSNudge,
+    rowGap: tokens.spacingHorizontalSNudge,
+    columnGap: tokens.spacingHorizontalSNudge,
   },
   'extra-large': {
     padding: `${tokens.spacingVerticalS} 0 ${tokens.spacingVerticalS} 0`,
-    gap: tokens.spacingHorizontalSNudge,
+    rowGap: tokens.spacingHorizontalSNudge,
+    columnGap: tokens.spacingHorizontalSNudge,
   },
 });
 
@@ -39,14 +42,19 @@ const useStyles = makeStyles({
  * Apply styling to the TagPickerGroup slots based on the state
  */
 export const useTagPickerGroupStyles_unstable = (state: TagPickerGroupState): TagPickerGroupState => {
-  useTagGroupStyles_unstable(state);
+  const className = state.root.className;
+  const tagGroupState = useTagGroupStyles_unstable({
+    ...state,
+    root: { ...state.root, className: undefined },
+  });
   const styles = useStyles();
   // eslint-disable-next-line react-hooks/immutability
   state.root.className = mergeClasses(
     tagPickerGroupClassNames.root,
+    tagGroupState.root.className,
     styles[tagSizeToTagPickerSize(state.size)],
     styles.root,
-    state.root.className,
+    className,
   );
 
   return state;

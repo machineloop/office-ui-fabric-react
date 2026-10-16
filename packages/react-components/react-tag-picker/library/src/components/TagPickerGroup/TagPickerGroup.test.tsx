@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { isConformant } from '../../testing/isConformant';
 import { TagPickerGroup } from './TagPickerGroup';
 import { TagPickerContextProvider, tagPickerContextDefaultValue } from '../../contexts/TagPickerContext';
@@ -27,5 +27,22 @@ describe('TagPickerGroup', () => {
   it('renders a default state', () => {
     const result = render(<TagPickerGroup>Default TagPickerGroup</TagPickerGroup>);
     expect(result.container).toMatchSnapshot();
+  });
+
+  it('does not move focus to the trigger when the caller cancels ArrowRight', () => {
+    const triggerRef = React.createRef<HTMLInputElement>();
+    const result = render(
+      <TagPickerContextProvider value={{ ...tagPickerContextDefaultValue, selectedOptions: ['Alpha'], triggerRef }}>
+        <TagPickerGroup tabIndex={0} onKeyDown={event => event.preventDefault()}>
+          Alpha
+        </TagPickerGroup>
+        <input ref={triggerRef} />
+      </TagPickerContextProvider>,
+    );
+    const group = result.getByRole('listbox');
+    group.focus();
+    fireEvent.keyDown(group, { key: 'ArrowRight' });
+
+    expect(document.activeElement).toBe(group);
   });
 });
