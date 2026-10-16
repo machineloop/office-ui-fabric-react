@@ -1,5 +1,11 @@
 # CarouselNav browser coverage
 
+The isolated selected-tab entry case now observes that the real Tabster focus
+backend has tracked its original preceding button before sending native Tab.
+The selected tab is not focused or chosen by the test: real Tab entry/exit and
+reverse reentry still have their original exact focus assertions. No mover state,
+DOM attribute, component source, sleep, retry or timeout is changed.
+
 The row-109 suite covers the finite supported Nav API and integrates real Carousel,
 CarouselCard, CarouselSlider, CarouselViewport, and valid CarouselNavButton or
 CarouselNavImageButton children. Siblings and production source remain read-only.

@@ -25,6 +25,7 @@ import { CarouselNavButton } from '../CarouselNavButton/CarouselNavButton';
 import { CarouselNavImageButton } from '../CarouselNavImageButton/CarouselNavImageButton';
 import { CarouselProvider, carouselContextDefaultValue, useCarouselContext_unstable } from '../CarouselContext';
 import { useNavCoverageStyles } from './CarouselNav.cy.styles';
+import { getTabster } from 'tabster';
 
 const mount = (element: JSXElement, dir: 'ltr' | 'rtl' = 'ltr', dark = false) =>
   mountBase(
@@ -185,7 +186,14 @@ describe('CarouselNav edges and accessibility', () => {
     );
     root().should('have.attr', 'role', 'tablist').and('not.have.attr', 'tabindex');
     button(2).should('have.attr', 'aria-selected', 'true');
-    cy.get('[data-testid="before"]').focus();
+    cy.get('[data-testid="before"]')
+      .focus()
+      .should($before =>
+        expect(
+          getTabster($before[0].ownerDocument.defaultView!)?.focusedElement.getFocusedElement(),
+          'native focus backend has observed the original preceding button',
+        ).to.equal($before[0]),
+      );
     cy.realPress('Tab');
     button(2).should('be.focused');
     cy.realPress('Tab');
