@@ -1,5 +1,11 @@
 # AccordionItem browser coverage
 
+The owner removal/reinsertion case now checks the opened item's actual expansion
+and waits for the existing panel animation-completion premise before clicking the
+Show button below it. This keeps the real pointer target settled without a sleep
+or synthetic event. Actual item disappearance, owner-retained selection and
+visible reinserted content remain the original assertions.
+
 The final gate adds two item-owned disability regressions (35 scenarios total).
 A closed item with header-slot `disabled: false` and an open item with an explicitly
 undefined slot disability remain owner-disabled: pointer attempts preserve
@@ -11,6 +17,9 @@ AccordionItem production policy is replaced.
 
 The component-local runner discovers the story-suffixed browser fixture with
 Chrome and zero retries, independently of the normal library build.
+The explicit `react-accordion:e2e-accordionitem` Nx target uses that existing
+component configuration and retains the shared Cypress helper prerequisite.
+It is a scoped Item target, not a claim to aggregate every Accordion child suite.
 
 The documented round maps package-local Default, OpenItems, Multiple,
 Collapsible, Controlled and Disabled stories to item ownership, visible content

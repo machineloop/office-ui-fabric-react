@@ -552,6 +552,8 @@ describe('AccordionItem source and conformance contracts', () => {
     };
     render(<Owner />);
     cy.get('#header-a').realClick();
+    expanded('a', true);
+    settledPanel('#panel-a');
     cy.get('#show').realClick();
     cy.get('#item-a').should('not.exist');
     cy.get('#show').realClick();

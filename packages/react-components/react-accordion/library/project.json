@@ -4,5 +4,20 @@
   "projectType": "library",
   "sourceRoot": "packages/react-components/react-accordion/library/src",
   "tags": ["vNext", "platform:web"],
-  "implicitDependencies": []
+  "implicitDependencies": [],
+  "targets": {
+    "e2e-accordionitem": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "dependsOn": [{ "target": "build", "projects": "scripts-cypress" }],
+      "options": {
+        "cwd": "packages/react-components/react-accordion/library",
+        "command": "yarn run -T cypress run --component --config-file src/components/AccordionItem/AccordionItem.cypress.config.cjs"
+      },
+      "metadata": {
+        "description": "Run the complete component-local AccordionItem functional suite with its existing Cypress configuration."
+      }
+    }
+  }
 }
