@@ -1,5 +1,13 @@
 # TagPicker browser coverage
 
+Reverse entry still starts with a real click on the original after button, then
+native Shift+Tab to the secondary action and input. A bounded retrying assertion
+now observes Tabster tracking that same after button before the first key; it
+does not focus the secondary action, input or a tag, or mutate mover state.
+This preserves the original 58 scenarios and all reverse-entry, tag-selection,
+caret-position and Backspace assertions while making the keyboard premise
+explicit under load.
+
 Sources: TagPicker description, best practices, accessibility notes and stories,
 useTagPicker state/context, TagPicker and hook unit tests.
 

@@ -12,6 +12,7 @@ import { TagPickerList } from '../TagPickerList/TagPickerList';
 import { TagPickerOption } from '../TagPickerOption/TagPickerOption';
 import { Avatar } from '@fluentui/react-avatar';
 import { Button } from '@fluentui/react-button';
+import { getTabster } from 'tabster';
 
 import 'cypress-real-events';
 import { tagPickerControlClassNames } from '../TagPickerControl/useTagPickerControlStyles.styles';
@@ -26,6 +27,18 @@ import { TruncatedText } from '../../../../stories/src/TagPicker/TagPickerTrunca
 const mount = (element: JSXElement) => {
   mountBase(<FluentProvider theme={teamsLightTheme}>{element}</FluentProvider>);
 };
+
+const enterFromAfter = () =>
+  cy
+    .get('#after-button')
+    .realClick()
+    .should($after =>
+      expect(
+        getTabster($after[0].ownerDocument.defaultView!)?.focusedElement.getFocusedElement(),
+        'native focus backend has observed the original after button',
+      ).to.equal($after[0]),
+    )
+    .realPress(['Shift', 'Tab']);
 
 const options = [
   'John Doe',
@@ -535,7 +548,7 @@ describe('TagPicker', () => {
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.visible');
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('be.visible');
 
-        cy.get('#after-button').realClick().realPress(['Shift', 'Tab']);
+        enterFromAfter();
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get('[data-testid="tag-picker-input"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('be.focused');
@@ -601,7 +614,7 @@ describe('TagPicker', () => {
       it('should move to last tag on Backspace key press on input, when input is empty', () => {
         mount(<TagPickerControlled defaultSelectedOptions={options} />);
 
-        cy.get('#after-button').realClick().realPress(['Shift', 'Tab']);
+        enterFromAfter();
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get('[data-testid="tag-picker-input"]').should('be.focused').realPress('Backspace');
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('be.focused');
@@ -610,7 +623,7 @@ describe('TagPicker', () => {
       it('should delete input content on Backspace when input is not empty', () => {
         mount(<TagPickerControlled defaultSelectedOptions={options} />);
 
-        cy.get('#after-button').realClick().realPress(['Shift', 'Tab']);
+        enterFromAfter();
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get('[data-testid="tag-picker-input"]').should('be.focused').realType('Some Text').realPress('Backspace');
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('not.be.focused');
@@ -620,7 +633,7 @@ describe('TagPicker', () => {
       it('should move to last tag on Backspace key press on input, when input is not empty but the cursor is on the first character', () => {
         mount(<TagPickerControlled defaultSelectedOptions={options} />);
 
-        cy.get('#after-button').realClick().realPress(['Shift', 'Tab']);
+        enterFromAfter();
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get('[data-testid="tag-picker-input"]').should('be.focused').realType('SomeText').realPress('Backspace');
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('not.be.focused');
@@ -636,7 +649,7 @@ describe('TagPicker', () => {
       it('should delete input content on Backspace when input is not empty and selected', () => {
         mount(<TagPickerControlled defaultSelectedOptions={options} />);
 
-        cy.get('#after-button').realClick().realPress(['Shift', 'Tab']);
+        enterFromAfter();
         cy.get('[data-testid="tag-picker-control__secondaryAction"]').should('be.focused').realPress(['Shift', 'Tab']);
         cy.get('[data-testid="tag-picker-input"]').should('be.focused').realType('SomeText').realPress('Backspace');
         cy.get(`[data-testid="tag--${options[options.length - 1]}"]`).should('not.be.focused');
