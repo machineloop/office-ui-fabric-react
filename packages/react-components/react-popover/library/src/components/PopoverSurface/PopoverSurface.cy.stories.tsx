@@ -23,6 +23,7 @@ import { usePopoverContext_unstable } from '../../popoverContext';
 import type { PopoverContextValue } from '../../popoverContext';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import * as axe from 'axe-core';
+import { getTabster } from 'tabster';
 
 const render = (children: React.ReactNode, dir: 'ltr' | 'rtl' = 'ltr') =>
   mount(
@@ -59,7 +60,23 @@ const cssColor = (value: string) => {
   probe.style.color = value;
   return probe.style.color;
 };
-const open = () => cy.get('#trigger').realClick();
+const focusTracked = (selector: string) =>
+  cy
+    .get(selector)
+    .focus()
+    .should($node =>
+      expect(getTabster($node[0].ownerDocument.defaultView!)?.focusedElement.getFocusedElement()).to.equal($node[0]),
+    );
+const open = () => focusTracked('#trigger').realClick();
+const closeModalFixture = (selector = '#surface') => {
+  cy.get(selector).should('be.visible');
+  cy.realPress('Escape');
+  cy.get(selector).should('not.exist');
+  cy.get('[data-cy-root]').should($root => {
+    expect($root[0].closest('[aria-hidden="true"]'), 'closed modal releases the retained mount root').to.equal(null);
+    expect($root[0].closest('[inert]')).to.equal(null);
+  });
+};
 
 describe('PopoverSurface documented content, shape and presence', () => {
   it('renders the default story as a positioned group and moves focus into interactive content', () => {
@@ -145,6 +162,7 @@ describe('PopoverSurface documented content, shape and presence', () => {
     cy.get('.fui-PopoverSurface button').last().should('have.focus');
     cy.realPress('Tab');
     cy.get('.fui-PopoverSurface button').first().should('have.focus');
+    closeModalFixture('.fui-PopoverSurface');
   });
 
   it('focuses and names the documented noninteractive surface', () => {
@@ -381,6 +399,7 @@ describe('PopoverSurface native interaction and containment boundaries', () => {
     cy.get('#first').should('have.focus');
     cy.realPress('Tab');
     cy.get('#input').should('have.focus');
+    closeModalFixture();
   });
 
   it('uses standards-like accessibility isolation and closes after deliberate external focus', () => {
@@ -421,6 +440,7 @@ describe('PopoverSurface native interaction and containment boundaries', () => {
     cy.get('#outer-surface').should('be.visible');
     cy.get('#inner-trigger').should('have.focus');
     cy.get('@outer').should('not.have.been.called');
+    closeModalFixture('#outer-surface');
   });
 
   it('uses the documented propagation stop to keep an inline nested Escape from closing the outer surface', () => {
@@ -443,7 +463,7 @@ describe('PopoverSurface native interaction and containment boundaries', () => {
       </Popover>,
     );
     cy.get('#outer-surface').should('have.attr', 'data-popper-placement');
-    cy.get('#inner-trigger').focus();
+    focusTracked('#inner-trigger');
     cy.realPress('Enter');
     cy.get('#inner-surface').should('be.visible');
     cy.get('#inner-action').should($node => {
@@ -465,6 +485,7 @@ describe('PopoverSurface native interaction and containment boundaries', () => {
     cy.get('#inner-surface').should('not.exist');
     cy.get('#outer-surface').should('be.visible');
     cy.get('@outer').should('not.have.been.called');
+    closeModalFixture('#outer-surface');
   });
 
   it('ignores native scrolling inside the surface while close-on-scroll is enabled', () => {
@@ -508,6 +529,7 @@ describe('PopoverSurface native interaction and containment boundaries', () => {
         .run({ include: [$node[0]], exclude: [sentinel] })
         .then(result => expect(result.violations, JSON.stringify(result.violations)).to.deep.equal([])),
     );
+    closeModalFixture();
   });
 });
 
@@ -732,6 +754,7 @@ describe('PopoverSurface source and conformance contracts', () => {
     cy.get('#last').focus();
     cy.realPress('Tab');
     cy.get('#first').should('have.focus');
+    closeModalFixture();
   });
 
   it('reflects exact provider theme colors across portals without changing surface identity', () => {

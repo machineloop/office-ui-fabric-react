@@ -4,6 +4,18 @@ The local CommonJS runner independently discovers this story-suffixed suite and
 browser type project while reusing the retained Popover runner configuration.
 Chrome native events run with zero retries.
 
+Modal cases that intentionally retain an open owner for their assertions now
+close that owner through real Escape only after the original verdicts and audits
+finish, then require the retained mount root to be exposed before unmount.
+Nested-owner independence remains asserted before closing the remaining outer
+owner. Tests do not remove `aria-hidden`/`inert` attributes or repair component
+state. These handoff verdicts remain inside test bodies.
+
+Scene opening and inline nested activation observe actual Tabster trigger focus
+before the real click or Enter, using the same bounded native-focus premise as
+the other popover integration suites. Surface autofocus, dismissal, exact
+placement and later focus assertions are not forced or relaxed.
+
 Documented Default, Appearance, WithArrow, WithArrowAutosize, TrappingFocus,
 NonInteractiveContent, InternalUpdateContent, MotionDisabled, MotionCustom,
 WithoutTrigger, AnchorToCustomTarget, CustomTrigger and ControllingOpenAndClose
