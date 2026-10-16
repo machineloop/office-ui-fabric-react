@@ -720,7 +720,21 @@ describe('ONLY131 R1 documented and native image-button contract', () => {
     mount(<ImageSlideshow />);
     loaded();
     settled();
-    cy.get('.fui-CarouselNavImageButton').should('have.length', 3).last().find('img').realClick();
+    cy.get('.fui-CarouselNavImageButton')
+      .should('have.length', 3)
+      .last()
+      .find('img')
+      .scrollIntoView()
+      .should('be.visible')
+      .realHover({ scrollBehavior: false })
+      .should($image => {
+        const image = $image[0];
+        expect(image.matches(':hover'), 'native pointer is over the original thumbnail').to.equal(true);
+        const rect = image.getBoundingClientRect();
+        const hit = image.ownerDocument.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        expect(hit, `original thumbnail center target: ${hit?.outerHTML}`).to.equal(image);
+      })
+      .realClick({ scrollBehavior: false });
     cy.get('.fui-CarouselNavImageButton').last().should('have.attr', 'aria-selected', 'true');
     loaded();
     audit('stable ImageSlideshow', 'mover');

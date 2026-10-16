@@ -1,5 +1,16 @@
 # ONLY131 CarouselNavImageButton browser and functional coverage
 
+The unchanged stable ImageSlideshow case now scrolls the original final
+thumbnail image into view, moves the native pointer over it, and observes both
+its hover state and that its center really hits that image
+before the same native click. Automatic second scrolling is disabled for that
+click so its hit-tested position is retained. It does not select or focus a
+destination through test code; the original three-button count, selected-state
+verdict, loaded-image checks and full audit remain, along with all other 130
+cases. The old selected-state failure reproduced both under load and alone;
+this explicit pointer-readiness premise does not claim a proven production
+defect or universal high-concurrency stability.
+
 All authored tests, compatibility/configuration files, runner state, logs,
 reports and screenshots are confined to this component directory on shared
 `master`. Production source, existing units/snapshots, sibling components,
