@@ -1,5 +1,19 @@
 # ONLY130 AvatarGroupPopover browser coverage
 
+## Closed-fixture handoff
+
+The existing real Escape helper now observes isolation release on the retained,
+connected `#fixture` after surface removal and trigger restoration, before a case
+can replace or remount its provider. Reset ownership and final closed-state audit
+checks use the same positive fixture/exposure premise, including absence of an
+inert ancestor. The test never removes attributes or changes Tabster state.
+
+The lifecycle case still removes an actually open owner and retains every null
+ref and dismissal-request assertion; it is not replaced with a close-before-remove
+scenario. Its original final audit still requires exposure. All 156 cases, open
+audits and classifier inventories remain; no sleep, retry or source change is
+introduced.
+
 ## Scope and execution
 
 The default suite has **156 Cypress component cases**: all 130 prior cases (28 documentation/unit-derived, 72 size/slot/provider, 30 inherited interaction/lifecycle) plus 26 source-derived R4 cases. The prior scenario register below is retained intact. Every passing case receives a final full-rule axe audit; additional audits exercise open surfaces, tooltips, every size/layout combination, explicit icon sizes and retained controlled modals. Actual stable stories are imported unchanged, not copied into simplified fixtures. Their 49 individual groups are opened with real Enter and dismissed with real Escape; exact overflow names, order, labels, indicators, 24px overflow avatars, and restored focus are asserted.

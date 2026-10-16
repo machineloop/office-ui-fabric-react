@@ -510,6 +510,13 @@ const settled = () =>
       'surface enter animation completed before dismissal',
     ).to.have.length(0),
   );
+function assertFixtureExposure(doc: Document) {
+  const fixtureRoot = doc.getElementById('fixture');
+  if (!fixtureRoot) throw new Error('The retained AvatarGroupPopover fixture is absent');
+  expect(fixtureRoot.isConnected, 'the retained fixture remains connected').to.equal(true);
+  expect(fixtureRoot.closest('[aria-hidden="true"]'), 'closed fixture isolation is released').to.equal(null);
+  expect(fixtureRoot.closest('[inert]'), 'closed fixture is not inert').to.equal(null);
+}
 const close = () => {
   settled();
   cy.realPress('Escape');
@@ -521,6 +528,7 @@ const close = () => {
     ),
   );
   trigger().should('have.focus');
+  cy.document().should(assertFixtureExposure);
 };
 const callback = (spy: Cypress.Agent<sinon.SinonStub>, index: number, value: boolean, type: string) =>
   cy.then(() => {
@@ -538,10 +546,7 @@ const audit = (stage = 'final') => {
     .document()
     .should(doc => {
       if (!doc.querySelector(`${surfaceSelector}[aria-modal="true"]`)) {
-        expect(
-          doc.querySelector('#fixture')?.closest('[aria-hidden="true"]'),
-          'closed fixture is exposed to axe',
-        ).to.equal(null);
+        assertFixtureExposure(doc);
       }
     })
     .then(doc =>
@@ -1307,8 +1312,7 @@ function classifierMutations(result: axe.AxeResults, doc: Document, stage: strin
   }
   return rejectedMutations;
 }
-const assertResetFixtureOwnership = () =>
-  cy.document().should(doc => expect(doc.querySelector('#fixture')?.closest('[aria-hidden="true"]')).to.equal(null));
+const assertResetFixtureOwnership = () => cy.document().should(assertFixtureExposure);
 beforeEach(() => {
   render(<button id="fixture-reset">Reset fixture</button>);
   cy.get('#fixture-reset').focus();
