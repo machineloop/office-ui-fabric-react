@@ -25,6 +25,18 @@ import { dialogActionSelector, dialogTriggerOpenId, dialogTriggerOpenSelector } 
 
 const mount = (element: JSXElement) => mountBase(<FluentProvider theme={teamsLightTheme}>{element}</FluentProvider>);
 
+const rootExposed = () =>
+  cy.get('#__cy_root').should($root => {
+    expect($root[0].closest('[aria-hidden="true"]'), 'retained dialog owner releases mount isolation').to.equal(null);
+    expect($root[0].closest('[inert]')).to.equal(null);
+  });
+
+const closeOriginalDialog = () => {
+  cy.contains('.fui-DialogSurface button', 'Close').realClick();
+  cy.get('.fui-DialogSurface').should('not.exist');
+  rootExposed();
+};
+
 describe('DialogTitle', () => {
   describe('modalType = modal', () => {
     it('should not have closeButton by default', () => {
@@ -53,6 +65,7 @@ describe('DialogTitle', () => {
       );
       cy.get(dialogTriggerOpenSelector).realClick();
       cy.get(dialogActionSelector).should('not.exist');
+      closeOriginalDialog();
     });
   });
   describe('modalType = non-modal', () => {
@@ -82,6 +95,7 @@ describe('DialogTitle', () => {
       );
       cy.get(dialogTriggerOpenSelector).realClick();
       cy.get(dialogActionSelector).should('exist');
+      closeOriginalDialog();
     });
   });
   describe('modalType = alert', () => {
@@ -111,6 +125,7 @@ describe('DialogTitle', () => {
       );
       cy.get(dialogTriggerOpenSelector).realClick();
       cy.get(dialogActionSelector).should('not.exist');
+      closeOriginalDialog();
     });
   });
 });
@@ -165,6 +180,7 @@ describe('DialogTitle documented scenarios', () => {
       cy.get('#close-title').realClick();
       cy.get('#title-surface').should('not.exist');
       cy.get('#open-title').should('be.focused');
+      rootExposed();
     });
   }
   for (const activation of ['pointer', 'Enter', 'Space'] as const) {
@@ -179,6 +195,7 @@ describe('DialogTitle documented scenarios', () => {
       }
       cy.get('#title-surface').should('not.exist');
       cy.get('#open-title').should('be.focused');
+      rootExposed();
     });
   }
   it('supports the documented custom Fluent Button action in a modal dialog', () => {
@@ -205,6 +222,7 @@ describe('DialogTitle documented scenarios', () => {
       .realPress('Enter');
     cy.get('#title-surface').should('not.exist');
     cy.get('#open-title').should('be.focused');
+    rootExposed();
   });
   it('omits the documented null action while retaining the non-modal heading and other dismissal', () => {
     mount(<TitleExample modalType="non-modal" action={null} />);
@@ -213,6 +231,7 @@ describe('DialogTitle documented scenarios', () => {
     cy.get('#title-surface').find('h2').should('have.text', 'Account settings');
     cy.get('#close-title').realClick();
     cy.get('#title-surface').should('not.exist');
+    rootExposed();
   });
 });
 
@@ -328,6 +347,9 @@ describe('DialogTitle supported API and accessibility edges', () => {
       );
     });
     cy.get('#explicit-title').should('not.have.attr', 'aria-label');
+    cy.get('#update-title').realPress('Escape');
+    cy.get('#title-surface').should('not.exist');
+    rootExposed();
   });
 
   it('replaces removes and omits action shorthand while restoring the default non-modal close button', () => {
@@ -366,6 +388,7 @@ describe('DialogTitle supported API and accessibility edges', () => {
     cy.get('#advance-title').realClick();
     cy.get('.fui-DialogTitle__action').find('button[aria-label="close"]').realClick();
     cy.get('#title-surface').should('not.exist');
+    rootExposed();
   });
 
   it('recomputes the omitted default action when modal type changes without remounting the heading', () => {
@@ -472,6 +495,7 @@ describe('DialogTitle supported API and accessibility edges', () => {
     cy.get('#advance-title').realClick();
     cy.get('#veto-close').realClick();
     cy.get('#title-surface').should('not.exist');
+    rootExposed();
     cy.then(() =>
       expect(calls).to.deep.equal(['old', 'new', 'request:false', 'new', 'request:false', 'request:false']),
     );
