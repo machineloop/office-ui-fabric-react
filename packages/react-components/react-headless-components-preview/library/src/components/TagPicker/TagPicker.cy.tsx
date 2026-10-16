@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { mount } from '@fluentui/scripts-cypress';
-import { polyfillBodyAndObserve } from '@microsoft/focusgroup-polyfill';
+import { polyfillBodyAndObserve, supportsFocusGroup } from '@microsoft/focusgroup-polyfill';
 
 import { Tag } from '../Tag';
 import { TagPicker } from './TagPicker';
@@ -98,7 +98,11 @@ describe('TagPicker', () => {
     cy.get('[aria-label="Selected animals"]')
       .should('have.attr', 'focusgroup', 'toolbar inline wrap')
       .and('not.have.attr', 'data-tabster');
-    cy.get('[data-testid="tag-Cat"]').should('have.attr', 'tabindex', '0').focus().realPress('ArrowRight');
+    if (!supportsFocusGroup()) {
+      cy.get('[data-testid="tag-Cat"]').should('have.attr', 'tabindex', '0');
+    }
+    cy.get('#before').focus().realPress('Tab');
+    cy.get('[data-testid="tag-Cat"]').should('be.focused').realPress('ArrowRight');
     cy.get('[data-testid="tag-Dog"]').should('be.focused');
     cy.get('[data-testid="tag-Dog"]').realPress('ArrowRight');
     cy.get(input).should('be.focused');
