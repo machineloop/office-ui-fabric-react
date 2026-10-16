@@ -147,10 +147,38 @@ function settled() {
       ).to.have.length(0);
     });
 }
+function rootBoundaryReady() {
+  const marker = 'isFirst=false, isOutside=false, (Root, tabbable=false)';
+  const selector = `:scope > i[data-tabster-dummy="${marker}"]`;
+  return cy
+    .document()
+    .should(document =>
+      expect(document.body.querySelectorAll(selector), 'one native body-owned trailing Root sentinel').to.have.length(
+        1,
+      ),
+    )
+    .then(document => {
+      const body = document.body;
+      const sentinel = body.querySelector<HTMLElement>(selector);
+      if (!sentinel) throw new Error('Required native body Root sentinel is absent');
+      return cy.wrap(sentinel).should(() => {
+        expect(document.body).to.equal(body);
+        const matches = body.querySelectorAll(selector);
+        expect(matches).to.have.length(1);
+        expect(matches[0], 'the same original trailing Root sentinel remains').to.equal(sentinel);
+        expect(sentinel.isConnected).to.equal(true);
+        expect(sentinel.parentElement).to.equal(body);
+        expect(sentinel.tagName).to.equal('I');
+        expect(sentinel.getAttribute('data-tabster-dummy')).to.equal(marker);
+        expect(body.lastElementChild, 'native Root boundary is settled after portal insertion').to.equal(sentinel);
+      });
+    });
+}
 function open() {
   focus('#trigger');
   cy.get('#trigger').realClick().should('have.attr', 'aria-expanded', 'true');
   settled();
+  rootBoundaryReady();
   audit('open-panel');
 }
 function closed(restore = true) {
@@ -159,6 +187,10 @@ function closed(restore = true) {
   if (restore) {
     cy.get('#trigger').should('have.focus');
   }
+  cy.get('#row139-stage').should($stage => {
+    expect($stage[0].closest('[aria-hidden="true"]'), 'closed owner releases the retained stage').to.equal(null);
+    expect($stage[0].closest('[inert]')).to.equal(null);
+  });
 }
 function escape() {
   settled();

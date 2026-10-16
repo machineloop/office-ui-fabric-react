@@ -1,5 +1,21 @@
 # TeachingPopoverFooter functional coverage (row 139)
 
+## Native audit boundary and reopen handoff
+
+Before the existing `open-panel` audit, the test observes the actual body-owned
+trailing Tabster Root sentinel at the end of the same body. Its globally unique
+selector, original reference, parent, connectedness and exact native marker are
+retained throughout the bounded wait. This reuses the native boundary premise
+already exercised by the independent-owner scenario; no sentinel is moved or
+edited by the test.
+
+Closed-owner checks retain all original surface, expanded-state and focus
+assertions, then require the retained stage to be accessibility-exposed and not
+inert before reopening. All 84 cases, 118 full audits, unexpected-incomplete
+rejection, native pointer/Escape behavior and exact callback assertions remain
+unchanged. There is no fixed sleep, retry increase, rule filtering, attribute
+repair or component source change.
+
 Component-local implementation for the parent's initial and fresh-repeat review.
 No review or commit is performed by this runner. Row 140 is not part of this work.
 
