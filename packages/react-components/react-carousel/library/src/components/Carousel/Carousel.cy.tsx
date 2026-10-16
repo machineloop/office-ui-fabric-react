@@ -1146,16 +1146,34 @@ describe('Carousel edges and accessibility', () => {
     cy.get('@announce').should('have.been.calledTwice').and('have.been.calledWith', 'Slide 3 / 3', { polite: true });
   });
 
-  it('characterizes the shared announcer assertive DOM fallback despite a polite root request', () => {
-    mount(
-      <AriaLiveAnnouncer>
-        <Fixture announcement={(index, count) => `Gallery ${index + 1} of ${count}`} />
-      </AriaLiveAnnouncer>,
-    );
-    selected(0);
-    navAt(1).click();
-    cy.get('[aria-live="assertive"]').should('contain.text', 'Gallery 2 of 3');
-    cy.get('[data-testid="fixture"]').should('not.have.attr', 'aria-live');
+  it('uses the browser-supported shared announcer for a polite root request', () => {
+    cy.document().then(doc => {
+      const nativeAnnouncement =
+        'ariaNotify' in doc && typeof doc.ariaNotify === 'function'
+          ? cy.spy(doc, 'ariaNotify').as('nativeAnnouncement')
+          : undefined;
+      mount(
+        <AriaLiveAnnouncer>
+          <Fixture announcement={(index, count) => `Gallery ${index + 1} of ${count}`} />
+        </AriaLiveAnnouncer>,
+      );
+      selected(0);
+      if (nativeAnnouncement) {
+        cy.get('@nativeAnnouncement').should('not.have.been.called');
+      } else {
+        cy.get('[aria-live="assertive"]').should('have.text', '');
+      }
+      navAt(1).click();
+      selected(1);
+      if (nativeAnnouncement) {
+        cy.get('@nativeAnnouncement')
+          .should('have.been.calledOnce')
+          .and('have.been.calledWithExactly', 'Gallery 2 of 3', { priority: 'normal' });
+      } else {
+        cy.get('[aria-live="assertive"]').should('have.text', 'Gallery 2 of 3. ');
+      }
+      cy.get('[data-testid="fixture"]').should('not.have.attr', 'aria-live');
+    });
   });
 
   it('balances forwarded root ref attachments and releases on unmount and fresh remount', () => {

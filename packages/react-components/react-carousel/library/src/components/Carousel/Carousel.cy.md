@@ -37,8 +37,12 @@ invalid default-plus-controlled fixtures, or production changes.
   asserted separately, not represented as accessible success.
 - Empty geometry disables previous but leaves next enabled and reports click
   index zero. No useful next slide exists.
-- The root requests `{ polite: true }`, but the shared DOM announcer creates an
-  assertive live region. Tests distinguish the root request from the actual DOM.
+- The root requests `{ polite: true }`. When the real document supports
+  `ariaNotify`, the shared announcer calls that native API with normal priority;
+  a call-through spy verifies the exact message and options without replacing
+  the browser implementation. Otherwise the shared DOM fallback creates an
+  assertive live region. Both paths retain silent initialization, actual
+  navigation, and the absence of a live attribute on the Carousel root.
 - A rejected controlled navigation request can leave context/selected-tab state
   at the controlled index while the engine physically displays the requested
   page. The external controlled update is subsequently honored.
@@ -56,6 +60,7 @@ policy prop, or independent autoplay enabled prop in the actual API. Circular,
 motion, provider direction and the real autoplay control are used instead.
 Announcement speech by assistive technology, universal browser behavior, all
 physics trajectories and arbitrary input combinations are not claimed.
-Whole-package Cypress typing has four independently reproduced inherited
-diagnostics in CarouselNav, FluentProvider and Tooltip; the owned suite has zero
-new diagnostics under the unchanged compiler settings.
+Whole-package Cypress typing remains blocked by inherited production diagnostics.
+The current compiler reports the same 14 diagnostics with the original and
+updated root test sources; the owned suite has zero diagnostics and introduces
+no new ones under the unchanged compiler settings.
