@@ -5,6 +5,72 @@ import { isConformant } from '../../testing/isConformant';
 import { InfoLabel } from './InfoLabel';
 
 describe('InfoLabel', () => {
+  it('resets ownership when an open optional button is removed and reinserted closed', () => {
+    const result = render(
+      <InfoLabel className="wrapper" info="Details" infoButton={{ popover: { defaultOpen: true } }}>
+        Name
+      </InfoLabel>,
+    );
+    result.rerender(<InfoLabel className="wrapper">Name</InfoLabel>);
+    result.rerender(
+      <InfoLabel className="wrapper" info="Details">
+        Name
+      </InfoLabel>,
+    );
+
+    expect(result.container.querySelector('.wrapper')?.hasAttribute('aria-owns')).toBe(false);
+  });
+
+  it('uses an overridden info ID for the default self-referencing popup name', () => {
+    const result = render(<InfoLabel info={{ id: 'custom-note', children: 'Details' }}>Name</InfoLabel>);
+    fireEvent.click(result.getByRole('button'));
+
+    expect(result.getByRole('note').getAttribute('aria-labelledby')).toBe('custom-note');
+  });
+
+  it('owns the info surface when the popup is initially open', () => {
+    const result = render(
+      <InfoLabel
+        className="wrapper"
+        info={{ id: 'initial-note', children: 'Details' }}
+        infoButton={{ popover: { defaultOpen: true } }}
+      >
+        Name
+      </InfoLabel>,
+    );
+
+    expect(result.container.querySelector('.wrapper')?.getAttribute('aria-owns')).toBe('initial-note');
+  });
+
+  it('does not claim ownership for a controlled closed popup opening request', () => {
+    const result = render(
+      <InfoLabel
+        className="wrapper"
+        info={{ id: 'frozen-note', children: 'Details' }}
+        infoButton={{ popover: { open: false } }}
+      >
+        Name
+      </InfoLabel>,
+    );
+    fireEvent.click(result.getByRole('button'));
+
+    expect(result.container.querySelector('.wrapper')?.hasAttribute('aria-owns')).toBe(false);
+  });
+
+  it('removes ownership when focus leaves the button and popup', () => {
+    const result = render(
+      <>
+        <InfoLabel className="wrapper" info={{ id: 'blur-note', children: 'Details' }}>
+          Name
+        </InfoLabel>
+        <button>Outside</button>
+      </>,
+    );
+    fireEvent.click(result.getByRole('button', { name: /information/ }));
+    fireEvent.blur(result.getByRole('note'), { relatedTarget: result.getByRole('button', { name: 'Outside' }) });
+
+    expect(result.container.querySelector('.wrapper')?.hasAttribute('aria-owns')).toBe(false);
+  });
   isConformant({
     Component: InfoLabel,
     displayName: 'InfoLabel',

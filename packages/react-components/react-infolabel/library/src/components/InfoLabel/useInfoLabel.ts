@@ -3,7 +3,14 @@
 import * as React from 'react';
 
 import { Label } from '@fluentui/react-label';
-import { mergeCallbacks, useId, slot, useEventCallback } from '@fluentui/react-utilities';
+import {
+  mergeCallbacks,
+  useId,
+  slot,
+  useEventCallback,
+  useMergedRefs,
+  elementContains,
+} from '@fluentui/react-utilities';
 import { InfoButton } from '../InfoButton/InfoButton';
 import type { InfoLabelProps, InfoLabelState } from './InfoLabel.types';
 
@@ -28,7 +35,6 @@ export const useInfoLabel_unstable = (props: InfoLabelProps, ref: React.Ref<HTML
     ...labelProps
   } = props;
   const baseId = useId('infolabel-');
-  const [open, setOpen] = React.useState(false);
 
   const root = slot.always(rootShorthand, {
     defaultProps: {
@@ -61,26 +67,53 @@ export const useInfoLabel_unstable = (props: InfoLabelProps, ref: React.Ref<HTML
   const infoButtonPopover = slot.always(infoButton?.popover, {
     elementType: 'div',
   });
+  const [open, setOpen] = React.useState(infoButtonPopover.defaultOpen ?? false);
+  const hasInfoButton = !!infoButton;
+  const hadInfoButton = React.useRef(hasInfoButton);
+  React.useEffect(() => {
+    if (!hasInfoButton || !hadInfoButton.current) {
+      setOpen(hasInfoButton && (infoButtonPopover.defaultOpen ?? false));
+    }
+    hadInfoButton.current = hasInfoButton;
+  }, [hasInfoButton, infoButtonPopover.defaultOpen]);
   infoButtonPopover.onOpenChange = useEventCallback(
     mergeCallbacks(infoButtonPopover.onOpenChange, (_, data) => {
       setOpen(data.open);
     }),
   );
 
+  const infoPopupId = baseId + '__info';
+  const infoSlot = slot.optional(infoButton?.info, {
+    defaultProps: {
+      id: infoPopupId,
+    },
+    elementType: 'div',
+  });
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const infoRef = React.useRef<HTMLDivElement>(null);
+  const mergedButtonRef = useMergedRefs(buttonRef, infoButton?.ref);
+  const mergedInfoRef = useMergedRefs(infoRef, infoSlot?.ref);
+  const onBlurButtonOrInfo = useEventCallback((event: React.FocusEvent) => {
+    const nextFocused = event.relatedTarget;
+    if (nextFocused && buttonRef.current !== nextFocused && !elementContains(infoRef.current, nextFocused)) {
+      setOpen(false);
+    }
+  });
+
   if (infoButton) {
     infoButton.popover = infoButtonPopover;
-    const infoPopupId = baseId + '__info'; // used as a self-referencing aria-labelledby to name the popup
-    infoButton.info = slot.optional(infoButton?.info, {
-      defaultProps: {
-        id: infoPopupId,
-        'aria-labelledby': infoPopupId,
-      },
-      elementType: 'div',
-    });
+    infoButton.ref = mergedButtonRef;
+    infoButton.onBlur = mergeCallbacks(infoButton.onBlur, onBlurButtonOrInfo);
+    infoButton.info = infoSlot;
+    if (infoSlot) {
+      infoSlot['aria-labelledby'] ??= infoSlot.id;
+      infoSlot.ref = mergedInfoRef;
+      infoSlot.onBlurCapture = mergeCallbacks(infoSlot.onBlurCapture, onBlurButtonOrInfo);
+    }
 
     infoButton['aria-labelledby'] ??= `${label.id} ${infoButton.id}`;
 
-    if (open) {
+    if (infoButtonPopover.open ?? open) {
       root['aria-owns'] ??= infoButton.info?.id;
     }
   }
